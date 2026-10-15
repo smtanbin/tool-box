@@ -64,9 +64,9 @@ jobs:
       - name: Build Store MSIX bundle
         shell: powershell
         env:
-          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
-          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
-          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME || 'Magestica.MyToolBox' }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER || 'CN=F8598E86-A98F-4FD0-90D7-DA85D833223D' }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME || 'Magestica' }}
         run: |
           if (-not $env:MSIX_IDENTITY_NAME -or -not $env:MSIX_PUBLISHER -or -not $env:MSIX_PUBLISHER_DISPLAY_NAME) {
             throw "Set repo variables MSIX_IDENTITY_NAME, MSIX_PUBLISHER and MSIX_PUBLISHER_DISPLAY_NAME (Partner Center -> Product identity)"
