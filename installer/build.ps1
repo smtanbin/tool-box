@@ -63,7 +63,7 @@ $g.FillRectangle($grad, $rect)
 $g.DrawImage($icon, 26, 70, 112, 112)
 $font = New-Object System.Drawing.Font "Segoe UI Semibold", 15
 $fmt = New-Object System.Drawing.StringFormat; $fmt.Alignment = "Center"
-$g.DrawString("Tool Box", $font, [System.Drawing.Brushes]::White, (New-Object System.Drawing.RectangleF 0, 196, 164, 32), $fmt)
+$g.DrawString("My Tool Box", $font, [System.Drawing.Brushes]::White, (New-Object System.Drawing.RectangleF 0, 196, 164, 32), $fmt)
 $small = New-Object System.Drawing.Font "Segoe UI", 8.5
 $g.DrawString("v$Version", $small, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(220, 255, 255, 255))), (New-Object System.Drawing.RectangleF 0, 226, 164, 20), $fmt)
 $bmp.Save((Join-Path $build "dialog.bmp"), [System.Drawing.Imaging.ImageFormat]::Bmp)

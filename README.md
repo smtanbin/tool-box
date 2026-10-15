@@ -1,4 +1,4 @@
-# Tool Box
+# My Tool Box
 
 A growing collection of everyday IT tools in one native-feeling Windows 11 app.
 Single portable `.exe`, no installer, works offline. Written in Go with a Fluent
@@ -40,8 +40,8 @@ Everything runs on your PC; the crypto and developer tools work entirely offline
 ## Install
 
 Run `ToolBoxSetup-<version>.msi`. It installs for the current user only (no
-administrator rights needed) into `%LocalAppData%\Programs\Tool Box`, adds
-**Tool Box** shortcuts to the Desktop and Start menu, and can be removed from
+administrator rights needed) into `%LocalAppData%\Programs\My Tool Box`, adds
+**My Tool Box** shortcuts to the Desktop and Start menu, and can be removed from
 **Settings → Apps → Installed apps**. Installing a newer version upgrades in place.
 
 ## Run
@@ -98,10 +98,16 @@ off your PC, and closing the window quits the app.
 
 Apache License 2.0 with the **Commons Clause** — see [LICENSE](LICENSE).
 
-You may use, copy, modify and share Tool Box for free, for personal or work use.
+You may use, copy, modify and share My Tool Box for free, for personal or work use.
 You may **not** sell it or make money from it (paid copies, hosting or support
 based on it).
 
+## Privacy
+
+My Tool Box collects no personal data and sends nothing off your PC. Network tools
+only contact the hosts you enter. Read the full
+[Privacy Policy](PRIVACY.md): <https://github.com/smtanbin/tool-box/blob/main/PRIVACY.md>
+
 ## Credits
 
-Designed and developed by **Tanbin** · Developer: [magestica.com](https://magestica.com)
+Designed and developed by **Tanbin** · Developer: [magestica.com](https://magestica.com/)

@@ -1,20 +1,20 @@
 <!--
-  Tool Box installer (WiX Toolset v5). Build with installer\build.ps1.
+  My Tool Box installer (WiX Toolset v5). Build with installer\build.ps1.
   Per-user install: no admin rights needed. Installs to
-  %LocalAppData%\Programs\Tool Box and adds Desktop + Start menu shortcuts.
+  %LocalAppData%\Programs\My Tool Box and adds Desktop + Start menu shortcuts.
   Copyright 2026 Tanbin (magestica.com). Apache License 2.0 with Commons Clause.
 -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-  <Package Name="Tool Box"
+  <Package Name="My Tool Box"
            Manufacturer="Tanbin (magestica.com)"
            Version="$(var.Version)"
            UpgradeCode="6F2B8C1E-4A7D-4E3B-9C55-2D1A7B3E9F40"
            Scope="perUser"
            Compressed="yes">
 
-    <SummaryInformation Description="Tool Box $(var.Version) Setup" Manufacturer="Tanbin (magestica.com)" />
-    <MajorUpgrade DowngradeErrorMessage="A newer version of Tool Box is already installed." />
+    <SummaryInformation Description="My Tool Box $(var.Version) Setup" Manufacturer="Tanbin (magestica.com)" />
+    <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of My Tool Box is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <!-- Apps & features entry -->
@@ -29,7 +29,7 @@
     <WixVariable Id="WixUIBannerBmp" Value="build\banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="build\dialog.bmp" />
     <ui:WixUI Id="WixUI_Minimal" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Tool Box" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch My Tool Box" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
     <Property Id="WixShellExecTarget" Value="[#ToolBoxExe]" />
     <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" DllEntry="WixShellExec" Impersonate="yes" />
@@ -40,7 +40,7 @@
 
     <StandardDirectory Id="LocalAppDataFolder">
       <Directory Id="UserProgramsDir" Name="Programs">
-        <Directory Id="INSTALLFOLDER" Name="Tool Box" />
+        <Directory Id="INSTALLFOLDER" Name="My Tool Box" />
       </Directory>
     </StandardDirectory>
     <StandardDirectory Id="DesktopFolder" />
@@ -48,28 +48,28 @@
 
     <!-- Per-user components use an HKCU value as key path (ICE38). -->
     <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
-      <Component Id="cmpExe" Guid="3C9E7A21-5B4F-4D8E-A1C6-7F2E9B0D4A13">
+      <Component Id="cmpExe" Guid="A7E14C93-2D6B-4F58-B0E1-93C5D7F2A846">
         <File Id="ToolBoxExe" Source="..\ToolBox.exe" Name="ToolBox.exe" />
-        <RegistryValue Root="HKCU" Key="Software\magestica\Tool Box" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\magestica\My Tool Box" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
         <RemoveFolder Id="rmInstallFolder" On="uninstall" />
         <RemoveFolder Id="rmUserPrograms" Directory="UserProgramsDir" On="uninstall" />
       </Component>
-      <Component Id="cmpLicense" Guid="8D4B2F6A-1E3C-4B7A-9F05-C6E2A8D1B357">
+      <Component Id="cmpLicense" Guid="5B90E3D7-8C21-4A6F-9E4D-1F7A2C6B08E5">
         <File Id="LicenseTxt" Source="..\LICENSE" Name="LICENSE.txt" />
-        <RegistryValue Root="HKCU" Key="Software\magestica\Tool Box" Name="License" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\magestica\My Tool Box" Name="License" Type="integer" Value="1" KeyPath="yes" />
       </Component>
       <Component Id="cmpShortcuts">
-        <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="Tool Box"
+        <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="My Tool Box"
                   Description="Everyday IT tools for Windows"
                   Target="[INSTALLFOLDER]ToolBox.exe" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
-        <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="Tool Box"
+        <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="My Tool Box"
                   Description="Everyday IT tools for Windows"
                   Target="[INSTALLFOLDER]ToolBox.exe" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
-        <RegistryValue Root="HKCU" Key="Software\magestica\Tool Box" Name="Shortcuts" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\magestica\My Tool Box" Name="Shortcuts" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
-    <Feature Id="Main" Title="Tool Box" Level="1">
+    <Feature Id="Main" Title="My Tool Box" Level="1">
       <ComponentGroupRef Id="AppFiles" />
     </Feature>
   </Package>

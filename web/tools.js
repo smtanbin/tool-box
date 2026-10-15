@@ -1,4 +1,4 @@
-// Copyright 2026 Tanbin (magestica.com). Tool Box.
+// Copyright 2026 Tanbin (magestica.com). My Tool Box.
 // Licensed under the Apache License 2.0 with the Commons Clause (no selling); see LICENSE.
 // Network and developer tool pages. Loaded after the main script in index.html and shares its helpers ($, $$, api, esc, toast, flyout).
 "use strict";
@@ -13,7 +13,7 @@ function showTool(t){
   $$('.tool').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
   $$('#rail .ri[data-tool]').forEach(a=>a.classList.toggle('on',a.dataset.tool===t));
   document.body.dataset.tool=t;$('#s3').textContent='';
-  document.title=t==='foldersize'?'Tool Box':TOOL_NAMES[t]+' — Tool Box';
+  document.title=t==='foldersize'?'My Tool Box':TOOL_NAMES[t]+' — My Tool Box';
   try{localStorage.setItem('tool',t)}catch(e){}
   if(location.hash.slice(1)!==t)history.replaceState(null,'','#'+t);
   if(toolInit[t]&&!toolInited.has(t)){toolInited.add(t);toolInit[t]()}
@@ -59,7 +59,7 @@ toolInit.disk=()=>{
   $('#dkref').onclick=diskLoad;
   $('#dkraw').onclick=()=>{dk.hex=!dk.hex;$('#dkraw').innerHTML=`<i class="fi">&#xE8EF;</i>Raw: ${dk.hex?'hex':'decimal'}`;diskRender()};
   $('#dkpills').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b){dk.sel=+b.dataset.i;diskRender()}});
-  $('#dkelev').onclick=async()=>{try{await api('/api/elevate');document.body.innerHTML='<div style="padding:60px;text-align:center">Tool Box is restarting as administrator in a new window. You can close this one.</div>';setTimeout(()=>window.close(),800)}catch(e){toast(e.message)}};
+  $('#dkelev').onclick=async()=>{try{await api('/api/elevate');document.body.innerHTML='<div style="padding:60px;text-align:center">My Tool Box is restarting as administrator in a new window. You can close this one.</div>';setTimeout(()=>window.close(),800)}catch(e){toast(e.message)}};
   addEventListener('keydown',e=>{if(e.key==='F5'&&curTool==='disk'){e.preventDefault();diskLoad()}});
   diskLoad()};
 async function diskLoad(){if(dk.loading)return;dk.loading=true;$('#dkref').disabled=true;$('#s3').textContent='Reading drives…';
@@ -343,8 +343,8 @@ async function cryptRun(){const pass=$('#crpass').value,input=$('#crin').value;$
   $('#crgo').disabled=true;
   try{if(crMode==='enc'){const salt=rand(16),iv=rand(12),key=await deriveKey(pass,salt);
       const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(input)));$('#crout').value=b64(concat([1],salt,iv,ct))}
-    else{let b;try{b=unb64(input.trim())}catch(e){throw new Error('This is not Base64 text encrypted by Tool Box')}
-      if(b[0]!==1||b.length<1+16+12+16)throw new Error('This is not text encrypted by Tool Box (unknown format)');
+    else{let b;try{b=unb64(input.trim())}catch(e){throw new Error('This is not Base64 text encrypted by My Tool Box')}
+      if(b[0]!==1||b.length<1+16+12+16)throw new Error('This is not text encrypted by My Tool Box (unknown format)');
       const key=await deriveKey(pass,b.subarray(1,17));let pt;
       try{pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b.subarray(17,29)},key,b.subarray(29))}catch(e){throw new Error('Wrong passphrase, or the text was changed or damaged')}
       $('#crout').value=fromUTF8(new Uint8Array(pt))}}

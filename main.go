@@ -1,4 +1,4 @@
-// Copyright 2026 Tanbin (magestica.com). Tool Box.
+// Copyright 2026 Tanbin (magestica.com). My Tool Box.
 // Licensed under the Apache License 2.0 with the Commons Clause (no selling); see LICENSE.
 
 package main
@@ -175,7 +175,7 @@ func main() {
 		}
 		openBrowser(url)
 	} else {
-		fmt.Println("Tool Box running at", url)
+		fmt.Println("My Tool Box running at", url)
 	}
 	http.Serve(ln, mux)
 }

@@ -1,4 +1,4 @@
-// Copyright 2026 Tanbin (magestica.com). Tool Box.
+// Copyright 2026 Tanbin (magestica.com). My Tool Box.
 // Licensed under the Apache License 2.0 with the Commons Clause (no selling); see LICENSE.
 
 package main
@@ -628,7 +628,7 @@ func hDisks(w http.ResponseWriter, r *http.Request) {
 		"ms": map[string]int64{"drives": t1.Sub(t0).Milliseconds(), "health": time.Since(t1).Milliseconds()}})
 }
 
-// hElevate restarts Tool Box as Administrator (UAC prompt), then exits this copy.
+// hElevate restarts My Tool Box as Administrator (UAC prompt), then exits this copy.
 func hElevate(w http.ResponseWriter, r *http.Request) {
 	exe, _ := os.Executable()
 	verb, _ := syscall.UTF16PtrFromString("runas")
