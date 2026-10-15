@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4cc2ff"/><stop offset="1" stop-color="#0050b8"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9aa8ba"/><stop offset="1" stop-color="#55627a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#cfe8ff" stop-opacity=".30"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="latch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f29c1f"/>
+    </linearGradient>
+    <linearGradient id="t1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0e9f8e"/></linearGradient>
+    <linearGradient id="t2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4a1ff"/><stop offset="1" stop-color="#7b3fe4"/></linearGradient>
+    <filter id="soft" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <ellipse cx="128" cy="228" rx="96" ry="12" fill="#000" opacity=".28" filter="url(#soft)"/>
+  <!-- handle -->
+  <rect x="86" y="30" width="84" height="58" rx="20" fill="none" stroke="url(#handle)" stroke-width="15"/>
+  <!-- tools peeking out of the box -->
+  <rect x="58" y="44" width="26" height="60" rx="13" fill="url(#t1)" transform="rotate(-14 71 74)"/>
+  <rect x="176" y="40" width="22" height="64" rx="11" fill="url(#t2)" transform="rotate(12 187 72)"/>
+  <!-- box body -->
+  <rect x="22" y="72" width="212" height="150" rx="26" fill="url(#body)"/>
+  <rect x="22" y="72" width="212" height="40" rx="26" fill="#fff" opacity=".16"/>
+  <!-- translucent glass front -->
+  <rect x="22" y="116" width="212" height="106" rx="26" fill="url(#glass)"/>
+  <rect x="22.75" y="116.75" width="210.5" height="104.5" rx="25.3" fill="none" stroke="url(#edge)" stroke-width="1.5"/>
+  <!-- latch -->
+  <rect x="106" y="104" width="44" height="30" rx="9" fill="url(#latch)"/>
+  <rect x="118" y="114" width="20" height="10" rx="5" fill="#fff" opacity=".55"/>
+  <!-- glass highlight -->
+  <path d="M30 124h110c-28 12-74 20-118 20v-4a22 22 0 0 1 8-16Z" fill="#fff" opacity=".35"/>
+</svg>
