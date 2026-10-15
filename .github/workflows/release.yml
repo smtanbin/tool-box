@@ -53,9 +53,47 @@ jobs:
           wix extension add -g WixToolset.UI.wixext/5.0.2
           wix extension add -g WixToolset.Util.wixext/5.0.2
 
+      # Microsoft Store policy 10.2.9 requires signed packages. Uses Azure Trusted Signing
+      # (https://learn.microsoft.com/azure/trusted-signing/). Required repo secrets:
+      #   AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET  (service principal with the
+      #     "Trusted Signing Certificate Profile Signer" role)
+      #   TS_ENDPOINT (e.g. https://eus.codesigning.azure.net), TS_ACCOUNT, TS_PROFILE
+      - name: Prepare Trusted Signing
+        shell: pwsh
+        env:
+          TS_ENDPOINT: ${{ secrets.TS_ENDPOINT }}
+          TS_ACCOUNT: ${{ secrets.TS_ACCOUNT }}
+          TS_PROFILE: ${{ secrets.TS_PROFILE }}
+        run: |
+          foreach ($n in "TS_ENDPOINT","TS_ACCOUNT","TS_PROFILE","AZURE_TENANT_ID","AZURE_CLIENT_ID","AZURE_CLIENT_SECRET") {
+            if (-not [Environment]::GetEnvironmentVariable($n) -and $n -like "TS_*") { throw "Missing secret $n" }
+          }
+          nuget install Microsoft.Trusted.Signing.Client -Version 1.0.60 -OutputDirectory "$env:RUNNER_TEMP\ts" | Out-Null
+          $dlib = Get-ChildItem "$env:RUNNER_TEMP\ts" -Recurse -Filter Azure.CodeSigning.Dlib.dll |
+            Where-Object FullName -match 'x64' | Select-Object -First 1
+          if (-not $dlib) { throw "Azure.CodeSigning.Dlib.dll not found" }
+          $meta = "$env:RUNNER_TEMP\ts-metadata.json"
+          @{ Endpoint = $env:TS_ENDPOINT; CodeSigningAccountName = $env:TS_ACCOUNT; CertificateProfileName = $env:TS_PROFILE } |
+            ConvertTo-Json | Set-Content $meta -Encoding ascii
+          "SIGN_DLIB=$($dlib.FullName)" >> $env:GITHUB_ENV
+          "SIGN_META=$meta" >> $env:GITHUB_ENV
+
       - name: Build installers and portable exes
         shell: powershell
-        run: .\installer\build.ps1 -Version ${{ steps.ver.outputs.version }}
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        run: .\installer\build.ps1 -Version ${{ steps.ver.outputs.version }} -SignDlib $env:SIGN_DLIB -SignMetadata $env:SIGN_META
+
+      - name: Verify signatures
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -File | Where-Object Name -match '\.(msi|exe)$' | ForEach-Object {
+            $s = Get-AuthenticodeSignature $_.FullName
+            "$($_.Name): $($s.Status)"
+            if ($s.Status -ne 'Valid') { throw "$($_.Name) is not validly signed" }
+          }
 
       - name: Checksums
         shell: pwsh

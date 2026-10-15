@@ -7,9 +7,22 @@
 # Usage: powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 1.0.1] [-Arch x64,x86,arm64]
 param(
     [string]$Version = "1.0.1",
-    [string[]]$Arch = @("x64", "x86", "arm64")
+    [string[]]$Arch = @("x64", "x86", "arm64"),
+    # Optional Azure Trusted Signing (needed for Microsoft Store policy 10.2.9). When both are given,
+    # ToolBox.exe and every MSI are signed with signtool (SHA256 + RFC3161 timestamp).
+    [string]$SignDlib = "",       # path to Azure.CodeSigning.Dlib.dll
+    [string]$SignMetadata = ""    # path to metadata.json (Endpoint, CodeSigningAccountName, CertificateProfileName)
 )
 $ErrorActionPreference = "Stop"
+$signing = ($SignDlib -ne "" -and $SignMetadata -ne "")
+function Sign-File([string]$Path) {
+    if (-not $signing) { return }
+    $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
+        Sort-Object FullName -Descending | Select-Object -First 1
+    if (-not $signtool) { throw "signtool.exe not found (install the Windows SDK)" }
+    & $signtool.FullName sign /v /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256 /dlib $SignDlib /dmdf $SignMetadata $Path
+    if ($LASTEXITCODE -ne 0) { throw "signtool failed for $Path" }
+}
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $here
 $build = Join-Path $here "build"
@@ -84,6 +97,7 @@ foreach ($a in $Arch) {
         Remove-Item Env:GOARCH, Env:GOOS, Env:CGO_ENABLED -ErrorAction SilentlyContinue
         Pop-Location
     }
+    Sign-File $exe
     Copy-Item $exe (Join-Path $dist "ToolBox-$Version-$a.exe") -Force
 
     Write-Host "[$a] MSI"
@@ -93,6 +107,7 @@ foreach ($a in $Arch) {
         wix build -arch $a -ext WixToolset.UI.wixext -ext WixToolset.Util.wixext -d Version=$Version -d ExeSource=$exe -o $out ToolBox.wxs
         if ($LASTEXITCODE -ne 0) { throw "wix build failed for $a" }
     } finally { Pop-Location }
+    Sign-File $out
 }
 Remove-Item (Join-Path $dist "*.wixpdb") -ErrorAction SilentlyContinue
 Write-Host "Done:"; Get-ChildItem $dist -Filter "*$Version*" | ForEach-Object { Write-Host "  $($_.Name)  $([math]::Round($_.Length/1MB,2)) MB" }
