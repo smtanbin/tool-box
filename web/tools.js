@@ -73,7 +73,7 @@ function diskRender(){const D=dk.disks;
   const d=D[dk.sel];$('#dkadmin').style.display=!dk.admin&&d.needAdmin&&!d.attrs.length?'flex':'none';
   const hlabel={Good:'Good',Caution:'Caution',Bad:'Bad',Unknown:'Unknown'}[d.health],tc=tempClass(d.temp);
   const kv=[['Firmware',d.firmware],['Serial number',d.serial],['Interface',d.bus],['Media type',d.media==='SSD'?'SSD (solid state)':d.media==='HDD'?'HDD (spinning disk)':d.media||'—'],
-    ['Capacity',d.size?`${fmt(d.size)} (${d.size.toLocaleString()} bytes)`:'—'],['Partition style',d.style||'—'],['Drive letters',d.letters.join(' ')||'—'],
+    ['Capacity',d.size?`${fmt(d.size)} · ${(d.size/1e9).toFixed(1)} GB (decimal)`:'—'],['Partition style',d.style||'—'],['Drive letters',d.letters.join(' ')||'—'],
     ['Power-on count',d.powerCount?d.powerCount.toLocaleString()+' times':'—'],['Power-on hours',d.powerHours?`${d.powerHours.toLocaleString()} h (${(d.powerHours/24).toFixed(0)} days)`:'—'],
     ['Host reads',d.hostReads?fmt(d.hostReads):'—'],['Host writes',d.hostWrites?fmt(d.hostWrites):'—'],['Health source',d.source||'Not available']];
   if(d.removable)kv.splice(3,0,['Removable','Yes']);

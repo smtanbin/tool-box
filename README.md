@@ -11,6 +11,11 @@ Design interface that follows your Windows light/dark theme and accent colour.
   with a squarified treemap, pie chart, file-type breakdown, largest files,
   name search (`*` `?` wildcards) and a content-based duplicate finder.
   Delete to the Recycle Bin, open in Explorer, export to CSV.
+- **Disk info** — CrystalDiskInfo-style drive health: model, serial, firmware,
+  interface (NVMe / SATA / USB), capacity, partitions and drive letters, a
+  Good / Caution / Bad health badge, temperature, power-on hours and count, host
+  reads / writes, and the full S.M.A.R.T. attribute table. NVMe health works as a
+  normal user; SATA SMART needs **Run as administrator** (one click in the app).
 
 **Network**
 - **Subnet calculator** — IPv4 address with prefix or netmask: network, broadcast,
