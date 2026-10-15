@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -28,6 +29,11 @@ var (
 	lastPing atomic.Int64
 	byeAt    atomic.Int64
 	autoExit bool
+
+	// appVersion is set at build time: -ldflags "-X main.appVersion=1.2.3".
+	// When set it replaces the VERSION constant in web/index.html.
+	appVersion  = ""
+	versionDecl = regexp.MustCompile(`VERSION='[^']*'`)
 )
 
 func writeJSON(w http.ResponseWriter, v any) {
@@ -93,6 +99,9 @@ func main() {
 			return
 		}
 		b, _ := webFS.ReadFile("web/" + name)
+		if name == "index.html" && appVersion != "" {
+			b = versionDecl.ReplaceAll(b, []byte("VERSION='"+appVersion+"'"))
+		}
 		w.Header().Set("Content-Type", ctype)
 		w.Write(b)
 	})

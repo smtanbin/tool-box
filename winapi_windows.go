@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"os"
 	"os/exec"
 	"runtime"
@@ -51,27 +52,35 @@ func listDrives() []Drive {
 	return out
 }
 
-type shFileOp struct {
-	Hwnd         uintptr
-	Func         uint32
-	From         *uint16
-	To           *uint16
-	Flags        uint16
-	Aborted      int32
-	NameMappings uintptr
-	Title        *uint16
-}
-
 // recycle moves a file or folder to the Recycle Bin.
+//
+// SHFILEOPSTRUCTW is 8-byte aligned on 64-bit Windows but byte-packed on
+// 32-bit Windows, so it is laid out by hand for the running architecture.
 func recycle(path string) error {
 	u, err := syscall.UTF16FromString(path)
 	if err != nil {
 		return err
 	}
 	u = append(u, 0) // double NUL terminated
-	op := shFileOp{Func: 3 /*FO_DELETE*/, From: &u[0], Flags: 0x40 | 0x10 | 0x4 | 0x400}
-	r, _, _ := procSHFileOperation.Call(uintptr(unsafe.Pointer(&op)))
-	if r != 0 || op.Aborted != 0 {
+	from := uintptr(unsafe.Pointer(&u[0]))
+	const flags = 0x40 | 0x10 | 0x4 | 0x400 // ALLOWUNDO | NOCONFIRMATION | SILENT | NOERRORUI
+
+	var op [56]byte
+	var abortedAt int
+	if unsafe.Sizeof(uintptr(0)) == 8 { // hwnd 0, wFunc 8, pFrom 16, pTo 24, fFlags 32, fAnyOperationsAborted 36
+		binary.LittleEndian.PutUint32(op[8:], 3) // FO_DELETE
+		binary.LittleEndian.PutUint64(op[16:], uint64(from))
+		binary.LittleEndian.PutUint16(op[32:], flags)
+		abortedAt = 36
+	} else { // packed: hwnd 0, wFunc 4, pFrom 8, pTo 12, fFlags 16, fAnyOperationsAborted 18
+		binary.LittleEndian.PutUint32(op[4:], 3)
+		binary.LittleEndian.PutUint32(op[8:], uint32(from))
+		binary.LittleEndian.PutUint16(op[16:], flags)
+		abortedAt = 18
+	}
+	r, _, _ := procSHFileOperation.Call(uintptr(unsafe.Pointer(&op[0])))
+	runtime.KeepAlive(u)
+	if r != 0 || binary.LittleEndian.Uint32(op[abortedAt:]) != 0 {
 		return syscall.Errno(0x1F)
 	}
 	return nil

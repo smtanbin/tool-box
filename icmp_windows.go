@@ -29,7 +29,8 @@ type ipOptionInfo struct {
 	OptionsData uintptr
 }
 
-// icmpEchoReply mirrors ICMP_ECHO_REPLY (64-bit layout).
+// icmpEchoReply mirrors ICMP_ECHO_REPLY. It uses natural alignment with
+// pointer-sized fields, so the Go layout matches on 386, amd64 and arm64.
 type icmpEchoReply struct {
 	Address       uint32
 	Status        uint32

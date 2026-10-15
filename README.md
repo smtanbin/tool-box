@@ -39,7 +39,13 @@ Everything runs on your PC; the crypto and developer tools work entirely offline
 
 ## Install
 
-Run `ToolBoxSetup-<version>.msi`. It installs for the current user only (no
+Download the installer for your PC from
+[Releases](https://github.com/smtanbin/tool-box/releases/latest):
+`ToolBoxSetup-<version>-x64.msi` (most PCs), `-x86.msi` (32-bit Windows) or
+`-arm64.msi` (Windows on ARM). Portable `ToolBox-<version>-<arch>.exe` builds are
+there too.
+
+The installer works for the current user only (no
 administrator rights needed) into `%LocalAppData%\Programs\My Tool Box`, adds
 **My Tool Box** shortcuts to the Desktop and Start menu, and can be removed from
 **Settings → Apps → Installed apps**. Installing a newer version upgrades in place.
@@ -81,11 +87,27 @@ wix extension add -g WixToolset.UI.wixext/5.0.2
 wix extension add -g WixToolset.Util.wixext/5.0.2
 ```
 
-Then build `dist\ToolBoxSetup-<version>.msi` (it rebuilds `ToolBox.exe` first):
+Then build `dist\ToolBoxSetup-<version>-<arch>.msi` and portable
+`dist\ToolBox-<version>-<arch>.exe` for x64, x86 and arm64:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.0
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.1
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.1 -Arch x64
 ```
+
+### Releases (CI/CD)
+
+GitHub Actions builds every push for all three architectures (`.github/workflows/ci.yml`).
+Pushing a version tag builds the installers and publishes a GitHub Release
+(`.github/workflows/release.yml`):
+
+```
+git tag v1.0.2
+git push origin v1.0.2
+```
+
+Release files have stable, versioned URLs, for example
+`https://github.com/smtanbin/tool-box/releases/download/v1.0.2/ToolBoxSetup-1.0.2-x64.msi`.
 
 ## How it works
 

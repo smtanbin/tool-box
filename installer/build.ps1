@@ -1,24 +1,24 @@
-# Builds dist\ToolBoxSetup-<version>.msi
-# Requires: Go, WiX Toolset v5 (`dotnet tool install --global wix`) with extensions
+# Builds, for each architecture:
+#   dist\ToolBoxSetup-<version>-<arch>.msi   (installer)
+#   dist\ToolBox-<version>-<arch>.exe        (portable)
+# Requires: Go, WiX Toolset v5 (`dotnet tool install --global wix --version 5.0.2`) with extensions
 #   wix extension add -g WixToolset.UI.wixext/5.0.2
 #   wix extension add -g WixToolset.Util.wixext/5.0.2
-# Usage: powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 1.0.0]
-param([string]$Version = "1.0.0")
+# Usage: powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 1.0.1] [-Arch x64,x86,arm64]
+param(
+    [string]$Version = "1.0.1",
+    [string[]]$Arch = @("x64", "x86", "arm64")
+)
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $here
 $build = Join-Path $here "build"
 $dist = Join-Path $root "dist"
 New-Item -ItemType Directory -Force $build, $dist | Out-Null
+$goArch = @{ x64 = "amd64"; x86 = "386"; arm64 = "arm64" }
+if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw "Version must look like 1.2.3 (got '$Version')" }
 
-Write-Host "1/4 Building ToolBox.exe"
-Push-Location $root
-try {
-    go build -ldflags "-H windowsgui -s -w" -o ToolBox.exe .
-    if ($LASTEXITCODE -ne 0) { throw "go build failed" }
-} finally { Pop-Location }
-
-Write-Host "2/4 Licence page"
+Write-Host "Licence page"
 $text = [IO.File]::ReadAllText((Join-Path $root "LICENSE"))
 $sb = New-Object System.Text.StringBuilder
 foreach ($ch in $text.ToCharArray()) {
@@ -36,7 +36,7 @@ foreach ($ch in $text.ToCharArray()) {
 $rtf = "{\rtf1\ansi\deff0{\fonttbl{\f0\fswiss Segoe UI;}}\viewkind4\uc1\pard\f0\fs17 " + $sb.ToString() + "}"
 [IO.File]::WriteAllText((Join-Path $build "License.rtf"), $rtf, [Text.Encoding]::ASCII)
 
-Write-Host "3/4 Wizard images"
+Write-Host "Wizard images"
 Add-Type -AssemblyName System.Drawing
 $icon = [System.Drawing.Image]::FromFile((Join-Path $root "web\icon-256.png"))
 $accentA = [System.Drawing.Color]::FromArgb(255, 0, 95, 184)
@@ -69,12 +69,30 @@ $g.DrawString("v$Version", $small, (New-Object System.Drawing.SolidBrush ([Syste
 $bmp.Save((Join-Path $build "dialog.bmp"), [System.Drawing.Imaging.ImageFormat]::Bmp)
 $g.Dispose(); $bmp.Dispose(); $icon.Dispose()
 
-Write-Host "4/4 MSI"
-$out = Join-Path $dist "ToolBoxSetup-$Version.msi"
-Push-Location $here
-try {
-    wix build -arch x64 -ext WixToolset.UI.wixext -ext WixToolset.Util.wixext -d Version=$Version -o $out ToolBox.wxs
-    if ($LASTEXITCODE -ne 0) { throw "wix build failed" }
-} finally { Pop-Location }
+foreach ($a in $Arch) {
+    if (-not $goArch.ContainsKey($a)) { throw "Unknown arch '$a' (use x64, x86, arm64)" }
+    Write-Host "[$a] ToolBox.exe"
+    $exeDir = Join-Path $build $a
+    New-Item -ItemType Directory -Force $exeDir | Out-Null
+    $exe = Join-Path $exeDir "ToolBox.exe"
+    Push-Location $root
+    $env:GOOS = "windows"; $env:GOARCH = $goArch[$a]; $env:CGO_ENABLED = "0"
+    try {
+        go build -trimpath -ldflags "-H windowsgui -s -w -X main.appVersion=$Version" -o $exe .
+        if ($LASTEXITCODE -ne 0) { throw "go build failed for $a" }
+    } finally {
+        Remove-Item Env:GOARCH, Env:GOOS, Env:CGO_ENABLED -ErrorAction SilentlyContinue
+        Pop-Location
+    }
+    Copy-Item $exe (Join-Path $dist "ToolBox-$Version-$a.exe") -Force
+
+    Write-Host "[$a] MSI"
+    $out = Join-Path $dist "ToolBoxSetup-$Version-$a.msi"
+    Push-Location $here
+    try {
+        wix build -arch $a -ext WixToolset.UI.wixext -ext WixToolset.Util.wixext -d Version=$Version -d ExeSource=$exe -o $out ToolBox.wxs
+        if ($LASTEXITCODE -ne 0) { throw "wix build failed for $a" }
+    } finally { Pop-Location }
+}
 Remove-Item (Join-Path $dist "*.wixpdb") -ErrorAction SilentlyContinue
-Write-Host "Done: $out"
+Write-Host "Done:"; Get-ChildItem $dist -Filter "*$Version*" | ForEach-Object { Write-Host "  $($_.Name)  $([math]::Round($_.Length/1MB,2)) MB" }

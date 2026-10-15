@@ -1,0 +1,84 @@
+# Publishes a GitHub Release with installers and portable builds for
+# x64, x86 and arm64 whenever a version tag (v1.2.3) is pushed:
+#
+#   git tag v1.0.2 && git push origin v1.0.2
+#
+# Release assets get stable, versioned URLs for the Microsoft Store, e.g.
+#   https://github.com/smtanbin/tool-box/releases/download/v1.0.2/ToolBoxSetup-1.0.2-x64.msi
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, without the v (e.g. 1.0.2)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+
+      - name: Version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = if ("${{ github.event_name }}" -eq "workflow_dispatch") { "${{ inputs.version }}" } else { "${{ github.ref_name }}".TrimStart("v") }
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Bad version '$v'" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Install WiX Toolset 5
+        shell: pwsh
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          wix extension add -g WixToolset.UI.wixext/5.0.2
+          wix extension add -g WixToolset.Util.wixext/5.0.2
+
+      - name: Build installers and portable exes
+        shell: powershell
+        run: .\installer\build.ps1 -Version ${{ steps.ver.outputs.version }}
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -File | Where-Object Name -match '\.(msi|exe)$' | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
+          } | Set-Content dist\SHA256SUMS.txt -Encoding ascii
+          Get-Content dist\SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: My Tool Box v${{ steps.ver.outputs.version }}
+          generate_release_notes: true
+          body: |
+            ## Download
+
+            | Windows | Installer | Portable |
+            |---|---|---|
+            | 64-bit (x64) | [ToolBoxSetup-${{ steps.ver.outputs.version }}-x64.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-x64.msi) | [ToolBox-${{ steps.ver.outputs.version }}-x64.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-x64.exe) |
+            | 32-bit (x86) | [ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi) | [ToolBox-${{ steps.ver.outputs.version }}-x86.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-x86.exe) |
+            | ARM64 | [ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi) | [ToolBox-${{ steps.ver.outputs.version }}-arm64.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-arm64.exe) |
+
+            The installer is per-user (no admin needed) and adds Desktop and Start menu shortcuts.
+            Silent install: `msiexec /i ToolBoxSetup-<version>-<arch>.msi /qn /norestart`
+          files: |
+            dist/ToolBoxSetup-*.msi
+            dist/ToolBox-*.exe
+            dist/SHA256SUMS.txt
+          fail_on_unmatched_files: true
