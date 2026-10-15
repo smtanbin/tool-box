@@ -73,6 +73,7 @@ type Crumb struct {
 func main() {
 	port := flag.Int("port", 0, "port to listen on (0 = random)")
 	noBrowser := flag.Bool("nobrowser", false, "do not open a window; keep running")
+	openTool := flag.String("tool", "", "tool page to open, e.g. disk or ping")
 	flag.Parse()
 	autoExit = !*noBrowser
 
@@ -154,6 +155,8 @@ func main() {
 	mux.HandleFunc("/api/dupes/start", hDupesStart)
 	mux.HandleFunc("/api/dupes/status", hDupesStatus)
 	registerNet(mux)
+	mux.HandleFunc("/api/disks", hDisks)
+	mux.HandleFunc("/api/elevate", hElevate)
 
 	ln, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", *port))
 	if err != nil {
@@ -167,6 +170,9 @@ func main() {
 		}
 	}
 	if !*noBrowser {
+		if *openTool != "" {
+			url += "#" + *openTool
+		}
 		openBrowser(url)
 	} else {
 		fmt.Println("Tool Box running at", url)

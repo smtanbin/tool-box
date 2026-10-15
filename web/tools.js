@@ -4,7 +4,7 @@
 "use strict";
 
 /* ---------- tool switching ---------- */
-const TOOL_NAMES={foldersize:'Folder Size',subnet:'Subnet calculator',ipscan:'IP scanner',ping:'Ping',telnet:'Telnet / ports',hash:'Hash text',crypt:'Encrypt / decrypt',
+const TOOL_NAMES={foldersize:'Folder Size',disk:'Disk info',subnet:'Subnet calculator',ipscan:'IP scanner',ping:'Ping',telnet:'Telnet / ports',hash:'Hash text',crypt:'Encrypt / decrypt',
   token:'Token & UUID',encode:'Base64 & encoders',jwt:'JWT decoder',json:'JSON formatter',time:'Timestamp converter',base:'Number base'};
 const toolInit={},toolInited=new Set();
 function showTool(t){
@@ -52,6 +52,45 @@ const ip2u=s=>{const m=String(s).trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\
 const u2ip=u=>[u>>>24,u>>>16&255,u>>>8&255,u&255].join('.');
 const maskOf=p=>p===0?0:(0xffffffff<<(32-p))>>>0;
 function prefixOf(mask){const inv=(~mask)>>>0;if(((inv+1)&inv)!==0)return null;let c=0;for(let x=inv;x;x>>>=1)c+=x&1;return 32-c}
+
+/* ================= Disk info ================= */
+let dk={disks:[],sel:0,hex:true,admin:true,loading:false};
+toolInit.disk=()=>{
+  $('#dkref').onclick=diskLoad;
+  $('#dkraw').onclick=()=>{dk.hex=!dk.hex;$('#dkraw').innerHTML=`<i class="fi">&#xE8EF;</i>Raw: ${dk.hex?'hex':'decimal'}`;diskRender()};
+  $('#dkpills').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b){dk.sel=+b.dataset.i;diskRender()}});
+  $('#dkelev').onclick=async()=>{try{await api('/api/elevate');document.body.innerHTML='<div style="padding:60px;text-align:center">Tool Box is restarting as administrator in a new window. You can close this one.</div>';setTimeout(()=>window.close(),800)}catch(e){toast(e.message)}};
+  addEventListener('keydown',e=>{if(e.key==='F5'&&curTool==='disk'){e.preventDefault();diskLoad()}});
+  diskLoad()};
+async function diskLoad(){if(dk.loading)return;dk.loading=true;$('#dkref').disabled=true;$('#s3').textContent='Reading drives…';
+  try{const r=await api('/api/disks');dk.disks=r.disks;dk.admin=r.admin;if(dk.sel>=dk.disks.length)dk.sel=0;diskRender();$('#s3').textContent=`${dk.disks.length} drive${dk.disks.length===1?'':'s'} · read ${new Date().toLocaleTimeString()}${r.admin?' · administrator':''}`}
+  catch(e){$('#dkbody').innerHTML=`<div class="card"><div class="err">${esc(e.message)}</div></div>`}
+  dk.loading=false;$('#dkref').disabled=false}
+const tempClass=t=>!t?'Unknown':t>=60?'Bad':t>=50?'Caution':'Good';
+function diskRender(){const D=dk.disks;
+  if(!D.length){$('#dkpills').innerHTML='';$('#dkbody').innerHTML='<div class="card"><div class="empty">No physical drives found.</div></div>';return}
+  $('#dkpills').innerHTML=D.map((d,i)=>`<button class="dkpill${i===dk.sel?' on':''}" data-i="${i}" title="${esc(d.model)}"><b><span class="hdot h-${d.health}"></span>Disk ${d.index}${d.temp?` · ${d.temp} °C`:''}</b><small>${esc(d.letters.join(' ')||'no drive letter')} · ${fmt(d.size)}</small></button>`).join('');
+  const d=D[dk.sel];$('#dkadmin').style.display=!dk.admin&&d.needAdmin&&!d.attrs.length?'flex':'none';
+  const hlabel={Good:'Good',Caution:'Caution',Bad:'Bad',Unknown:'Unknown'}[d.health],tc=tempClass(d.temp);
+  const kv=[['Firmware',d.firmware],['Serial number',d.serial],['Interface',d.bus],['Media type',d.media==='SSD'?'SSD (solid state)':d.media==='HDD'?'HDD (spinning disk)':d.media||'—'],
+    ['Capacity',d.size?`${fmt(d.size)} (${d.size.toLocaleString()} bytes)`:'—'],['Partition style',d.style||'—'],['Drive letters',d.letters.join(' ')||'—'],
+    ['Power-on count',d.powerCount?d.powerCount.toLocaleString()+' times':'—'],['Power-on hours',d.powerHours?`${d.powerHours.toLocaleString()} h (${(d.powerHours/24).toFixed(0)} days)`:'—'],
+    ['Host reads',d.hostReads?fmt(d.hostReads):'—'],['Host writes',d.hostWrites?fmt(d.hostWrites):'—'],['Health source',d.source||'Not available']];
+  if(d.removable)kv.splice(3,0,['Removable','Yes']);
+  let html=`<div class="card"><div class="dktop"><div class="dkbadges">
+      <div class="hbadge h-${d.health}" title="${esc(d.source||'')}"><small>Health status</small><b>${hlabel}</b><span>${d.healthPct>0?d.healthPct+' %':'&nbsp;'}</span></div>
+      <div class="hbadge h-${tc}"><small>Temperature</small><b>${d.temp?d.temp+' °C':'— °C'}</b><span>${d.temp?Math.round(d.temp*9/5+32)+' °F':(d.needAdmin&&!dk.admin?'needs administrator':'not reported')}</span></div></div>
+    <div><div class="dkhead"><h2>${esc(d.model||'Unknown drive')}</h2><span>${fmt(d.size)} · Disk ${d.index}</span></div>
+      <div class="dkkv">${kv.map(([k,v])=>`<div><span class="k">${k}</span><span class="v">${esc(v||'—')}</span></div>`).join('')}</div>
+      ${d.reasons.length?`<div class="reasons h-${d.health}">${d.reasons.map(esc).join('<br>')}</div>`:''}
+      ${d.notes.length?`<p class="hint">${d.notes.map(esc).join('<br>')}</p>`:''}</div></div></div>`;
+  if(d.attrs.length){const nvme=d.attrs[0].cur<0;
+    html+=`<div class="card flush"><div class="chhead" style="padding:12px 16px 0"><h3>S.M.A.R.T. attributes</h3><span class="hint" style="margin:0">${esc(d.source)}</span></div><div class="tblwrap"><table class="tbl hov"><thead><tr><th></th><th>ID</th><th>Attribute name</th>${nvme?'':'<th class="r">Current</th><th class="r">Worst</th><th class="r">Threshold</th>'}<th class="r">Raw value</th></tr></thead><tbody>`+
+      d.attrs.map(a=>`<tr class="${a.status==='ok'?'':a.status}"><td><span class="sdot ${a.status}" title="${a.status==='ok'?'Good':a.status==='bad'?'Bad':'Caution'}"></span></td><td class="mono">${a.id.toString(16).toUpperCase().padStart(2,'0')}</td><td>${esc(a.name)}</td>${nvme?'':`<td class="r">${a.cur}</td><td class="r">${a.worst}</td><td class="r">${a.thr}</td>`}<td class="r mono">${dk.hex?a.rawHex:Number(a.raw).toLocaleString()}</td></tr>`).join('')+'</tbody></table></div></div>'}
+  else html+=`<div class="card"><h3>S.M.A.R.T. attributes</h3><div class="empty" style="padding:16px">${!dk.admin&&d.needAdmin?'Windows only shares SMART attributes for this drive with administrators. Use <b>Restart as administrator</b> above.':'This drive did not report SMART attributes.'}</div></div>`;
+  if(d.parts.length)html+=`<div class="card flush"><div class="chhead" style="padding:12px 16px 0"><h3>Partitions</h3><span class="hint" style="margin:0">${esc(d.style||'')}</span></div><div class="tblwrap"><table class="tbl hov"><thead><tr><th>#</th><th>Drive</th><th>Label</th><th>Type</th><th>File system</th><th class="r">Size</th><th>Used</th><th class="r">Free</th></tr></thead><tbody>`+
+    d.parts.map(p=>{const used=p.letter&&p.size?(p.size-p.free)/p.size:0;return`<tr><td>${p.num}</td><td><b>${esc(p.letter)||'—'}</b></td><td>${esc(p.label||p.name)||'—'}</td><td>${esc(p.type)}</td><td>${esc(p.fs)||'—'}</td><td class="r">${fmt(p.size)}</td><td>${p.letter?`<span class="ubar"><i style="width:${(used*100).toFixed(1)}%"></i></span>${Math.round(used*100)}%`:'—'}</td><td class="r">${p.letter?fmt(p.free):'—'}</td></tr>`}).join('')+'</tbody></table></div></div>';
+  $('#dkbody').innerHTML=html}
 
 /* ================= Subnet calculator ================= */
 toolInit.subnet=()=>{
