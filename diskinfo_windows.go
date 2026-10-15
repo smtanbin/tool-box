@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 	"unsafe"
@@ -31,11 +32,12 @@ const (
 )
 
 var (
-	procIsUserAnAdmin    = shell32.NewProc("IsUserAnAdmin")
-	procShellExecute     = shell32.NewProc("ShellExecuteW")
-	procGetVolumeInfo    = kernel32.NewProc("GetVolumeInformationW")
+	procIsUserAnAdmin     = shell32.NewProc("IsUserAnAdmin")
+	procShellExecute      = shell32.NewProc("ShellExecuteW")
+	procGetVolumeInfo     = kernel32.NewProc("GetVolumeInformationW")
 	procGetLogicalDrives2 = procGetLogicalDrives
 	procQueryDosDevice    = kernel32.NewProc("QueryDosDeviceW")
+	procSetErrorMode      = kernel32.NewProc("SetErrorMode")
 )
 
 type DiskAttr struct {
@@ -136,6 +138,7 @@ func queryProp(h syscall.Handle, id uint32, extra []byte, outSize int) ([]byte, 
 }
 
 func listDisks() []*DiskInfo {
+	procSetErrorMode.Call(0x0001 | 0x8000) // no "insert a disk" boxes: SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX
 	var disks []*DiskInfo
 	for i := 0; i < 32; i++ {
 		h, err := openDev(fmt.Sprintf(`\\.\PhysicalDrive%d`, i), 0)
@@ -235,6 +238,10 @@ func mapLetters(disks []*DiskInfo) {
 			continue
 		}
 		letter := string(rune('A'+i)) + ":"
+		rp, _ := syscall.UTF16PtrFromString(letter + `\`)
+		if t, _, _ := procGetDriveType.Call(uintptr(unsafe.Pointer(rp))); t != 2 && t != 3 {
+			continue // only removable and fixed volumes; network shares can stall for seconds
+		}
 		var target [512]uint16
 		lp, _ := syscall.UTF16PtrFromString(letter)
 		if n, _, _ := procQueryDosDevice.Call(uintptr(unsafe.Pointer(lp)), uintptr(unsafe.Pointer(&target[0])), 512); n > 0 &&
@@ -315,7 +322,7 @@ func u128(b []byte, o int) int64 { // the counters never need more than 63 bits 
 }
 
 func readNVMe(h syscall.Handle, d *DiskInfo) {
-	extra := make([]byte, 40) // STORAGE_PROTOCOL_SPECIFIC_DATA
+	extra := make([]byte, 40)                     // STORAGE_PROTOCOL_SPECIFIC_DATA
 	binary.LittleEndian.PutUint32(extra[0:], 3)   // ProtocolTypeNvme
 	binary.LittleEndian.PutUint32(extra[4:], 2)   // NVMeDataTypeLogPage
 	binary.LittleEndian.PutUint32(extra[8:], 2)   // SMART / health information log
@@ -526,27 +533,39 @@ type psDisk struct {
 	DeviceId     string
 	HealthStatus string
 	MediaType    string
-	Temperature  *int
-	PowerOnHours *int64
 }
 
+var (
+	psMu    sync.Mutex
+	psCache map[int]psDisk
+	psAt    time.Time
+)
+
+// psHealth asks Windows (MSFT_PhysicalDisk) for each disk's overall health; cached for a minute.
 func psHealth() map[int]psDisk {
-	script := `$d=Get-PhysicalDisk|Select-Object DeviceId,@{n='HealthStatus';e={"$($_.HealthStatus)"}},@{n='MediaType';e={"$($_.MediaType)"}};` +
-		`$r=@{};try{Get-PhysicalDisk|Get-StorageReliabilityCounter -ErrorAction Stop|ForEach-Object{$r[$_.DeviceId]=$_}}catch{};` +
-		`$d|ForEach-Object{$x=$r[$_.DeviceId];[pscustomobject]@{DeviceId=$_.DeviceId;HealthStatus=$_.HealthStatus;MediaType=$_.MediaType;Temperature=$x.Temperature;PowerOnHours=$x.PowerOnHours}}|ConvertTo-Json -Compress`
-	cmd := exec.Command("powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script)
+	psMu.Lock()
+	defer psMu.Unlock()
+	if psCache != nil && time.Since(psAt) < time.Minute {
+		return psCache
+	}
+	script := `Get-PhysicalDisk|Select-Object DeviceId,@{n='HealthStatus';e={"$($_.HealthStatus)"}},@{n='MediaType';e={"$($_.MediaType)"}}|ConvertTo-Json -Compress`
+	cmd := exec.Command("powershell.exe", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", script)
+	cmd.Stdin = strings.NewReader("")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000} // CREATE_NO_WINDOW
-	done := make(chan []byte, 1)
-	go func() { b, _ := cmd.Output(); done <- b }()
-	var b []byte
-	select {
-	case b = <-done:
-	case <-time.After(20 * time.Second):
-		if cmd.Process != nil {
-			cmd.Process.Kill()
-		}
+	var outBuf strings.Builder
+	cmd.Stdout = &outBuf
+	if cmd.Start() != nil {
 		return nil
 	}
+	done := make(chan struct{})
+	go func() { cmd.Wait(); close(done) }()
+	select {
+	case <-done:
+	case <-time.After(10 * time.Second):
+		cmd.Process.Kill()
+		return nil
+	}
+	b := []byte(outBuf.String())
 	b = []byte(strings.TrimSpace(string(b)))
 	var list []psDisk
 	if len(b) > 0 && b[0] == '{' {
@@ -564,11 +583,14 @@ func psHealth() map[int]psDisk {
 			out[n] = p
 		}
 	}
+	psCache, psAt = out, time.Now()
 	return out
 }
 
 func hDisks(w http.ResponseWriter, r *http.Request) {
+	t0 := time.Now()
 	disks := listDisks()
+	t1 := time.Now()
 	need := false
 	for _, d := range disks {
 		if d.Source == "" {
@@ -597,18 +619,13 @@ func hDisks(w http.ResponseWriter, r *http.Request) {
 			case "Unhealthy":
 				d.Health = "Bad"
 			}
-			if p.Temperature != nil && *p.Temperature > 0 && d.Temp == 0 {
-				d.Temp = *p.Temperature
-			}
-			if p.PowerOnHours != nil && *p.PowerOnHours > 0 {
-				d.PowerHours = *p.PowerOnHours
-			}
 		}
 	}
 	if disks == nil {
 		disks = []*DiskInfo{}
 	}
-	writeJSON(w, map[string]any{"admin": isAdmin(), "disks": disks, "time": time.Now().Unix()})
+	writeJSON(w, map[string]any{"admin": isAdmin(), "disks": disks, "time": time.Now().Unix(),
+		"ms": map[string]int64{"drives": t1.Sub(t0).Milliseconds(), "health": time.Since(t1).Milliseconds()}})
 }
 
 // hElevate restarts Tool Box as Administrator (UAC prompt), then exits this copy.
