@@ -129,6 +129,8 @@ Privacy policy: https://github.com/smtanbin/tool-box/blob/main/PRIVACY.md
 | Partner Center slot | File |
 |---|---|
 | Store logo, 1:1 (300×300) | `store/logos/logo-300x300.png` |
+| Poster art, 2:3 (720×1080, recommended) | `store/logos/poster-720x1080.png` |
+| Poster art, 2:3 (1440×2160, recommended, sharper on large displays) | `store/logos/poster-1440x2160.png` |
 | Poster art, 1:1 (1080×1080), optional | `store/logos/poster-1080x1080.png` |
 | Screenshots, 16:9 (1600×900, add all four) | `store/screenshots/01-folder-size-light.png` · `02-folder-size-dark.png` · `03-subnet-calculator.png` · `04-token-uuid-generator.png` |
 
