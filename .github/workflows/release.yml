@@ -109,8 +109,8 @@ jobs:
           $dir = "pages/downloads/$($env:VERSION)"
           New-Item -ItemType Directory -Force $dir | Out-Null
           Copy-Item dist/ToolBoxSetup-*.msi, dist/SHA256SUMS.txt $dir
-          (Get-Content installer/pages-index.template.html -Raw).Replace("{{VERSION}}", $env:VERSION) | Set-Content pages/index.html -Encoding utf8
-          New-Item -ItemType File -Force pages/.nojekyll | Out-Null
+          # FTP-style listings of all versions (index of /downloads/, /downloads/<version>/)
+          ./installer/make-pages-index.ps1 -Root pages
           git -C pages add -A
           git -C pages commit -m "Publish My Tool Box $($env:VERSION) installers"
           git -C pages push origin gh-pages
