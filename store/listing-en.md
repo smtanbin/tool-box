@@ -143,15 +143,26 @@ Screenshot captions (optional, max 200 each):
 ## Notes for certification *(Submission options → Notes for certification, max 2,000)*
 
 ```
-My Tool Box is a standalone Windows desktop app (MSI installer, per-user, no administrator rights needed). No sign-in or test account is required.
+My Tool Box is a standalone Windows desktop app (MSI installer, per-user, no administrator rights needed). No sign-in, account or test credentials are required.
 
-How it works: the app starts a small local web server bound to 127.0.0.1 only (not reachable from other computers) and shows its interface in a Microsoft Edge or Google Chrome app window (--app mode). Closing the window exits the app. Nothing is uploaded; the app has no accounts, ads, analytics or telemetry.
-
-To test: install, open "My Tool Box" from the Desktop or Start menu, then use the left menu. Folder Size: type or Browse to a folder (e.g. C:\Program Files) and press Scan. Subnet calculator: enter 192.168.1.10/24. Token & UUID: press Generate. Hash text: type any text.
-
-Network tools (IP scanner, Ping, Telnet / ports) only contact the hosts the user types in. Disk info shows basic drive details without administrator rights; the S.M.A.R.T. table for SATA drives needs administrator rights, and the app offers a "Restart as administrator" button.
-
+INSTALL
 Silent install: msiexec /i ToolBoxSetup-1.0.1-x64.msi /qn /norestart
+The installer adds Desktop and Start menu shortcuts and one entry in Settings > Apps > Installed apps named "My Tool Box". It installs only this app (no bundled or third-party software) and uninstalls cleanly from there.
+
+HOW IT WORKS
+The app starts a small local web server bound to 127.0.0.1 only (not reachable from other computers) and shows its interface in a Microsoft Edge or Google Chrome app window, both built into Windows. Closing the window exits the app. Nothing is uploaded: there are no accounts, ads, analytics or telemetry.
+
+HOW TO TEST (no setup needed)
+1. Folder Size: type C:\Program Files in the address bar and press Enter. Explore the treemap and pie chart.
+2. Subnet calculator: enter 192.168.1.10/24.
+3. Token & UUID: press Generate.
+4. Hash text: type any text.
+5. Ping: enter 127.0.0.1.
+6. Disk info: shows drive details. The S.M.A.R.T. table for SATA drives needs administrator rights; the app offers a "Restart as administrator" button.
+
+Network tools (IP scanner, Ping, Telnet / ports) only contact the hosts the user types in. Files are only changed when the user confirms a delete (moved to the Recycle Bin).
+
+Privacy policy: https://github.com/smtanbin/tool-box/blob/main/PRIVACY.md
 Source code: https://github.com/smtanbin/tool-box
 ```
 
