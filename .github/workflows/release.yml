@@ -3,8 +3,13 @@
 #
 #   git tag v1.0.2 && git push origin v1.0.2
 #
-# Release assets get stable, versioned URLs for the Microsoft Store, e.g.
-#   https://github.com/smtanbin/tool-box/releases/download/v1.0.2/ToolBoxSetup-1.0.2-x64.msi
+# GitHub Release download links redirect to another host, which the Microsoft Store
+# does not accept. So the installers are also published to the gh-pages branch and
+# served by GitHub Pages with NO redirect. Use these as the Store "Package URL":
+#   https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x64.msi
+#   https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x86.msi
+#   https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-arm64.msi
+# (One-time repo setting: Settings -> Pages -> Deploy from a branch -> gh-pages / root.)
 name: Release
 
 on:
@@ -82,3 +87,30 @@ jobs:
             dist/ToolBox-*.exe
             dist/SHA256SUMS.txt
           fail_on_unmatched_files: true
+
+      - name: Publish direct (non-redirecting) downloads to GitHub Pages
+        shell: pwsh
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          REPO: ${{ github.repository }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          $url = "https://x-access-token:$($env:TOKEN)@github.com/$($env:REPO).git"
+          git ls-remote --exit-code --heads $url gh-pages *> $null
+          if ($LASTEXITCODE -eq 0) {
+            git clone --quiet --branch gh-pages --single-branch $url pages
+          } else {
+            git init --quiet pages
+            git -C pages checkout --quiet --orphan gh-pages
+            git -C pages remote add origin $url
+          }
+          $dir = "pages/downloads/$($env:VERSION)"
+          New-Item -ItemType Directory -Force $dir | Out-Null
+          Copy-Item dist/ToolBoxSetup-*.msi, dist/SHA256SUMS.txt $dir
+          (Get-Content installer/pages-index.template.html -Raw).Replace("{{VERSION}}", $env:VERSION) | Set-Content pages/index.html -Encoding utf8
+          New-Item -ItemType File -Force pages/.nojekyll | Out-Null
+          git -C pages add -A
+          git -C pages commit -m "Publish My Tool Box $($env:VERSION) installers"
+          git -C pages push origin gh-pages

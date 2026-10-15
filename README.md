@@ -106,8 +106,18 @@ git tag v1.0.2
 git push origin v1.0.2
 ```
 
-Release files have stable, versioned URLs, for example
-`https://github.com/smtanbin/tool-box/releases/download/v1.0.2/ToolBoxSetup-1.0.2-x64.msi`.
+The installers are also published to GitHub Pages, which serves files directly
+with no redirect (GitHub Release download links redirect, which the Microsoft Store
+rejects). These are the URLs to use as the Store "Package URL":
+
+```
+https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x64.msi
+https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x86.msi
+https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-arm64.msi
+```
+
+One-time setup: repo **Settings → Pages → Build and deployment → Deploy from a
+branch → `gh-pages` / `/ (root)`**.
 
 ## How it works
 

@@ -166,3 +166,9 @@ Source code: https://github.com/smtanbin/tool-box
 | Minimum OS | Windows 10 version 1809 or later |
 | Needs Microsoft Edge or Chrome | Yes, built into Windows 10/11 |
 | Code signing | Required by the Store for MSI/EXE packages. Sign each installer before submitting. |
+| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-x64.msi` |
+| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-x86.msi` |
+| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-arm64.msi` |
+
+The Package URL must **not redirect**. GitHub Release links redirect (HTTP 302), so use
+the GitHub Pages URLs above (needs Settings → Pages → `gh-pages` branch, root).

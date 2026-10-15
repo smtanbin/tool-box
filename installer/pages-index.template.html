@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Tool Box — Downloads</title>
+<style>
+  :root{color-scheme:light dark;--bg:#f3f3f3;--card:#fff;--text:#1a1a1a;--muted:#5f5f5f;--accent:#0067c0;--border:rgba(0,0,0,.1)}
+  @media (prefers-color-scheme:dark){:root{--bg:#202020;--card:#2c2c2c;--text:#fff;--muted:#a8a8a8;--accent:#60cdff;--border:rgba(255,255,255,.1)}}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif}
+  main{max-width:640px;margin:0 auto;padding:48px 20px}
+  h1{font-size:28px;margin:0 0 4px}p{color:var(--muted);margin:0 0 24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 20px}
+  .row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+  .row:last-child{border:0}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  small{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>My Tool Box</h1>
+  <p>Everyday IT tools for Windows. Version {{VERSION}} · free for personal and business use, not for resale.</p>
+  <div class="card">
+    <div class="row"><span>64-bit Windows (most PCs)</span><a href="downloads/{{VERSION}}/ToolBoxSetup-{{VERSION}}-x64.msi">ToolBoxSetup-{{VERSION}}-x64.msi</a></div>
+    <div class="row"><span>32-bit Windows</span><a href="downloads/{{VERSION}}/ToolBoxSetup-{{VERSION}}-x86.msi">ToolBoxSetup-{{VERSION}}-x86.msi</a></div>
+    <div class="row"><span>Windows on ARM</span><a href="downloads/{{VERSION}}/ToolBoxSetup-{{VERSION}}-arm64.msi">ToolBoxSetup-{{VERSION}}-arm64.msi</a></div>
+    <div class="row"><span>Checksums (SHA-256)</span><a href="downloads/{{VERSION}}/SHA256SUMS.txt">SHA256SUMS.txt</a></div>
+  </div>
+  <p style="margin-top:24px"><small>
+    <a href="https://github.com/smtanbin/tool-box">Source code</a> ·
+    <a href="https://github.com/smtanbin/tool-box/releases">All releases and portable builds</a> ·
+    <a href="https://github.com/smtanbin/tool-box/blob/main/PRIVACY.md">Privacy policy</a> ·
+    <a href="https://magestica.com/">magestica.com</a>
+  </small></p>
+</main>
+</body>
+</html>
