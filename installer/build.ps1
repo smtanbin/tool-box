@@ -8,19 +8,19 @@
 param(
     [string]$Version = "1.0.1",
     [string[]]$Arch = @("x64", "x86", "arm64"),
-    # Optional Azure Trusted Signing (needed for Microsoft Store policy 10.2.9). When both are given,
+    # Optional code signing (needed for Microsoft Store policy 10.2.9). When a PFX is given,
     # ToolBox.exe and every MSI are signed with signtool (SHA256 + RFC3161 timestamp).
-    [string]$SignDlib = "",       # path to Azure.CodeSigning.Dlib.dll
-    [string]$SignMetadata = ""    # path to metadata.json (Endpoint, CodeSigningAccountName, CertificateProfileName)
+    [string]$SignPfx = "",         # path to a code-signing .pfx from a Microsoft Trusted Root CA
+    [string]$SignPfxPassword = ""
 )
 $ErrorActionPreference = "Stop"
-$signing = ($SignDlib -ne "" -and $SignMetadata -ne "")
+$signing = ($SignPfx -ne "")
 function Sign-File([string]$Path) {
     if (-not $signing) { return }
     $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
         Sort-Object FullName -Descending | Select-Object -First 1
     if (-not $signtool) { throw "signtool.exe not found (install the Windows SDK)" }
-    & $signtool.FullName sign /v /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256 /dlib $SignDlib /dmdf $SignMetadata $Path
+    & $signtool.FullName sign /v /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $SignPfx /p $SignPfxPassword $Path
     if ($LASTEXITCODE -ne 0) { throw "signtool failed for $Path" }
 }
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
