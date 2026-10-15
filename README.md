@@ -12,12 +12,25 @@ Design interface that follows your Windows light/dark theme and accent colour.
   name search (`*` `?` wildcards) and a content-based duplicate finder.
   Delete to the Recycle Bin, open in Explorer, export to CSV.
 
-**Network** · Subnet calculator · IP scanner · Ping · Telnet / port check
+**Network**
+- **Subnet calculator** — IPv4 address with prefix or netmask: network, broadcast,
+  host range, wildcard, class, address type, binary/hex views, split into subnets.
+- **IP scanner** — scan a CIDR or range by ping, ARP (local subnets) and optional
+  TCP ports; shows host names, latency, MAC addresses; cancellable, CSV export.
+- **Ping** — continuous or N-count ICMP ping (no admin needed) with a live latency
+  chart and min / avg / max / jitter / loss.
+- **Telnet / ports** — TCP port tester (open / closed / filtered with timing) and a
+  raw TCP / Telnet console.
 
-**Crypto & text** · Hash text · Encrypt / decrypt · Token & UUID generator ·
-Base64 & encoders
+**Crypto & text**
+- **Hash text** — MD5, SHA-1, SHA-256, SHA-384, SHA-512 of text or a file, optional HMAC.
+- **Encrypt / decrypt** — AES-256-GCM with a passphrase (PBKDF2-SHA-256, 210,000 rounds).
+- **Token & UUID** — UUID v4 / v7, ULID, random tokens and passwords.
+- **Base64 & encoders** — Base64, Base64url, URL, HTML entities, hex, Unicode escapes.
 
-Tools are being added steadily; see the left-hand menu in the app.
+**Developer** · JWT decoder · JSON formatter · Timestamp converter · Number base converter
+
+Everything runs on your PC; the crypto and developer tools work entirely offline.
 
 ## Run
 

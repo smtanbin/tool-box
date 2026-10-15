@@ -281,11 +281,87 @@ body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--ac
 .dd,#ctx,.flyout,#tip,#toast{background:color-mix(in srgb,var(--card) 74%,transparent);-webkit-backdrop-filter:blur(40px) saturate(170%);backdrop-filter:blur(40px) saturate(170%)}
 #dlg{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 #status{background:transparent;border-top:1px solid var(--border)}
+/* sticky tab toolbars must hide what scrolls under them */
+.pane>.tools,#p-pie .tools{position:sticky;top:0;z-index:3;background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;flex-wrap:nowrap;min-height:44px}
+.pane>.tools>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pie{padding-top:10px}
+/* ===== tool pages ===== */
+:root{--ok:#0f7b0f;--bad:#c42b1c;--mono:"Cascadia Mono",Consolas,"Courier New",monospace}
+:root[data-theme=dark]{--ok:#6ccb5f;--bad:#ff99a4}
+.tool{display:none;flex:1;flex-direction:column;min-height:0}.tool.on{display:flex}
+body:not([data-tool=foldersize]) #s1,body:not([data-tool=foldersize]) #s2,body[data-tool=foldersize] #s3{display:none}
+.tpage{flex:1;overflow:auto;padding:2px 12px 12px 4px}
+.thead{display:flex;align-items:center;gap:14px;padding:4px 4px 14px}
+.thead>.fi{font-size:28px;margin:0;color:var(--accent);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.thead h1{font-size:20px;font-weight:600;margin:0;font-family:"Segoe UI Variable Display","Segoe UI",sans-serif}
+.thead p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.card{background:color-mix(in srgb,var(--card) 78%,transparent);-webkit-backdrop-filter:blur(30px) saturate(140%);backdrop-filter:blur(30px) saturate(140%);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:8px;min-width:0}
+.card.flush{padding:0;overflow:hidden}
+.card h3{margin:0 0 12px;font-size:14px;font-weight:600}
+.chhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.chhead h3{margin:0}
+.frm{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end}
+.fld{display:flex;flex-direction:column;gap:5px;min-width:0}.fld>label{font-size:12px;color:var(--muted)}
+.grow{flex:1 1 200px}
+.chk{display:inline-flex;align-items:center;gap:7px;height:32px;white-space:nowrap;user-select:none}
+.tool input[type=checkbox]{width:18px;height:18px;padding:0;margin:0;accent-color:var(--accent);border-radius:4px}
+.tool input[type=number]{padding-right:4px}
+.mono,.tool textarea,pre.code{font-family:var(--mono);font-size:13px}
+.tool textarea{width:100%;resize:vertical;min-height:80px;color:var(--text);background:var(--card);border:1px solid var(--border);border-bottom-color:var(--strong);border-radius:4px;padding:8px 10px;line-height:1.45;display:block}
+.tool textarea:focus{outline:none;box-shadow:inset 0 -2px 0 var(--accent)}
+.tool textarea[readonly]{background:color-mix(in srgb,var(--card) 60%,transparent)}
+.tool textarea.out{margin-top:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two>.card{margin-bottom:8px}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.hint{color:var(--muted);font-size:12px;margin:8px 0 0}
+.frm .hint{margin:0;align-self:center}
+.err{color:var(--bad);font-size:13px}.err:not(:empty){margin-top:8px}.frm .err:not(:empty){margin:0;align-self:center}
+.kv{display:grid;grid-template-columns:minmax(130px,max-content) 1fr 34px;align-items:center;gap:0 14px}
+.kv>div{padding:6px 0;border-bottom:1px solid var(--border);min-width:0;overflow-wrap:anywhere}
+.kv>.k{color:var(--muted)}.kv>.v{font-family:var(--mono);font-size:13px}
+.kv>:nth-last-child(-n+3){border-bottom:0}
+.kv .ib{width:30px;height:30px}.kv .ib .fi{font-size:13px}
+.bin{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:13px;overflow-x:auto}
+.bin .k{font-family:"Segoe UI",sans-serif;color:var(--muted)}
+.bin b{color:var(--accent);font-weight:600}.bin i{font-style:normal;color:var(--muted)}
+.tblwrap{overflow:auto;max-height:520px}
+.card .tblwrap{margin-top:12px}.card.flush .tblwrap{margin:0;max-height:none}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{position:sticky;top:0;background:color-mix(in srgb,var(--card) 94%,transparent);text-align:left;font-weight:400;color:var(--muted);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;user-select:none}
+.tbl th[data-k]{cursor:default}.tbl th[data-k]:hover{background:var(--hover);color:var(--text)}
+.tbl td{padding:6px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.tbl.hov tbody tr:hover td{background:var(--hover)}
+.tbl .r{text-align:right}.tbl .mono{font-size:12.5px}
+.tbl td.empty{padding:40px;white-space:normal}
+.tbl .acts{text-align:right;padding:2px 6px}.tbl .acts button{height:26px;padding:0 8px;font-size:12px;border:0;background:transparent}.tbl .acts button:hover{background:var(--hover)}
+.st{display:inline-flex;align-items:center;gap:6px}.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.st.ok{color:var(--ok)}.st.bad{color:var(--bad)}.st.mut{color:var(--muted)}
+.port{display:inline-block;padding:0 6px;margin:1px 3px 1px 0;border-radius:4px;background:var(--fill);font-family:var(--mono);font-size:12px;line-height:18px}
+.tbar{display:flex;align-items:flex-end;gap:8px 10px;padding:2px 12px 12px 4px;flex-wrap:wrap}
+.tbar .sep{height:24px;margin:0 2px 4px;background:var(--border);width:1px}
+.tbar button.cmd{height:32px}
+.line{display:flex;justify-content:space-between;gap:12px;white-space:nowrap}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-bottom:8px}
+.tile{background:color-mix(in srgb,var(--card) 78%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:8px;padding:10px 14px;min-width:0}
+.tile small{display:block;color:var(--muted);font-size:12px}.tile b{display:block;font-size:22px;font-weight:600;font-family:"Segoe UI Variable Display","Segoe UI",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile b.sm{font-size:15px;font-family:var(--mono);font-weight:400;padding-top:5px}
+.tile.bad b{color:var(--bad)}
+.chart{position:relative;height:220px}.chart canvas{position:absolute;inset:0;width:100%;height:100%}
+.ctip{position:absolute;pointer-events:none;display:none;background:color-mix(in srgb,var(--card) 80%,transparent);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:6px;box-shadow:var(--flyout);padding:6px 10px;font-size:12px;white-space:nowrap;z-index:3}
+.ctip b{display:block;font-size:13px}
+.log{max-height:260px;overflow:auto;font-size:12.5px;line-height:1.6;white-space:pre-wrap}
+.log .bad{color:var(--bad)}
+.term{margin-top:12px;height:320px;overflow:auto;white-space:pre-wrap;word-break:break-all;background:#0c0c0c;color:#cccccc;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.45;border:1px solid var(--border)}
+.term .sys{color:#61a0ff}.term .me{color:#e5c07b}.term .er{color:#ff7b72}
+pre.code{margin:0;white-space:pre-wrap;word-break:break-all;max-height:420px;overflow:auto;line-height:1.5}
+pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pre.code .k{color:var(--text);font-weight:600}
+:root[data-theme=dark] pre.code .s{color:#98c379}:root[data-theme=dark] pre.code .n{color:#79b8ff}:root[data-theme=dark] pre.code .b{color:#d38aea}
+.pw{display:flex;align-items:center;gap:4px}.pw input{flex:1}
+.tool .seg{height:32px;align-self:flex-end}
 </style>
 </head>
 <body>
 <header id="appbar">
-  <div class="logo"><img src="/icon.svg" width="20" height="20" alt="">Tool Box</div>
   <nav id="menubar">
     <div class="menu"><span>File</span><div class="dd">
       <div data-cmd="scan">Scan folder…<kbd>F5</kbd></div>
@@ -320,17 +396,23 @@ body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--ac
   <div class="rh">Disk</div>
   <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><b class="lbl">Folder Size</b></a>
   <div class="rh">Network</div>
-  <a class="ri soon" data-tool="Subnet calculator" title="Subnet calculator"><i class="fi">&#xE839;</i><b class="lbl">Subnet calculator</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="IP scanner" title="IP scanner"><i class="fi">&#xE774;</i><b class="lbl">IP scanner</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="Ping" title="Ping"><i class="fi">&#xE9D9;</i><b class="lbl">Ping</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="Telnet" title="Telnet"><i class="fi">&#xE756;</i><b class="lbl">Telnet</b><span>Soon</span></a>
+  <a class="ri" data-tool="subnet" title="Subnet calculator"><i class="fi">&#xE839;</i><b class="lbl">Subnet calculator</b></a>
+  <a class="ri" data-tool="ipscan" title="IP scanner"><i class="fi">&#xE774;</i><b class="lbl">IP scanner</b></a>
+  <a class="ri" data-tool="ping" title="Ping"><i class="fi">&#xE9D9;</i><b class="lbl">Ping</b></a>
+  <a class="ri" data-tool="telnet" title="Telnet / port tester"><i class="fi">&#xE756;</i><b class="lbl">Telnet / ports</b></a>
   <div class="rh">Crypto &amp; text</div>
-  <a class="ri soon" data-tool="Hash text" title="Hash text"><i class="fi">&#xE8EC;</i><b class="lbl">Hash text</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="Encrypt / decrypt" title="Encrypt / decrypt"><i class="fi">&#xE72E;</i><b class="lbl">Encrypt / decrypt</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="Token &amp; UUID generator" title="Token &amp; UUID generator"><i class="fi">&#xE8D7;</i><b class="lbl">Token &amp; UUID</b><span>Soon</span></a>
-  <a class="ri soon" data-tool="Base64 &amp; encoders" title="Base64 &amp; encoders"><i class="fi">&#xE943;</i><b class="lbl">Base64 &amp; encoders</b><span>Soon</span></a>
+  <a class="ri" data-tool="hash" title="Hash text"><i class="fi">&#xE8EC;</i><b class="lbl">Hash text</b></a>
+  <a class="ri" data-tool="crypt" title="Encrypt / decrypt"><i class="fi">&#xE72E;</i><b class="lbl">Encrypt / decrypt</b></a>
+  <a class="ri" data-tool="token" title="Token &amp; UUID generator"><i class="fi">&#xE8D7;</i><b class="lbl">Token &amp; UUID</b></a>
+  <a class="ri" data-tool="encode" title="Base64 &amp; encoders"><i class="fi">&#xE943;</i><b class="lbl">Base64 &amp; encoders</b></a>
+  <div class="rh">Developer</div>
+  <a class="ri" data-tool="jwt" title="JWT decoder"><i class="fi">&#xEA18;</i><b class="lbl">JWT decoder</b></a>
+  <a class="ri" data-tool="json" title="JSON formatter"><i class="fi">&#xE8A5;</i><b class="lbl">JSON formatter</b></a>
+  <a class="ri" data-tool="time" title="Timestamp converter"><i class="fi">&#xE823;</i><b class="lbl">Timestamp converter</b></a>
+  <a class="ri" data-tool="base" title="Number base converter"><i class="fi">&#xE8EF;</i><b class="lbl">Number base</b></a>
 </nav>
 <div id="content">
+<div class="tool on" id="t-foldersize">
 <div id="navrow">
   <button class="ib" id="back" title="Back (Alt+Left)" disabled><i class="fi">&#xE72B;</i></button>
   <button class="ib" id="fwd" title="Forward (Alt+Right)" disabled><i class="fi">&#xE72A;</i></button>
@@ -407,8 +489,226 @@ body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--ac
     </div>
   </section>
 </div>
+</div><!-- /t-foldersize -->
+
+<!-- ===== Subnet calculator ===== -->
+<section class="tool" id="t-subnet"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE839;</i><div><h1>Subnet calculator</h1><p>IPv4 address and prefix or mask in — network, broadcast, host range, wildcard and binary out.</p></div></div>
+  <div class="card"><div class="frm">
+    <div class="fld grow"><label for="snip">IP address (CIDR or mask ok)</label><input id="snip" class="mono" value="192.168.1.10/24" spellcheck="false" placeholder="10.0.0.5/16 or 10.0.0.5 255.255.0.0"></div>
+    <div class="fld"><label for="snmask">Prefix / netmask</label><select id="snmask"></select></div>
+  </div><div class="err" id="snerr"></div></div>
+  <div class="card"><h3>Network</h3><div class="kv" id="snout"></div></div>
+  <div class="card"><h3>Binary view</h3><div class="bin mono" id="snbin"></div><p class="hint">Network bits are highlighted; the rest are host bits.</p></div>
+  <div class="card"><h3>Split into subnets</h3>
+    <div class="frm"><div class="fld"><label for="snsplit">New prefix</label><select id="snsplit"></select></div><button id="sncsv"><i class="fi">&#xE8C8;</i>Copy as CSV</button><span class="hint" id="sninfo"></span></div>
+    <div class="tblwrap"><table class="tbl" id="sntbl"></table></div></div>
+</div></section>
+
+<!-- ===== IP scanner ===== -->
+<section class="tool" id="t-ipscan">
+  <div class="tbar">
+    <div class="fld"><label for="isrange">Range</label><input id="isrange" class="mono" style="width:230px" placeholder="192.168.1.0/24 or .1-254" spellcheck="false"></div>
+    <button class="cmd" id="islocal" title="Pick one of this PC's networks"><i class="fi">&#xE968;</i>My networks<i class="fi chev">&#xE70D;</i></button>
+    <div class="fld"><label for="isports">Also check TCP ports (optional)</label><input id="isports" class="mono" style="width:210px" placeholder="e.g. 22,80,443,3389" spellcheck="false"></div>
+    <button class="cmd" id="iscommon" title="Fill in common ports"><i class="fi">&#xE71D;</i>Common</button>
+    <div class="fld"><label for="istimeout">Timeout</label><select id="istimeout"><option value="400">400 ms</option><option value="800" selected>800 ms</option><option value="1500">1.5 s</option><option value="3000">3 s</option></select></div>
+    <label class="chk" title="Also find hosts that block ping, by asking for their MAC address (local networks only)"><input type="checkbox" id="isarp" checked>ARP</label>
+    <label class="chk" title="Look up host names (reverse DNS)"><input type="checkbox" id="isdns" checked>Names</label>
+    <span class="sep"></span>
+    <button class="cmd" id="isgo"><i class="fi acc">&#xE768;</i>Scan</button>
+    <button class="cmd" id="isstop" style="display:none"><i class="fi acc">&#xE711;</i>Cancel</button>
+    <button class="cmd" id="iscsv" disabled><i class="fi">&#xE896;</i>Export CSV</button>
+  </div>
+  <div class="tpage">
+    <div class="card" id="isprog" style="display:none"><div class="line"><span id="isstat"></span><span id="istime"></span></div><div class="pbar"><i id="isbar"></i></div></div>
+    <div class="card flush"><div class="tblwrap"><table class="tbl hov" id="istbl"><thead><tr><th data-k="ip">IP address</th><th data-k="host">Host name</th><th data-k="ms" class="r">Latency</th><th data-k="mac">MAC address</th><th>Open ports</th><th data-k="via">Found by</th><th></th></tr></thead><tbody><tr><td colspan="7" class="empty">Enter a range and press <b>Scan</b>. Hosts that answer ping, ARP or a port check are listed here.</td></tr></tbody></table></div></div>
+  </div>
+</section>
+
+<!-- ===== Ping ===== -->
+<section class="tool" id="t-ping">
+  <div class="tbar">
+    <div class="fld"><label for="pghost">Host or IPv4 address</label><input id="pghost" class="mono" style="width:240px" value="8.8.8.8" spellcheck="false"></div>
+    <div class="fld"><label for="pgcount">Count</label><select id="pgcount"><option value="0">Continuous</option><option value="4">4</option><option value="10">10</option><option value="50">50</option><option value="100">100</option></select></div>
+    <div class="fld"><label for="pgint">Interval</label><select id="pgint"><option value="250">0.25 s</option><option value="500">0.5 s</option><option value="1000" selected>1 s</option><option value="2000">2 s</option><option value="5000">5 s</option></select></div>
+    <div class="fld"><label for="pgto">Timeout</label><select id="pgto"><option value="500">500 ms</option><option value="1000">1 s</option><option value="2000" selected>2 s</option><option value="5000">5 s</option></select></div>
+    <div class="fld"><label for="pgsize">Bytes</label><input id="pgsize" type="number" min="0" max="65500" value="32" style="width:84px"></div>
+    <span class="sep"></span>
+    <button class="cmd" id="pggo"><i class="fi acc">&#xE768;</i>Start</button>
+    <button class="cmd" id="pgstop" style="display:none"><i class="fi acc">&#xE71A;</i>Stop</button>
+    <button class="cmd" id="pgclear"><i class="fi">&#xE894;</i>Clear</button>
+  </div>
+  <div class="tpage">
+    <div class="tiles" id="pgtiles"></div>
+    <div class="card"><div class="chhead"><h3 id="pgtitle">Latency</h3><span class="hint">Last 120 replies · red marks are lost packets</span></div><div class="chart" id="pgchart"><canvas></canvas><div class="ctip"></div></div></div>
+    <div class="card"><h3>Log</h3><div class="log mono" id="pglog"></div></div>
+  </div>
+</section>
+
+<!-- ===== Telnet / port tester ===== -->
+<section class="tool" id="t-telnet"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE756;</i><div><h1>Telnet &amp; TCP port tester</h1><p>Check whether TCP ports are open, or open a raw TCP / Telnet session and talk to the server.</p></div></div>
+  <div class="card"><h3>Port tester</h3>
+    <div class="frm">
+      <div class="fld grow"><label for="pthost">Host</label><input id="pthost" class="mono" value="localhost" spellcheck="false"></div>
+      <div class="fld grow"><label for="ptports">Ports</label><input id="ptports" class="mono" value="22,80,443,3389" spellcheck="false" placeholder="22,80,443 or 8000-8100"></div>
+      <div class="fld"><label for="ptto">Timeout</label><select id="ptto"><option value="1000">1 s</option><option value="2000" selected>2 s</option><option value="5000">5 s</option></select></div>
+      <button class="primary" id="ptgo">Test ports</button>
+    </div>
+    <div class="err" id="pterr"></div>
+    <div class="tblwrap"><table class="tbl" id="pttbl"></table></div>
+  </div>
+  <div class="card"><h3>Console</h3>
+    <div class="frm">
+      <div class="fld grow"><label for="tnhost">Host</label><input id="tnhost" class="mono" value="localhost" spellcheck="false"></div>
+      <div class="fld"><label for="tnport">Port</label><input id="tnport" class="mono" type="number" min="1" max="65535" value="23" style="width:96px"></div>
+      <div class="fld"><label for="tneol">Enter sends</label><select id="tneol"><option value="\r\n">CR LF</option><option value="\n">LF</option><option value="\r">CR</option><option value="">Nothing</option></select></div>
+      <label class="chk" title="Answer Telnet option negotiation (turn off for raw TCP protocols)"><input type="checkbox" id="tntel" checked>Telnet negotiation</label>
+      <button class="primary" id="tngo">Connect</button><button id="tnstop" style="display:none">Disconnect</button>
+      <button id="tnclr"><i class="fi">&#xE894;</i>Clear</button>
+    </div>
+    <div class="term mono" id="tnout"><span class="sys">Not connected. Tip: try port 80 and send “GET / HTTP/1.0” then an empty line.</span></div>
+    <div class="frm" style="margin-top:8px"><input id="tnin" class="mono grow" placeholder="Type and press Enter to send" disabled spellcheck="false"><button id="tnsend" disabled>Send</button></div>
+  </div>
+</div></section>
+
+<!-- ===== Hash ===== -->
+<section class="tool" id="t-hash"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE8EC;</i><div><h1>Hash text</h1><p>MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of text or a file, with optional HMAC key.</p></div></div>
+  <div class="card">
+    <div class="frm" style="margin-bottom:10px">
+      <button id="hsfile"><i class="fi">&#xE8E5;</i>Hash a file…</button><input type="file" id="hsfilein" hidden>
+      <div class="fld"><label for="hsenc">Output</label><select id="hsenc"><option value="hex">hex (lowercase)</option><option value="HEX">HEX (uppercase)</option><option value="b64">Base64</option></select></div>
+      <div class="fld grow"><label for="hskey">HMAC key (optional)</label><input id="hskey" placeholder="Leave empty for a plain hash" spellcheck="false"></div>
+    </div>
+    <textarea id="hsin" rows="6" placeholder="Type or paste text to hash" spellcheck="false"></textarea>
+    <p class="hint" id="hsinfo">UTF-8 text · 0 bytes</p>
+  </div>
+  <div class="card"><div class="kv" id="hsout"></div></div>
+</div></section>
+
+<!-- ===== Encrypt / decrypt ===== -->
+<section class="tool" id="t-crypt"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE72E;</i><div><h1>Encrypt / decrypt text</h1><p>AES-256-GCM with a key derived from your passphrase (PBKDF2-SHA-256, 210,000 rounds). Nothing leaves this PC.</p></div></div>
+  <div class="card">
+    <div class="frm" style="margin-bottom:12px">
+      <div class="seg" id="crmode"><button data-m="enc" class="on">Encrypt</button><button data-m="dec">Decrypt</button></div>
+      <div class="fld grow"><label for="crpass">Passphrase</label><div class="pw"><input id="crpass" type="password" placeholder="Use a long passphrase" spellcheck="false"><button class="ib" id="crshow" title="Show / hide"><i class="fi">&#xE7B3;</i></button></div></div>
+      <button class="primary" id="crgo">Encrypt</button>
+    </div>
+    <div class="two">
+      <div class="fld"><label for="crin" id="crinl">Plain text</label><textarea id="crin" rows="9" spellcheck="false"></textarea></div>
+      <div class="fld"><label for="crout" id="croutl">Encrypted (Base64)</label><textarea id="crout" rows="9" readonly spellcheck="false"></textarea></div>
+    </div>
+    <div class="frm" style="margin-top:8px"><button data-copy="#crout"><i class="fi">&#xE8C8;</i>Copy result</button><button id="crswap"><i class="fi">&#xE8AB;</i>Use result as input</button><span class="err" id="crerr"></span></div>
+  </div>
+</div></section>
+
+<!-- ===== Token & UUID ===== -->
+<section class="tool" id="t-token"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE8D7;</i><div><h1>Token &amp; UUID generator</h1><p>Cryptographically secure random UUIDs, ULIDs, passwords and API tokens.</p></div></div>
+  <div class="card"><h3>UUID / ULID</h3>
+    <div class="frm">
+      <div class="fld"><label for="uuver">Type</label><select id="uuver"><option value="4">UUID v4 (random)</option><option value="7">UUID v7 (time-ordered)</option><option value="ulid">ULID</option><option value="nil">Nil UUID</option></select></div>
+      <div class="fld"><label for="uun">How many</label><input id="uun" type="number" min="1" max="1000" value="5" style="width:90px"></div>
+      <label class="chk"><input type="checkbox" id="uuup">Uppercase</label>
+      <label class="chk"><input type="checkbox" id="uuhy" checked>Hyphens</label>
+      <label class="chk"><input type="checkbox" id="uubr">Braces { }</label>
+      <button class="primary" id="uugo">Generate</button><button data-copy="#uuout"><i class="fi">&#xE8C8;</i>Copy</button>
+    </div>
+    <textarea id="uuout" class="out" rows="5" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="card"><h3>Random token / password</h3>
+    <div class="frm">
+      <div class="fld"><label for="tklen">Length</label><input id="tklen" type="number" min="1" max="1024" value="32" style="width:90px"></div>
+      <div class="fld"><label for="tkn">How many</label><input id="tkn" type="number" min="1" max="500" value="5" style="width:90px"></div>
+      <label class="chk"><input type="checkbox" id="tkU" checked>A–Z</label>
+      <label class="chk"><input type="checkbox" id="tkL" checked>a–z</label>
+      <label class="chk"><input type="checkbox" id="tkD" checked>0–9</label>
+      <label class="chk"><input type="checkbox" id="tkS">Symbols</label>
+      <label class="chk" title="Leave out 0 O o 1 l I |"><input type="checkbox" id="tkA">No look-alikes</label>
+      <div class="fld"><label for="tkfmt">Format</label><select id="tkfmt"><option value="chars">Characters</option><option value="hex">Hex bytes</option><option value="b64">Base64url bytes</option></select></div>
+      <button class="primary" id="tkgo">Generate</button><button data-copy="#tkout"><i class="fi">&#xE8C8;</i>Copy</button>
+    </div>
+    <textarea id="tkout" class="out" rows="5" readonly spellcheck="false"></textarea>
+    <p class="hint" id="tkinfo"></p>
+  </div>
+</div></section>
+
+<!-- ===== Encoders ===== -->
+<section class="tool" id="t-encode"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE943;</i><div><h1>Base64 &amp; encoders</h1><p>Encode or decode Base64, URL, HTML entities, hex and Unicode escapes. Converts as you type.</p></div></div>
+  <div class="card">
+    <div class="frm" style="margin-bottom:12px">
+      <div class="fld"><label for="enkind">Encoding</label><select id="enkind"><option value="b64">Base64</option><option value="b64u">Base64 URL-safe</option><option value="url">URL component (%XX)</option><option value="uri">Full URL (encodeURI)</option><option value="html">HTML entities</option><option value="hex">Hex (UTF-8 bytes)</option><option value="uni">Unicode escapes (\uXXXX)</option></select></div>
+      <div class="seg" id="endir"><button data-d="enc" class="on">Encode</button><button data-d="dec">Decode</button></div>
+      <button id="enswap"><i class="fi">&#xE8AB;</i>Swap</button>
+    </div>
+    <div class="two">
+      <div class="fld"><label for="enin">Input</label><textarea id="enin" rows="10" spellcheck="false"></textarea></div>
+      <div class="fld"><label for="enout">Output</label><textarea id="enout" rows="10" readonly spellcheck="false"></textarea></div>
+    </div>
+    <div class="frm" style="margin-top:8px"><button data-copy="#enout"><i class="fi">&#xE8C8;</i>Copy output</button><span class="err" id="enerr"></span></div>
+  </div>
+</div></section>
+
+<!-- ===== JWT ===== -->
+<section class="tool" id="t-jwt"><div class="tpage">
+  <div class="thead"><i class="fi">&#xEA18;</i><div><h1>JWT decoder</h1><p>Read the header, payload and time claims of a JSON Web Token. The signature is not verified.</p></div></div>
+  <div class="card"><div class="fld"><label for="jwin">Token</label><textarea id="jwin" rows="4" spellcheck="false" placeholder="eyJhbGciOi..."></textarea></div><div class="err" id="jwerr"></div></div>
+  <div class="card" id="jwclaims" style="display:none"><h3>Time claims</h3><div class="kv" id="jwkv"></div></div>
+  <div class="two">
+    <div class="card"><div class="chhead"><h3>Header</h3><button class="ib" data-copy="#jwh" title="Copy"><i class="fi">&#xE8C8;</i></button></div><pre class="code" id="jwh"></pre></div>
+    <div class="card"><div class="chhead"><h3>Payload</h3><button class="ib" data-copy="#jwp" title="Copy"><i class="fi">&#xE8C8;</i></button></div><pre class="code" id="jwp"></pre></div>
+  </div>
+</div></section>
+
+<!-- ===== JSON ===== -->
+<section class="tool" id="t-json"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE8A5;</i><div><h1>JSON formatter</h1><p>Validate, pretty-print, minify or sort the keys of JSON.</p></div></div>
+  <div class="card">
+    <div class="frm" style="margin-bottom:12px">
+      <button class="primary" id="jsfmt">Format</button><button id="jsmin">Minify</button>
+      <div class="fld"><label for="jsind">Indent</label><select id="jsind"><option value="2">2 spaces</option><option value="4">4 spaces</option><option value="tab">Tab</option></select></div>
+      <label class="chk"><input type="checkbox" id="jssort">Sort keys</label>
+      <button data-copy="#jsout"><i class="fi">&#xE8C8;</i>Copy output</button>
+    </div>
+    <div class="two">
+      <div class="fld"><label for="jsin">Input</label><textarea id="jsin" rows="16" spellcheck="false" placeholder='{"hello":"world"}'></textarea></div>
+      <div class="fld"><label for="jsout">Output</label><textarea id="jsout" rows="16" readonly spellcheck="false"></textarea></div>
+    </div>
+    <div class="err" id="jserr"></div><p class="hint" id="jsinfo"></p>
+  </div>
+</div></section>
+
+<!-- ===== Timestamp ===== -->
+<section class="tool" id="t-time"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE823;</i><div><h1>Timestamp converter</h1><p>Convert between Unix time, ISO 8601 and your local time.</p></div></div>
+  <div class="tiles" id="tmnow"></div>
+  <div class="card">
+    <div class="frm">
+      <div class="fld grow"><label for="tmin">Date or timestamp</label><input id="tmin" class="mono" spellcheck="false" placeholder="1700000000, 1700000000000, 2026-10-15T12:00:00Z, …"></div>
+      <div class="fld"><label for="tmunit">Numbers are</label><select id="tmunit"><option value="auto">Auto-detect</option><option value="s">Seconds</option><option value="ms">Milliseconds</option><option value="us">Microseconds</option></select></div>
+      <div class="fld"><label for="tmpick">…or pick</label><input id="tmpick" type="datetime-local" step="1"></div>
+      <button id="tmnowbtn">Now</button>
+    </div>
+    <div class="err" id="tmerr"></div>
+  </div>
+  <div class="card"><div class="kv" id="tmout"></div></div>
+</div></section>
+
+<!-- ===== Number base ===== -->
+<section class="tool" id="t-base"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE8EF;</i><div><h1>Number base converter</h1><p>Binary, octal, decimal, hexadecimal and more — any size integer.</p></div></div>
+  <div class="card"><div class="frm">
+    <div class="fld grow"><label for="nbin">Number</label><input id="nbin" class="mono" value="255" spellcheck="false"></div>
+    <div class="fld"><label for="nbfrom">Input base</label><select id="nbfrom"><option value="2">2 (binary)</option><option value="8">8 (octal)</option><option value="10" selected>10 (decimal)</option><option value="16">16 (hex)</option><option value="36">36</option></select></div>
+  </div><div class="err" id="nberr"></div></div>
+  <div class="card"><div class="kv" id="nbout"></div></div>
+</div></section>
 </div></div>
-<div id="status"><span id="s1"></span><span id="s2"></span></div>
+<div id="status"><span id="s1"></span><span id="s2"></span><span id="s3"></span></div>
 <div id="tip"></div><div id="ctx"></div><div id="toast"></div>
 
 <script>
@@ -441,7 +741,7 @@ applyTheme(false);
 
 /* ---------- state ---------- */
 let rootId=null, tmId=null, selId=null, tmData=null, tabName='pie';
-const AUTHOR='Tanbin', VERSION='1.0';
+const AUTHOR='Tanbin', VERSION='1.0.0';
 const IC_DIR='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f6b73c" d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>';
 const IC_FILE='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#90a4ae" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>';
 const kids=new Map(), parentOf=new Map(), open=new Set();
@@ -692,7 +992,7 @@ function updateStatus(){const r=kids.get(rootId);if(!r)return;const n=r.node;
   $('#s1').textContent=`${n.name} — ${fmt(n.size)} · ${num(n.files)} files · ${num(n.dirs)} folders`;
   let s='';if(selId!==null){const k=[...kids.values()].flatMap(x=>x.children||[]).find(c=>c.id===selId);if(selId===rootId)s='';else if(k)s=`Selected: ${k.name} — ${fmt(k.size)}${k.dir?` · ${num(k.files)} files`:''}`}
   $('#s2').textContent=s}
-addEventListener('keydown',e=>{const tag=document.activeElement.tagName;
+addEventListener('keydown',e=>{const tag=document.activeElement.tagName;if(curTool!=='foldersize')return;
   if(e.ctrlKey&&e.key==='f'){e.preventDefault();$('#q').focus();$('#q').select()}
   else if(tag==='INPUT'||tag==='SELECT')return;
   else if(e.key==='Backspace'){e.preventDefault();goUp()}
@@ -701,7 +1001,7 @@ addEventListener('keydown',e=>{const tag=document.activeElement.tagName;
   else if(e.key==='ArrowDown'||e.key==='ArrowUp'){const rows=$$('#rows .row');const i=rows.findIndex(r=>+r.dataset.id===selId);const nx=rows[Math.max(0,Math.min(rows.length-1,i+(e.key==='ArrowDown'?1:-1)))];if(nx){e.preventDefault();nx.click();nx.scrollIntoView({block:'nearest'})}}
   else if(e.key==='ArrowRight'&&selId!==null){const r=kids.get(selId);if(!open.has(selId)&&$(`#rows .row[data-id="${selId}"]`)?.dataset.dir==='1')toggle(selId)}
   else if(e.key==='ArrowLeft'&&selId!==null&&open.has(selId))toggle(selId)});
-addEventListener('contextmenu',e=>{if(!e.target.closest('#rows,#tmo,.lrow,.di'))e.preventDefault()});
+addEventListener('contextmenu',e=>{if(!e.target.closest('#rows,#tmo,.lrow,.di,input,textarea,.tpage'))e.preventDefault()});
 
 /* splitter */
 (function(){const sp=$('#split'),left=$('#left');let drag=false;sp.onmousedown=e=>{drag=true;e.preventDefault()};
@@ -737,7 +1037,20 @@ const FAQ=[
 function showFAQ(){dialog('<h2>Frequently asked questions</h2>'+FAQ.map(f=>`<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join(''))}
 function showKeys(){const k=[['F5','Rescan the path'],['Ctrl+R','Reset'],['Ctrl+F','Search'],['Backspace','Up one folder'],['↑ ↓','Move selection'],['→ ←','Expand / collapse folder'],['Delete','Move selected to Recycle Bin'],['Shift+Delete','Delete permanently'],['Double-click','Open folder / show file in Explorer'],['Right-click','Context menu'],['Esc','Close menus and dialogs']];
   dialog('<h2>Keyboard shortcuts</h2><table>'+k.map(r=>`<tr><td><kbd>${r[0]}</kbd></td><td>${r[1]}</td></tr>`).join('')+'</table>')}
-function showAbout(){dialog(`<div class="about"><img src="/icon.svg" width="88" height="88" alt=""><div class="big">Tool Box</div><div><span class="chip">Version ${VERSION}</span></div><p class="by">Designed &amp; developed by <b>${esc(AUTHOR)}</b><br>Developer: <b>magestica.com</b></p><p style="color:var(--muted)">A growing collection of everyday IT tools in one native-feeling Windows app.<br><br><b>Folder Size</b> — see where your disk space went: fast scanner with treemap, pie chart, file types, largest files, search and duplicate finder.<br><br>Coming soon: network tools (subnet calculator, IP scanner, ping, telnet) and common developer tools (hashing, encryption, encoders, generators).<br><br>Built with Go and a Windows 11 Fluent interface that follows your system theme and accent colour. Runs entirely on your PC.</p><p style="font-size:12px"><span class="chip">Apache License 2.0 + Commons Clause</span></p><p style="color:var(--muted);font-size:12px">Free to use, copy, modify and share for personal or work use.<br>Selling it, or making money from it (paid copies, hosting or support), is not allowed.<br>Provided “as is”, without warranty.</p><p style="color:var(--muted);font-size:12px">© ${new Date().getFullYear()} ${esc(AUTHOR)} · magestica.com</p></div>`)}
+function showAbout(){
+  const REPO='https://github.com/smtanbin/tool-box';
+  const row=(k,v)=>`<div style="color:var(--muted)">${k}</div><div>${v}</div>`;
+  const link=(href,text)=>`<a href="${href}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">${text}</a>`;
+  dialog(`<div style="display:flex;gap:18px;align-items:center;margin-bottom:18px"><img src="/icon.svg" width="64" height="64" alt="">
+    <div><div style="font-size:22px;font-weight:600;line-height:1.2">Tool Box</div><div style="color:var(--muted)">Version ${VERSION}</div></div></div>
+    <p style="margin:0 0 16px">Everyday IT tools for Windows.</p>
+    <div style="display:grid;grid-template-columns:110px 1fr;row-gap:8px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+      ${row('Developer',esc(AUTHOR))}
+      ${row('Website',link('https://magestica.com','magestica.com'))}
+      ${row('Source code',link(REPO,'github.com/smtanbin/tool-box'))}
+      ${row('License',link(REPO+'/blob/main/LICENSE','Apache 2.0 + Commons Clause'))}
+    </div>
+    <p style="color:var(--muted);font-size:12px;margin:14px 0 0">© ${new Date().getFullYear()} ${esc(AUTHOR)}. Free for personal and business use; not for resale.</p>`)}
 async function doExit(){try{await api('/api/quit')}catch(e){}window.close();document.body.innerHTML='<div style="padding:60px;text-align:center;font:16px Roboto,Segoe UI,sans-serif">Tool Box has closed. You can close this window.</div>'}
 const CMD={scan:()=>startScan(),browse:()=>$('#browse').click(),reset:resetAll,export:()=>$('#export').click(),explorer:()=>$('#openx').click(),exit:doExit,
   'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
@@ -747,7 +1060,7 @@ $('#menubar').addEventListener('click',e=>{const it=e.target.closest('[data-cmd]
   if(m){const was=m.classList.contains('open');$$('.menu.open').forEach(x=>x.classList.remove('open'));if(!was)m.classList.add('open')}});
 $('#menubar').addEventListener('mouseover',e=>{const m=e.target.closest('.menu');if(m&&!m.classList.contains('open')&&$('.menu.open')){$$('.menu.open').forEach(x=>x.classList.remove('open'));m.classList.add('open')}});
 addEventListener('click',e=>{if(!e.target.closest('.menu'))$$('.menu.open').forEach(x=>x.classList.remove('open'))});
-addEventListener('keydown',e=>{if(e.ctrlKey&&e.key.toLowerCase()==='r'){e.preventDefault();resetAll()}});
+addEventListener('keydown',e=>{if(e.ctrlKey&&e.key.toLowerCase()==='r'){e.preventDefault();if(curTool==='foldersize')resetAll()}});
 
 /* ---------- Explorer-style top: history, address bar, flyouts ---------- */
 const hist=[];let hIdx=-1,navigating=false,lastRoot='';
@@ -787,14 +1100,15 @@ $('#details').onclick=toggleDetails;
 $('#drivebtn').onclick=e=>{const f=$('#fly');
   if(!drives.length)return toast('No drives found');
   flyout(e.currentTarget,drives.map(d=>({label:`${d.path}   ${fmt(d.free)} free of ${fmt(d.total)}`,fn:()=>{$('#path').value=d.path;startScan(d.path)}})))};
-addEventListener('keydown',e=>{if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();navHist(-1)}else if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();navHist(1)}});
+addEventListener('keydown',e=>{if(curTool!=='foldersize')return;if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();navHist(-1)}else if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();navHist(1)}});
 
 /* ---------- tool navigation rail ---------- */
 (function(){const rail=$('#rail');
   try{if(localStorage.getItem('railMin')==='1')rail.classList.add('min')}catch(e){}
   $('#railtoggle').onclick=()=>{rail.classList.toggle('min');try{localStorage.setItem('railMin',rail.classList.contains('min')?'1':'0')}catch(e){}};
   rail.addEventListener('click',e=>{const a=e.target.closest('.ri[data-tool]');if(!a)return;
-    if(a.classList.contains('soon'))toast(a.dataset.tool+' is coming soon to Tool Box')})})();
+    showTool(a.dataset.tool)})})();
+let curTool='foldersize'; // set by showTool() in tools.js
 
 /* heartbeat so the server can exit when the window closes */
 setInterval(()=>fetch('/api/ping').catch(()=>{}),4000);fetch('/api/ping').catch(()=>{});
@@ -804,5 +1118,6 @@ addEventListener('pagehide',()=>navigator.sendBeacon('/api/bye'));
 loadDrives();
 api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scanning)poll();else if(s.hasRoot)scanFinished(s)}).catch(()=>{});
 </script>
+<script src="/tools.js"></script>
 </body>
 </html>

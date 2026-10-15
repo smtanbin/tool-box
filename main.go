@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/tools.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -83,6 +83,8 @@ func main() {
 		case "/":
 		case "/icon.svg", "/tool-foldersize.svg":
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
+		case "/tools.js":
+			name, ctype = "tools.js", "text/javascript; charset=utf-8"
 		case "/icon-256.png", "/favicon.ico":
 			name, ctype = "icon-256.png", "image/png"
 		default:
