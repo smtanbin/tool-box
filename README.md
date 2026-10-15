@@ -32,9 +32,16 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
+## Install
+
+Run `ToolBoxSetup-<version>.msi`. It installs for the current user only (no
+administrator rights needed) into `%LocalAppData%\Programs\Tool Box`, adds
+**Tool Box** shortcuts to the Desktop and Start menu, and can be removed from
+**Settings → Apps → Installed apps**. Installing a newer version upgrades in place.
+
 ## Run
 
-Download or build `ToolBox.exe` and double-click it. It opens in its own app
+Or skip the installer: download or build `ToolBox.exe` and double-click it. It opens in its own app
 window (Microsoft Edge or Chrome in app mode, both already on Windows 11).
 
 ```
@@ -57,6 +64,22 @@ go build -ldflags "-H windowsgui -s -w" -o ToolBox.exe .
 
 ```
 go run github.com/akavel/rsrc@v0.10.2 -ico app.ico -o rsrc_windows_amd64.syso
+```
+
+### Installer
+
+Requires the [WiX Toolset](https://wixtoolset.org) v5 with the UI and Util extensions:
+
+```
+dotnet tool install --global wix --version 5.0.2
+wix extension add -g WixToolset.UI.wixext/5.0.2
+wix extension add -g WixToolset.Util.wixext/5.0.2
+```
+
+Then build `dist\ToolBoxSetup-<version>.msi` (it rebuilds `ToolBox.exe` first):
+
+```
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.0
 ```
 
 ## How it works

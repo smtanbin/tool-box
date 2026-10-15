@@ -35,3 +35,7 @@ go.work.sum
 # Local build/test leftovers
 out.txt
 err.txt
+
+# Installer build output
+dist/
+installer/build/
