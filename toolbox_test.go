@@ -167,7 +167,7 @@ func TestHostsSaveRejectsCrossOrigin(t *testing.T) {
 }
 
 func TestEmbeddedWebFiles(t *testing.T) {
-	for _, f := range []string{"index.html", "tools.js", "proc.js", "image.js", "hosts.js", "boot.js"} {
+	for _, f := range []string{"index.html", "tools.js", "proc.js", "image.js", "hosts.js", "sysnet.js", "env.js", "boot.js"} {
 		b, err := webFS.ReadFile("web/" + f)
 		if err != nil || len(b) == 0 {
 			t.Errorf("web/%s missing or empty: %v", f, err)

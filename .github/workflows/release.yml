@@ -1,14 +1,14 @@
 ﻿# Publishes a GitHub Release with installers and portable builds for
 # x64, x86 and arm64 whenever a version tag (v1.2.3) is pushed:
 #
-#   git tag v1.1.0 && git push origin v1.1.0
+#   git tag v2.0.0 && git push origin v2.0.0
 #
 # GitHub Release download links redirect to another host, which the Microsoft Store
 # does not accept. So the installers are also published to the gh-pages branch and
 # served by GitHub Pages with NO redirect. Use these as the Store "Package URL":
-#   https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x64.msi
-#   https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x86.msi
-#   https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-arm64.msi
+#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x64.msi
+#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x86.msi
+#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-arm64.msi
 # (One-time repo setting: Settings -> Pages -> Deploy from a branch -> gh-pages / root.)
 name: Release
 
@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release, without the v (e.g. 1.1.0)"
+        description: "Version to release, without the v (e.g. 2.0.0)"
         required: true
 
 permissions:

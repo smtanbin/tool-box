@@ -30,6 +30,17 @@ Design interface that follows your Windows light/dark theme and accent colour.
 - **Hosts file** — edit `drivers\etc\hosts` as a table (enable / disable, add,
   delete, notes, validation) or as raw text. A timestamped backup is made on every
   save and the DNS cache is flushed. Saving needs an administrator copy (one click).
+- **Environment & PATH** — user and system variables with a table editor; PATH opens
+  as an ordered list with duplicate / missing-folder markers, move up / down, and
+  "remove duplicates / missing". Keeps expandable (`%VAR%`) values, backs up all
+  variables first, and tells running programs about the change. System variables
+  need an administrator copy.
+- **Network adapters** — every adapter's IPv4 / IPv6, mask, gateway, DNS servers,
+  DHCP server, MAC, link speed and MTU, with copy buttons.
+- **DNS lookup** — A, AAAA, MX, NS, TXT, CNAME, PTR and SRV via the system resolver
+  or a server you pick (Cloudflare, Google, Quad9 or your own).
+- **Traceroute** — hop-by-hop ICMP route with three probes per hop, host names,
+  and a stop button. No administrator rights needed.
 
 **Network**
 - **Subnet calculator** — IPv4 address with prefix or netmask: network, broadcast,
@@ -96,7 +107,7 @@ info shown in Explorer's Properties > Details tab (edit `versioninfo.json`). The
 installer build regenerates them for the release version; to do it by hand:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 1.1.0
+powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 2.0.0
 ```
 
 ### Installer
@@ -113,8 +124,8 @@ Then build `dist\ToolBoxSetup-<version>-<arch>.msi` and portable
 `dist\ToolBox-<version>-<arch>.exe` for x64, x86 and arm64:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.1.0
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.1.0 -Arch x64
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.0.0
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.0.0 -Arch x64
 ```
 
 ### Releases (CI/CD)
@@ -124,8 +135,8 @@ Pushing a version tag builds the installers and publishes a GitHub Release
 (`.github/workflows/release.yml`):
 
 ```
-git tag v1.1.0
-git push origin v1.1.0
+git tag v2.0.0
+git push origin v2.0.0
 ```
 
 The installers are also published to GitHub Pages, which serves files directly
@@ -133,9 +144,9 @@ with no redirect (GitHub Release download links redirect, which the Microsoft St
 rejects). These are the URLs to use as the Store "Package URL":
 
 ```
-https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x64.msi
-https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x86.msi
-https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-arm64.msi
+https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x64.msi
+https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x86.msi
+https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-arm64.msi
 ```
 
 One-time setup: repo **Settings → Pages → Build and deployment → Deploy from a
@@ -156,12 +167,13 @@ off your PC, and closing the window quits the app.
 | `main.go` | start-up, flags, static files, route table |
 | `folder_api.go`, `scan.go`, `dupes.go` | Folder Size: scanner, tree, duplicate finder, HTTP handlers |
 | `diskinfo_windows.go`, `diskmeta_windows.go` | Disk info: SMART / NVMe health; maker, controller and DRAM detection |
-| `process_windows.go`, `hosts_windows.go` | Process monitor (processes, ports, kill); hosts file editor |
+| `process_windows.go`, `hosts_windows.go`, `env_windows.go` | Process monitor (processes, ports, kill); hosts file editor; environment variables and PATH |
+| `netinfo_windows.go` | network adapters (GetAdaptersAddresses), DNS lookup, traceroute hops |
 | `nettools.go`, `icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
 | `winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
 | `web/index.html` | page shell, styles and the Folder Size UI |
 | `web/tools.js` | Disk info, network, crypto and developer tool pages |
-| `web/proc.js`, `web/hosts.js`, `web/image.js` | Process monitor; Hosts editor; Image to Base64 and Image to ICO |
+| `web/proc.js`, `web/hosts.js`, `web/env.js`, `web/sysnet.js`, `web/image.js` | Process monitor; Hosts editor; Environment and PATH; Adapters, DNS and Traceroute; Image tools |
 | `web/boot.js` | opens the first tool (loaded last) |
 | `installer/`, `store/` | MSI / MSIX build scripts and Microsoft Store listing |
 ## License

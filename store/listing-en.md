@@ -51,11 +51,11 @@ Everyday IT tools for Windows in one app: folder size and disk health, subnet ca
 ## What's new in this version *(max 1,500)*
 
 ```
-Version 1.1.0
-• New Process monitor: live process list with CPU and memory, open TCP/UDP ports with the program using each one, and one-click End process / End tree / Kill port owner.
-• Disk info now shows the drive maker and controller, and tells you whether an SSD is DRAM-less (Host Memory Buffer) or has a DRAM cache.
-• New Image to Base64 (data URI, CSS, HTML) with Base64 to image decoding, and Image to ICO that packs several icon sizes into one .ico file.
-• New Hosts file editor with enable/disable, backups and DNS flush.
+Version 2.0.0
+• New Environment variables and PATH editor: user and system variables, a PATH list with duplicate and missing-folder checks, automatic backup before every change.
+• New Network adapters page: IP, mask, gateway, DNS, DHCP, MAC and link speed for every adapter.
+• New DNS lookup (A, AAAA, MX, NS, TXT, CNAME, PTR, SRV, with your own DNS server) and Traceroute with live hops.
+• Also in this release line: Process monitor with kill and port owners, Hosts file editor, Disk info with maker, controller and DRAM-less detection, Image to Base64 and Image to ICO, and in-app confirmation dialogs.
 • Tidier internals and the same private, offline design.
 ```
 
@@ -147,7 +147,7 @@ Screenshot captions (optional, max 200 each):
 My Tool Box is a standalone Windows desktop app (MSI installer, per-user, no administrator rights needed). No sign-in, account or test credentials are required.
 
 INSTALL
-Silent install: msiexec /i ToolBoxSetup-1.1.0-x64.msi /qn /norestart
+Silent install: msiexec /i ToolBoxSetup-2.0.0-x64.msi /qn /norestart
 The installer adds Desktop and Start menu shortcuts and one entry in Settings > Apps > Installed apps named "My Tool Box". It installs only this app (no bundled or third-party software) and uninstalls cleanly from there.
 
 HOW IT WORKS
@@ -178,9 +178,9 @@ Source code: https://github.com/smtanbin/tool-box
 | Minimum OS | Windows 10 version 1809 or later |
 | Needs Microsoft Edge or Chrome | Yes, built into Windows 10/11 |
 | Code signing | Required by the Store for MSI/EXE packages. Sign each installer before submitting. |
-| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x64.msi` |
-| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x86.msi` |
-| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-arm64.msi` |
+| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x64.msi` |
+| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x86.msi` |
+| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-arm64.msi` |
 
 The Package URL must **not redirect**. GitHub Release links redirect (HTTP 302), so use
 the GitHub Pages URLs above (needs Settings → Pages → `gh-pages` branch, root).

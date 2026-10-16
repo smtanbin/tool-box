@@ -46,6 +46,7 @@ type PingResult struct {
 	OK     bool    `json:"ok"`
 	Ms     float64 `json:"ms"`
 	TTL    int     `json:"ttl"`
+	From   string  `json:"from,omitempty"` // who answered: the router that dropped the packet, or the host itself
 	Status string  `json:"status"`
 }
 
@@ -107,6 +108,7 @@ func icmpPing(ip net.IP, timeout time.Duration, size int, ttl int) PingResult {
 	}
 	res.OK = r.Status == 0
 	res.TTL = int(r.Options.Ttl)
+	res.From = net.IP{byte(r.Address), byte(r.Address >> 8), byte(r.Address >> 16), byte(r.Address >> 24)}.String()
 	res.Ms = float64(r.RoundTripTime) // whole ms; 0 means under 1 ms
 	return res
 }
