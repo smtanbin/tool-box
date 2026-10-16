@@ -242,3 +242,15 @@
 /* Explorer's address bar and details pane feel for the Folder Size toolbar */
 :root[data-skin=aero] #toolbar #path{border:1px solid #8e9bb0;border-radius:2px;background:#fff}
 :root[data-skin=aero] #status{background:linear-gradient(#f4f8fd,#e1ebf6);border-top:1px solid #b9c9dc}
+
+/* ===== Disk tabs: each skin keeps the tab shape ===== */
+:root[data-skin=burgundy] button.dkpill{border-radius:14px 14px 0 0;padding:5px 16px;border:1px solid transparent;border-bottom:0;background:transparent}
+:root[data-skin=burgundy] button.dkpill.on{background:var(--card);border-color:var(--border);color:var(--text)}
+:root[data-skin=burgundy] button.dkpill:hover:not(.on){background:var(--hover);color:var(--accent)}
+:root[data-skin=burgundy] .dkpill.on::before{border-radius:14px 14px 0 0}
+:root[data-skin=aero] .dkpills{border-bottom:1px solid #898c95}
+:root[data-skin=aero] button.dkpill{min-width:0;height:auto;border:1px solid #898c95;border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(#fff,#e8eef6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);margin-top:3px}
+:root[data-skin=aero] button.dkpill:hover:not(.on):not(:disabled){background:linear-gradient(#eaf6fd,#d9f0fc 48%,#bee6fd 52%,#a7d9f5);border-color:#3c7fb1}
+:root[data-skin=aero] button.dkpill.on{background:#fff;margin-top:0;border-color:#898c95;box-shadow:inset 0 3px 0 #f2b13c}
+:root[data-skin=aero] .dkpill.on::before{display:none}
+:root[data-skin=aero] .hbadge{background:linear-gradient(100deg,color-mix(in srgb,var(--hc) 78%,black) 0,var(--hc) 38%,color-mix(in srgb,var(--hc) 80%,white) 100%)}
