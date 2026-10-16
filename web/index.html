@@ -437,6 +437,8 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <hr>
       <div data-cmd="about">About</div></div></div>
   </nav>
+  <span style="flex:1"></span>
+  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Windows 11</option><option value="aero">Windows 7 Aero</option><option value="burgundy">Magestica burgundy</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
 <div id="shell">
@@ -955,9 +957,11 @@ function applyTheme(redraw){
     if(m){const lin=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};const L=.2126*lin(+m[0])+.7152*lin(+m[1])+.0722*lin(+m[2]);
       document.documentElement.style.setProperty('--accent-text',L>.4?'#000':'#fff')}}catch(e){}
   for(const m of['system','light','dark']){const k=document.querySelector(`[data-cmd=theme-${m}] kbd`);if(k)k.textContent=themeMode===m?'✓':''}
+  {const sel=document.getElementById('skinsel');if(sel)sel.value=skin}
   for(const s of['default','aero','burgundy']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
   if(redraw)drawTM()}
 function setThemeMode(m){themeMode=m;try{localStorage.setItem('themeMode',m)}catch(e){}applyTheme(true);toast('Theme: '+{system:'follow Windows setting',light:'light',dark:'dark'}[m])}
+document.getElementById('skinsel').addEventListener('change',e=>setSkin(e.target.value));
 const SKIN_NAMES={'':'Windows 11',aero:'Windows 7 Aero',burgundy:'Magestica burgundy'};
 function setSkin(s){skin=s;try{if(s)localStorage.setItem('skin',s);else localStorage.removeItem('skin')}catch(e){}applyTheme(true);toast('Skin: '+SKIN_NAMES[s]+(s==='aero'?' (always light)':''))}
 darkMQ.addEventListener('change',()=>{if(themeMode==='system')applyTheme(true)});

@@ -7,16 +7,71 @@
      aero      Windows 7 Aero glass, always light
    Skins only override colour variables and a few surfaces, so every tool page picks them up. */
 
-/* ===================== Magestica burgundy ===================== */
-:root[data-skin=burgundy]{--accent:#8a1c3c;--accent-text:#fff;--bg:#f6f0f1;--panel:#faf5f6;--card:#fff;--text:#241a1d;--muted:#6f5d63;
- --border:rgba(90,20,40,.13);--strong:rgba(90,20,40,.3);--hover:rgba(138,28,60,.07);--press:rgba(138,28,60,.13);--tmbg:#efe6e8;--fill:rgba(138,28,60,.1);--danger:#b3261e;
- --flyout:0 8px 24px rgba(60,10,25,.18),0 0 2px rgba(60,10,25,.25);--dialog:0 32px 64px rgba(60,10,25,.3),0 0 8px rgba(60,10,25,.2);--good:#2e7d4f;--caution:#b7791f;--badc:#c0392b}
-:root[data-skin=burgundy][data-theme=dark]{--accent:#e07a96;--accent-text:#2a0a14;--bg:#1c1215;--panel:#251a1e;--card:#2b1e23;--text:#f6eef0;--muted:#b3a0a6;
- --border:rgba(255,225,232,.11);--strong:rgba(255,225,232,.24);--hover:rgba(224,122,150,.11);--press:rgba(224,122,150,.18);--tmbg:#170f12;--fill:rgba(255,225,232,.12);--danger:#ff9aa8;
- --flyout:0 8px 24px rgba(0,0,0,.55),0 0 2px rgba(0,0,0,.6);--dialog:0 32px 64px rgba(0,0,0,.65),0 0 8px rgba(0,0,0,.5)}
-:root[data-skin=burgundy] #appbar .logo svg path:first-child{fill:var(--accent)}
-:root[data-skin=burgundy] button.primary{background:var(--accent);border-color:transparent}
-:root[data-skin=burgundy] ::selection{background:color-mix(in srgb,var(--accent) 35%,transparent)}
+/* skin dropdown in the top bar (all skins) */
+.skinpick{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
+.skinpick select{height:26px;font-size:12px;padding:0 8px;min-width:150px}
+:root[data-skin=aero] .skinpick{color:#1e395b;text-shadow:0 0 6px #fff}
+
+/* ===================== Magestica burgundy =====================
+   Follows magestica.com (site.css): warm off-white page, near-black ink, crimson-burgundy #981f32 accent
+   (#bd2941 on hover), hairline borders, soft translucent cards with big radii, pill buttons,
+   tight letter-spacing, and a faint accent glow in the top-right corner. Dark mode is derived from it. */
+:root[data-skin=burgundy]{--accent:#981f32;--accent-2:#bd2941;--accent-text:#fff;--bg:#fbfaf8;--panel:#f6f3f0;--card:#fff;--text:#171214;--muted:#756d70;
+ --border:rgba(23,18,20,.11);--strong:rgba(23,18,20,.22);--hover:rgba(152,31,50,.06);--press:rgba(152,31,50,.11);--tmbg:#f1ede9;--fill:rgba(23,18,20,.08);--danger:#b3261e;
+ --flyout:0 18px 40px -24px rgba(152,31,50,.35),0 2px 8px rgba(23,18,20,.1);--dialog:0 30px 70px -30px rgba(152,31,50,.45),0 4px 18px rgba(23,18,20,.18);
+ --good:#2e7d4f;--caution:#b7791f;--badc:#c0392b;--mag-tint:rgba(152,31,50,.09)}
+:root[data-skin=burgundy][data-theme=dark]{--accent:#e0586e;--accent-2:#ee7285;--accent-text:#1d070c;--bg:#151012;--panel:#1b1517;--card:#211a1d;--text:#f4eff0;--muted:#a69b9f;
+ --border:rgba(244,239,240,.1);--strong:rgba(244,239,240,.22);--hover:rgba(224,88,110,.1);--press:rgba(224,88,110,.17);--tmbg:#110c0e;--fill:rgba(244,239,240,.1);--danger:#ff9aa8;
+ --flyout:0 18px 40px -20px rgba(0,0,0,.7),0 2px 8px rgba(0,0,0,.5);--dialog:0 30px 70px -30px rgba(0,0,0,.8),0 4px 18px rgba(0,0,0,.5);--mag-tint:rgba(224,88,110,.14)}
+:root[data-skin=burgundy] body{font-family:Inter,"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;letter-spacing:-.005em;-webkit-font-smoothing:antialiased;
+ background:radial-gradient(circle at 82% 12%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 32%),var(--bg)}
+/* header and navigation: quiet text links, accent on hover / current, like the site's nav */
+:root[data-skin=burgundy] #appbar{background:transparent}
+:root[data-skin=burgundy] #appbar .logo{color:var(--accent);font-weight:650;letter-spacing:-.035em}
+:root[data-skin=burgundy] .menu>span{color:var(--muted);border-radius:999px;font-size:12.5px}
+:root[data-skin=burgundy] .menu>span:hover,:root[data-skin=burgundy] .menu.open>span{color:var(--accent);background:var(--mag-tint)}
+:root[data-skin=burgundy] .ri{border-radius:999px;color:var(--muted)}
+:root[data-skin=burgundy] .ri:hover{color:var(--accent);background:var(--hover)}
+:root[data-skin=burgundy] .ri.on{color:var(--accent);background:var(--mag-tint);font-weight:600}
+:root[data-skin=burgundy] .ri.on::before{display:none}
+:root[data-skin=burgundy] .rh{text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;font-weight:600;color:var(--muted)}
+:root[data-skin=burgundy] .thead h1{font-weight:500;letter-spacing:-.05em;font-size:26px}
+:root[data-skin=burgundy] .thead>.fi{border-radius:50%;background:var(--mag-tint);color:var(--accent)}
+/* surfaces: hairline border, no shadow, large soft radius */
+:root[data-skin=burgundy] .card,:root[data-skin=burgundy] .tile,:root[data-skin=burgundy] #left,:root[data-skin=burgundy] #tmwrap,:root[data-skin=burgundy] #tabs,:root[data-skin=burgundy] #progress{
+ background:color-mix(in srgb,var(--card) 72%,transparent);border-radius:18px;border:1px solid var(--border);box-shadow:none}
+:root[data-skin=burgundy] .card:hover{border-color:color-mix(in srgb,var(--accent) 28%,var(--border))}
+:root[data-skin=burgundy] .card h3{font-weight:550;letter-spacing:-.03em}
+:root[data-skin=burgundy] .dd,:root[data-skin=burgundy] #ctx,:root[data-skin=burgundy] #tip,:root[data-skin=burgundy] #toast{border-radius:14px;background:var(--card);border-color:var(--border)}
+:root[data-skin=burgundy] #toast{border-left:1px solid var(--border);border-top:3px solid var(--accent)}
+:root[data-skin=burgundy] .dd div,:root[data-skin=burgundy] #ctx div{border-radius:10px}
+:root[data-skin=burgundy] .dlg-card{border-radius:22px;border-color:var(--border);background:var(--card)}
+:root[data-skin=burgundy] .dfoot{background:transparent;border-top:1px solid var(--border)}
+:root[data-skin=burgundy] .dbody h2{font-weight:500;letter-spacing:-.04em}
+:root[data-skin=burgundy] .banner{border-radius:16px}
+:root[data-skin=burgundy] .tbl th{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+:root[data-skin=burgundy] .row.sel::before{background:var(--accent)}
+/* controls: pill buttons (filled accent / ghost), softly rounded inputs */
+:root[data-skin=burgundy] button,:root[data-skin=burgundy] select{border-radius:999px;background:transparent;border:1px solid var(--border);border-bottom-color:var(--border);color:var(--text);padding:0 16px;font-weight:500}
+:root[data-skin=burgundy] select{padding:0 12px}
+:root[data-skin=burgundy] button:hover:not(:disabled){color:var(--accent);border-color:color-mix(in srgb,var(--accent) 38%,transparent);background:transparent}
+:root[data-skin=burgundy] button:active:not(:disabled){background:var(--mag-tint);color:var(--accent)}
+:root[data-skin=burgundy] button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-text);font-weight:600}
+:root[data-skin=burgundy] button.primary:hover:not(:disabled){background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-text)}
+:root[data-skin=burgundy] button.primary.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+:root[data-skin=burgundy] button.danger:not(.primary){color:var(--danger)}
+:root[data-skin=burgundy] button.ib,:root[data-skin=burgundy] .ib{border-color:transparent;padding:0 8px}
+:root[data-skin=burgundy] input:not([type=checkbox]),:root[data-skin=burgundy] textarea{border-radius:10px;background:color-mix(in srgb,var(--card) 80%,transparent);border-color:var(--border)}
+:root[data-skin=burgundy] input:focus,:root[data-skin=burgundy] select:focus,:root[data-skin=burgundy] textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+:root[data-skin=burgundy] .seg{border-radius:999px;background:transparent;padding:2px}
+:root[data-skin=burgundy] .seg button{border-radius:999px;border-color:transparent;height:26px}
+:root[data-skin=burgundy] .seg button.on{background:var(--mag-tint);color:var(--accent);box-shadow:none}
+:root[data-skin=burgundy] #tabbar button{border-radius:999px;color:var(--muted)}
+:root[data-skin=burgundy] #tabbar button.on{color:var(--accent);background:var(--mag-tint)}
+:root[data-skin=burgundy] #tabbar button.on::after{display:none}
+:root[data-skin=burgundy] .pbar,:root[data-skin=burgundy] .pbar i{border-radius:999px}
+:root[data-skin=burgundy] .cpubar{border-radius:999px}
+:root[data-skin=burgundy] ::selection{background:color-mix(in srgb,var(--accent) 30%,transparent)}
 
 /* ===================== Windows 7 Aero ===================== */
 :root[data-skin=aero]{color-scheme:light;--accent:#2d6fbf;--accent-text:#fff;--bg:#d6e4f5;--panel:#eef4fb;--card:#fff;--text:#1b1b1b;--muted:#4f5b6b;
