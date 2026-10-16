@@ -8,7 +8,7 @@ const USAGE_KEY='usage';
 function usageLoad(){try{return JSON.parse(localStorage.getItem(USAGE_KEY))||{}}catch(e){return {}}}
 function usageSave(u){try{localStorage.setItem(USAGE_KEY,JSON.stringify(u))}catch(e){}}
 
-function homeTools(){return $$('#rail .ri[data-tool]').filter(a=>a.dataset.tool!=='home').map(a=>({id:a.dataset.tool,name:TOOL_NAMES[a.dataset.tool]||a.title,icons:[...a.querySelectorAll('.cicon,.fi')],desc:a.title}))}
+function homeTools(){return $$('#rail .ri[data-tool]').filter(a=>a.dataset.tool!=='home').map(a=>({id:a.dataset.tool,name:TOOL_NAMES[a.dataset.tool]||a.title,icons:[...a.querySelectorAll('img,.cicon,.fi')],desc:a.title}))}
 
 function homeCard(t,sub){
   const a=document.createElement('a');a.className='hcard';a.href='#'+t.id;a.title=t.desc;
@@ -30,16 +30,46 @@ function ago(ts){const s=Math.max(1,Math.round((Date.now()-ts)/1000));
   if(s<60)return 'just now';const m=Math.round(s/60);if(m<60)return m+' min ago';
   const h=Math.round(m/60);if(h<24)return h+' h ago';const d=Math.round(h/24);return d+(d===1?' day ago':' days ago')}
 
+/* short descriptions shown on the home cards */
+const HOME_DESC={foldersize:'See what fills your disks',disk:'Health, SMART, DRAM-less check',proc:'Processes, ports, end tasks',hosts:'Edit the hosts file safely',
+  env:'Variables and PATH, with backups',adapters:'IP, gateway, DNS, MAC, speed',dns:'Any record, any DNS server',trace:'Follow the route hop by hop',
+  subnet:'Networks, masks and ranges',ipscan:'Find devices on a network',ping:'Live latency and packet loss',telnet:'Test ports, raw TCP console',
+  hash:'MD5, SHA-1, SHA-256 and more',crypt:'AES-256 with a passphrase',token:'UUIDs, tokens, passwords',encode:'Base64, URL, hex, HTML',
+  img64:'Pictures to Base64 and back',ico:'Multi-size Windows icons',jwt:'Read tokens and claims',json:'Format, minify, validate',
+  time:'Unix time to dates and back',base:'Binary, octal, decimal, hex'};
+const HOME_FEATURED=[['foldersize','#f59e0b'],['proc','#10b981'],['disk','#0ea5e9'],['dns','#8b5cf6']];
+
+function homeHero(){
+  const h=$('#hhero');if(!h)return;const hr=new Date().getHours();
+  const greet=hr<5?'Working late':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  const n=homeTools().length;
+  h.innerHTML=`<div class="hh-text"><small class="hh-greet">${greet}</small><h2>My Tool Box</h2>
+    <p>Everyday IT tools for Windows, in one private, offline app.</p>
+    <button class="hh-search" id="hhsearch" type="button"><i class="fi">&#xE721;</i><span>Search tools and commands</span><kbd>Ctrl+K</kbd></button>
+    <div class="hh-chips"><span><i class="fi">&#xE74C;</i>${n} tools</span><span><i class="fi">&#xE72E;</i>Private and offline</span>${typeof VERSION!=='undefined'?`<span><i class="fi">&#xE946;</i>v${esc(VERSION)}</span>`:''}</div></div>
+    <div class="hh-art" aria-hidden="true"><span class="hh-orb o1"></span><span class="hh-orb o2"></span><span class="hh-orb o3"></span><img src="/icon-256.png" alt=""></div>`;
+  $('#hhsearch').onclick=()=>CMD.palette?CMD.palette():null}
+
+function homeFeature(t,color){
+  const a=homeCard(t,HOME_DESC[t.id]||'');a.classList.add('hfeat');a.style.setProperty('--fc',color);return a}
+
 function renderHome(){
-  const root=$('#homebody');if(!root)return;
+  const root=$('#homebody');if(!root)return;homeHero();
   const tools=homeTools(),byId=Object.fromEntries(tools.map(t=>[t.id,t])),u=usageLoad();
   const used=Object.entries(u).filter(([id])=>byId[id]);
   const recent=used.slice().sort((a,b)=>b[1].t-a[1].t).slice(0,6).map(([id,e])=>homeCard(byId[id],ago(e.t)));
   const most=used.slice().sort((a,b)=>b[1].n-a[1].n||b[1].t-a[1].t).slice(0,6).map(([id,e])=>homeCard(byId[id],e.n+(e.n===1?' use':' uses')));
-  root.replaceChildren(
-    homeSection('Recent',recent,'Tools you open will show up here.'),
-    homeSection('Most used',most,'Your most used tools will show up here.'),
-    homeSection('All tools',tools.map(t=>homeCard(t)),''));
+  const feat=homeSection('Start here',HOME_FEATURED.filter(([id])=>byId[id]).map(([id,c])=>homeFeature(byId[id],c)),'');feat.classList.add('hsec-feat');
+  const parts=[feat];
+  if(recent.length)parts.push(homeSection('Recent',recent,''));
+  if(most.length)parts.push(homeSection('Most used',most,''));
+  // all tools, grouped like the sidebar
+  let group=null,cards=[];const flush=()=>{if(group&&cards.length)parts.push(homeSection(group,cards,''));cards=[]};
+  for(const e of $$('#rail > .rh, #rail > .ri[data-tool]')){
+    if(e.classList.contains('rh')){flush();group=e.textContent.trim();continue}
+    const t=byId[e.dataset.tool];if(t)cards.push(homeCard(t,HOME_DESC[t.id]||''))}
+  flush();
+  root.replaceChildren(...parts);
 }
 
 /* count every tool the user opens (the home page itself is not counted) and draw the home page when it is shown */

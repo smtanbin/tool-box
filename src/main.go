@@ -69,6 +69,9 @@ func main() {
 			return
 		}
 		b, _ := webFS.ReadFile("web/" + name)
+		if name == "index.html" {
+			b = injectAccent(injectPrefs(b))
+		}
 		if name == "index.html" && appVersion != "" {
 			b = versionDecl.ReplaceAll(b, []byte("VERSION='"+appVersion+"'"))
 		}
@@ -140,6 +143,7 @@ func main() {
 	registerNetInfo(mux)
 	registerEnv(mux)
 	registerAppInfo(mux)
+	registerPrefs(mux)
 	mux.HandleFunc("/api/disks", hDisks)
 	mux.HandleFunc("/api/elevate", hElevate)
 

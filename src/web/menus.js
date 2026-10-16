@@ -71,7 +71,7 @@ function allItems(){
   const L=[];
   for(const a of document.querySelectorAll('#rail .ri[data-tool]'))L.push({label:(a.querySelector('.lbl')||a).textContent.trim(),hint:'Tool',run:()=>showTool(a.dataset.tool)});
   for(const a of actionsFor(curTool))if(a.ok)L.push({label:a.label,hint:TOOL_NAMES[curTool],run:a.run});
-  for(const [k,l] of[['theme-system','Theme: use system setting'],['theme-light','Theme: light'],['theme-dark','Theme: dark'],['skin-default','Skin: Fluent'],['skin-burgundy','Skin: Magestica'],['skin-aero','Skin: Aero'],['skin-android','Skin: Android'],
+  for(const [k,l] of[['theme-system','Theme: use system setting'],['theme-light','Theme: light'],['theme-dark','Theme: dark'],['skin-default','Skin: Fluent'],['skin-burgundy','Skin: Magestica'],['skin-aero','Skin: Aero'],['skin-black','Skin: Black & White'],
     ['zoom-in','Zoom in'],['zoom-out','Zoom out'],['zoom-reset','Actual size'],['fullscreen','Full screen'],['opendata','Open app data folder'],['keys','Keyboard shortcuts'],['faq','FAQ'],['about','About'],['exit','Exit']])
     if(CMD[k])L.push({label:l,hint:'Command',run:CMD[k]});
   if(!info.admin)L.push({label:'Restart as administrator',hint:'Command',run:elevate});

@@ -483,100 +483,24 @@
 :root:not([data-skin]) .ri .cicon{display:block}
 :root:not([data-skin]) .ri[data-tool] .fi{display:none}
 
-/* ===================== Android (Material You / Material 3) =====================
-   Material 3 baseline tokens: tonal surfaces, a navigation drawer with a pill active indicator, outlined icons,
-   filled-tonal and filled pill buttons, filled text fields, surface-container cards and 28px dialogs. Light and dark. */
-:root[data-skin=android]{--md-primary:#6750a4;--md-on-primary:#fff;--md-primary-container:#eaddff;--md-on-primary-container:#21005d;
  --md-secondary-container:#e8def8;--md-on-secondary-container:#1d192b;--md-surface:#fef7ff;--md-sc-low:#f7f2fa;--md-sc:#f3edf7;--md-sc-high:#ece6f0;--md-sc-highest:#e6e0e9;
  --md-on-surface:#1d1b20;--md-on-surface-variant:#49454f;--md-outline:#79747e;--md-outline-variant:#cac4d0;--md-error:#b3261e;--md-inverse-surface:#322f35;--md-inverse-on:#f5eff7;
  --accent:var(--md-primary);--accent-text:var(--md-on-primary);--bg:var(--md-surface);--panel:var(--md-surface);--card:var(--md-sc-low);--text:var(--md-on-surface);--muted:var(--md-on-surface-variant);
  --border:var(--md-outline-variant);--strong:var(--md-outline);--hover:color-mix(in srgb,var(--md-on-surface) 8%,transparent);--press:color-mix(in srgb,var(--md-on-surface) 12%,transparent);
  --fill:var(--md-sc-highest);--tmbg:var(--md-sc);--sel:var(--md-secondary-container);--bar:var(--md-primary);--danger:var(--md-error);
  --good:#146c2e;--caution:#8b5000;--badc:#b3261e;--flyout:0 2px 6px 2px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.3);--dialog:0 4px 8px 3px rgba(0,0,0,.15),0 1px 3px rgba(0,0,0,.3)}
-:root[data-skin=android][data-theme=dark]{--md-primary:#d0bcff;--md-on-primary:#381e72;--md-primary-container:#4f378b;--md-on-primary-container:#eaddff;
  --md-secondary-container:#4a4458;--md-on-secondary-container:#e8def8;--md-surface:#141218;--md-sc-low:#1d1b20;--md-sc:#211f26;--md-sc-high:#2b2930;--md-sc-highest:#36343b;
  --md-on-surface:#e6e0e9;--md-on-surface-variant:#cac4d0;--md-outline:#938f99;--md-outline-variant:#49454f;--md-error:#f2b8b5;--md-inverse-surface:#e6e0e9;--md-inverse-on:#322f35;
  --good:#6dd58c;--caution:#ffb86c;--badc:#f2b8b5}
-:root[data-skin=android] body{font-family:"Google Sans","Roboto","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;background:var(--md-surface);letter-spacing:.01em}
 /* top app bar */
-:root[data-skin=android] #appbar{background:var(--md-surface);border:0;box-shadow:none;height:48px}
-:root[data-skin=android] .menu>span{border-radius:20px;padding:6px 12px}
-:root[data-skin=android] .menu>span:hover,:root[data-skin=android] .menu.open>span{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
 /* navigation drawer: outlined icons, full-width pill active indicator */
-:root[data-skin=android] #rail{background:var(--md-sc-low);border:0;padding:8px 12px;border-radius:0 16px 16px 0;margin-right:12px}
-:root[data-skin=android] .rh{font-size:14px;font-weight:500;color:var(--md-on-surface-variant);text-transform:none;letter-spacing:.01em;padding:18px 16px 8px}
-:root[data-skin=android] .ri{height:56px;min-height:56px;border-radius:28px;padding:0 24px 0 16px;gap:12px;color:var(--md-on-surface-variant);font-size:14px;font-weight:500}
-:root[data-skin=android] .ri:hover{background:var(--hover)}
-:root[data-skin=android] .ri.on{background:var(--md-secondary-container);color:var(--md-on-secondary-container);font-weight:600}
-:root[data-skin=android] .ri.on::before{display:none}
-:root[data-skin=android] .ri .fi{font-size:20px;width:24px;color:inherit}
-:root[data-skin=android] #rail.min .ri{padding:0;justify-content:center;width:56px}
 /* surfaces */
-:root[data-skin=android] .card,:root[data-skin=android] .tile,:root[data-skin=android] #left,:root[data-skin=android] #tmwrap,:root[data-skin=android] #tabs,:root[data-skin=android] #progress{
  background:var(--md-sc-low);-webkit-backdrop-filter:none;backdrop-filter:none;border:0;border-radius:16px;box-shadow:none}
-:root[data-skin=android] .card{padding:20px}
-:root[data-skin=android] .tile{background:var(--md-sc-high);border-radius:12px}
-:root[data-skin=android] .banner{border:0;border-radius:16px;background:var(--md-primary-container);color:var(--md-on-primary-container)}
-:root[data-skin=android] .banner span{color:var(--md-on-primary-container);opacity:.85}
-:root[data-skin=android] .thead h1{font-size:28px;font-weight:400;letter-spacing:0}
-:root[data-skin=android] .thead>.fi{border-radius:16px;background:var(--md-primary-container);color:var(--md-on-primary-container)}
 /* buttons: filled-tonal by default, filled for the main action, text buttons in toolbars */
-:root[data-skin=android] button,:root[data-skin=android] select{height:40px;border-radius:20px;border:0;background:var(--md-secondary-container);color:var(--md-on-secondary-container);font-weight:500;padding:0 24px;box-shadow:none}
-:root[data-skin=android] select{border:1px solid var(--md-outline);background:transparent;color:var(--md-on-surface);border-radius:8px;padding:0 12px}
-:root[data-skin=android] select option{background:var(--md-sc-high);color:var(--md-on-surface)}
-:root[data-skin=android] button:hover:not(:disabled){background:color-mix(in srgb,var(--md-on-secondary-container) 8%,var(--md-secondary-container));color:var(--md-on-secondary-container)}
-:root[data-skin=android] button.primary{background:var(--md-primary);color:var(--md-on-primary)}
-:root[data-skin=android] button.primary:hover:not(:disabled){background:color-mix(in srgb,var(--md-on-primary) 8%,var(--md-primary));color:var(--md-on-primary);box-shadow:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15)}
-:root[data-skin=android] button.primary.danger{background:var(--md-error);color:#fff}
-:root[data-skin=android] button.danger:not(.primary){color:var(--md-error)}
-:root[data-skin=android] .tbar button.cmd,:root[data-skin=android] button.ib,:root[data-skin=android] .ib{background:transparent;color:var(--md-primary)}
-:root[data-skin=android] .tbar button.cmd:hover:not(:disabled),:root[data-skin=android] button.ib:hover:not(:disabled){background:color-mix(in srgb,var(--md-primary) 8%,transparent);color:var(--md-primary)}
-:root[data-skin=android] button.ib,:root[data-skin=android] .ib{width:40px;padding:0;border-radius:50%}
-:root[data-skin=android] button:disabled{opacity:.38}
 /* filled text fields */
-:root[data-skin=android] input:not([type=checkbox]),:root[data-skin=android] textarea{height:40px;border:0;border-bottom:1px solid var(--md-on-surface-variant);border-radius:4px 4px 0 0;background:var(--md-sc-highest);padding:0 14px;box-shadow:none}
-:root[data-skin=android] textarea{height:auto;padding:10px 14px}
-:root[data-skin=android] input:focus,:root[data-skin=android] textarea:focus{border-bottom:2px solid var(--md-primary);box-shadow:none}
-:root[data-skin=android] select:focus{border:2px solid var(--md-primary);box-shadow:none}
-:root[data-skin=android] .tool input[type=checkbox]{accent-color:var(--md-primary);width:18px;height:18px}
 /* segmented buttons and tabs */
-:root[data-skin=android] .seg{border:1px solid var(--md-outline);border-radius:20px;padding:0;background:transparent;height:40px;overflow:hidden;gap:0}
-:root[data-skin=android] .seg button{height:38px;border-radius:0;background:transparent;color:var(--md-on-surface);border-right:1px solid var(--md-outline);padding:0 16px}
-:root[data-skin=android] .seg button:last-child{border-right:0}
-:root[data-skin=android] .seg button.on{background:var(--md-secondary-container);color:var(--md-on-secondary-container);box-shadow:none}
-:root[data-skin=android] .dkpills{border-bottom:1px solid var(--md-outline-variant)}
-:root[data-skin=android] button.dkpill{background:transparent;border-radius:0;color:var(--md-on-surface-variant);padding:6px 18px 10px}
-:root[data-skin=android] button.dkpill:hover:not(.on){background:var(--hover)}
-:root[data-skin=android] button.dkpill.on{color:var(--md-primary)}
-:root[data-skin=android] .dkpill.on::after{left:10px;right:10px;height:3px;border-radius:3px 3px 0 0;background:var(--md-primary)}
-:root[data-skin=android] #tabbar button.on{color:var(--md-primary)}
-:root[data-skin=android] #tabbar button.on::after{background:var(--md-primary);border-radius:3px 3px 0 0}
 /* lists */
-:root[data-skin=android] .tbl th{background:var(--md-sc-low);color:var(--md-on-surface-variant);font-weight:500;border-bottom:1px solid var(--md-outline-variant)}
-:root[data-skin=android] .tbl td{border-bottom:1px solid var(--md-outline-variant)}
-:root[data-skin=android] .tbl tr.sel td{background:var(--md-secondary-container)}
-:root[data-skin=android] .row.sel::before{background:var(--md-primary)}
-:root[data-skin=android] .hbadge{border-radius:16px;border:0}
-:root[data-skin=android] .pbar,:root[data-skin=android] .pbar i,:root[data-skin=android] .cpubar,:root[data-skin=android] .cpubar i{border-radius:999px}
-:root[data-skin=android] .pbar{background:var(--md-secondary-container)}
 /* menus, dialogs, snackbar */
-:root[data-skin=android] .dd,:root[data-skin=android] #ctx{background:var(--md-sc);border:0;border-radius:4px;padding:8px 0;box-shadow:var(--flyout)}
-:root[data-skin=android] .dd div,:root[data-skin=android] #ctx div{border-radius:0;padding:12px 16px;margin:0}
-:root[data-skin=android] .dd div:hover,:root[data-skin=android] #ctx div:hover{background:var(--hover)}
-:root[data-skin=android] .dlg-card{background:var(--md-sc-high);border:0;border-radius:28px;box-shadow:var(--dialog)}
-:root[data-skin=android] .dbody{padding:24px 24px 8px}
-:root[data-skin=android] .dbody h2{font-size:24px;font-weight:400}
-:root[data-skin=android] .dmsg{color:var(--md-on-surface-variant)}
-:root[data-skin=android] .dfoot{background:transparent;border:0;padding:16px 24px 20px;gap:8px}
-:root[data-skin=android] .dfoot button:not(.primary){background:transparent;color:var(--md-primary);min-width:0;padding:0 12px}
-:root[data-skin=android] .dfoot button:not(.primary):hover:not(:disabled){background:color-mix(in srgb,var(--md-primary) 8%,transparent)}
-:root[data-skin=android] .dfoot button{min-width:0}
-:root[data-skin=android] #dlg{background:rgba(0,0,0,.32);-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-skin=android] #toast{background:var(--md-inverse-surface);color:var(--md-inverse-on);border:0;border-radius:4px;box-shadow:var(--flyout)}
-:root[data-skin=android] #status{background:var(--md-surface);border:0}
-:root[data-skin=android] button:focus-visible{outline:2px solid var(--md-primary);outline-offset:2px}
-:root[data-skin=android]{--md-on-error:#fff}:root[data-skin=android][data-theme=dark]{--md-on-error:#601410}
-:root[data-skin=android] button.primary.danger,:root[data-skin=android] button.primary.danger:hover:not(:disabled){background:var(--md-error);color:var(--md-on-error)}
 
 /* collapsible sidebar groups: every skin except Fluent (the default, no data-skin) */
 :root[data-skin] #rail:not(.min) .rh{cursor:pointer;user-select:none;position:relative}
@@ -615,4 +539,222 @@
 :root[data-skin=aero] #palette .pitem{border-radius:3px;border:1px solid transparent}
 :root[data-skin=aero] #palette .pitem.on,:root[data-skin=aero] #palette .pitem:hover{background:var(--item-highlighted-background,#e6f0fb);border-color:var(--item-highlighted-border,#aaddfa)}
 :root[data-skin=burgundy] #palette .pcard{border:0;border-radius:24px}
-:root[data-skin=android] #palette .pcard{border:0;border-radius:28px;background:var(--md-sc-high)}
+
+/* ===== Home page: gradient hero, featured tiles, grouped tool cards (every skin uses its own --accent) ===== */
+#homepage{padding:6px 18px 18px 6px}
+.hhero{position:relative;display:flex;align-items:center;gap:24px;margin:2px 0 6px;padding:28px 30px;border-radius:20px;overflow:hidden;color:#fff;
+ background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 70%,#fff) 0,transparent 55%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 92%,#000) 0,var(--accent) 45%,color-mix(in srgb,var(--accent) 60%,#7c3aed) 100%);
+ box-shadow:0 18px 40px -22px color-mix(in srgb,var(--accent) 80%,#000)}
+.hhero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 85% 120%,rgba(255,255,255,.18) 0,transparent 45%),radial-gradient(circle at 60% -30%,rgba(255,255,255,.14) 0,transparent 40%)}
+.hh-text{position:relative;z-index:1;flex:1;min-width:0}
+.hh-greet{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.hhero h2{margin:4px 0 6px;font-size:34px;font-weight:700;letter-spacing:-.02em;color:#fff}
+.hhero p{margin:0 0 16px;font-size:14.5px;opacity:.9;color:#fff}
+.hh-search{display:flex;align-items:center;gap:10px;width:min(420px,100%);height:42px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.45);
+ background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;cursor:pointer;font-size:14px;box-shadow:none;text-shadow:none}
+.hh-search:hover:not(:disabled){background:rgba(255,255,255,.28);color:#fff}
+.hh-search .fi{color:#fff;margin:0}.hh-search span{flex:1;text-align:left;opacity:.9}
+.hh-search kbd{font:12px "Segoe UI",sans-serif;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35)}
+.hh-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hh-chips span{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12.5px;font-weight:500}
+.hh-chips .fi{margin:0;font-size:12px;color:#fff}
+.hh-art{position:relative;z-index:1;flex:none;width:150px;height:150px;display:flex;align-items:center;justify-content:center}
+.hh-art img{position:relative;width:118px;height:118px;filter:drop-shadow(0 14px 22px rgba(0,0,0,.35));animation:hhfloat 6s ease-in-out infinite}
+.hh-orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.18)}
+.hh-orb.o1{width:150px;height:150px;inset:0}.hh-orb.o2{width:56px;height:56px;right:-14px;top:-8px;background:rgba(255,255,255,.22)}.hh-orb.o3{width:28px;height:28px;left:4px;bottom:6px;background:rgba(255,255,255,.3)}
+@keyframes hhfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media (max-width:760px){.hh-art{display:none}.hhero h2{font-size:28px}}
+/* sections and cards */
+.hsec{margin-top:26px}
+.hsec h3{display:flex;align-items:center;gap:10px}
+.hsec h3::after{content:"";flex:1;height:1px;background:var(--border)}
+.hgrid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.hcard{padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--border);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.hcard:hover{transform:translateY(-2px);box-shadow:0 12px 26px -16px color-mix(in srgb,var(--accent) 70%,#000);border-color:color-mix(in srgb,var(--accent) 45%,var(--border));background:var(--card)}
+.hico{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 10%,var(--card))}
+.htxt b{font-weight:600}.htxt small{margin-top:1px}
+/* featured: big colour tiles */
+.hsec-feat .hgrid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.hfeat{padding:16px;border:0;color:#fff;flex-direction:column;align-items:flex-start;gap:14px;min-height:118px;
+ background:radial-gradient(120% 120% at 100% 0%,color-mix(in srgb,var(--fc) 55%,#fff) 0,transparent 50%),linear-gradient(140deg,var(--fc),color-mix(in srgb,var(--fc) 65%,#000));
+ box-shadow:0 14px 28px -18px var(--fc)}
+.hfeat:hover{border:0;background:radial-gradient(120% 120% at 100% 0%,color-mix(in srgb,var(--fc) 50%,#fff) 0,transparent 55%),linear-gradient(140deg,var(--fc),color-mix(in srgb,var(--fc) 70%,#000));box-shadow:0 18px 34px -16px var(--fc)}
+.hfeat .hico{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.92);font-size:22px;color:var(--fc)}
+.hfeat .hico .cicon svg{width:28px;height:28px}
+.hfeat .htxt b{color:#fff;font-size:15px}.hfeat .htxt small{color:rgba(255,255,255,.88)}
+/* skins */
+:root[data-skin=aero] .hhero{border-radius:6px;border:1px solid #2c5f96;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(0,30,80,.25);
+ background:linear-gradient(180deg,rgba(255,255,255,.35) 0,rgba(255,255,255,.08) 48%,rgba(0,0,0,0) 52%),linear-gradient(135deg,#3a86d6,#1d5aa8 60%,#2b78c4)}
+:root[data-skin=aero] .hcard,:root[data-skin=aero] .hfeat{border-radius:4px}
+:root[data-skin=aero] .hhero h2{text-shadow:0 1px 2px rgba(0,0,0,.35)}
+:root[data-skin=burgundy] .hhero,:root[data-skin=burgundy] .hcard{border-radius:var(--oneui-r,28px)}
+:root[data-skin=burgundy] .hcard{border:0}
+/* home: featured tiles and the hero search keep their look whatever a skin does to cards and buttons */
+:root .hgrid .hcard.hfeat{border:0;color:#fff;background:radial-gradient(120% 120% at 100% 0%,color-mix(in srgb,var(--fc) 55%,#fff) 0,transparent 50%),linear-gradient(140deg,var(--fc),color-mix(in srgb,var(--fc) 65%,#000))}
+:root .hgrid .hcard.hfeat:hover{background:radial-gradient(120% 120% at 100% 0%,color-mix(in srgb,var(--fc) 50%,#fff) 0,transparent 55%),linear-gradient(140deg,var(--fc),color-mix(in srgb,var(--fc) 70%,#000))}
+#hhero .hh-search{height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.18);color:#fff;font-weight:400;padding:0 14px;min-width:0;box-shadow:none}
+#hhero .hh-search:hover:not(:disabled){background:rgba(255,255,255,.28);color:#fff;border-color:rgba(255,255,255,.6)}
+#hhero .hh-search::before,#hhero .hh-search::after{content:none}
+:root[data-skin=burgundy] #hhero .hh-search{border-radius:22px}
+.hico img{display:none;width:26px;height:26px}
+:root:not([data-skin]) .hico img{display:block}:root:not([data-skin]) .hico img~.fi{display:none}
+:root[data-skin=aero] .hico img{display:block;width:22px;height:22px}:root[data-skin=aero] .hico img~.fi{display:none}
+.hfeat .hico img{width:30px;height:30px}
+/* dark themes use a light accent, so the hero darkens it to keep white text readable */
+
+/* ===== Magestica: burgundy, crimson and white gradient page with translucent (frosted) surfaces ===== */
+:root[data-skin=burgundy]{--mg-glass:rgba(255,255,255,.62);--mg-glass-hi:rgba(255,255,255,.82);--mg-edge:rgba(255,255,255,.75);--oneui-field:rgba(255,255,255,.6);--fill:rgba(152,31,50,.08)}
+:root[data-skin=burgundy][data-theme=dark]{--mg-glass:rgba(38,12,22,.55);--mg-glass-hi:rgba(60,18,32,.7);--mg-edge:rgba(255,255,255,.08);--oneui-field:rgba(255,255,255,.07);--fill:rgba(255,255,255,.07)}
+:root[data-skin=burgundy] body{background:
+ radial-gradient(60% 70% at 0% 0%,rgba(122,18,48,.36) 0,transparent 62%),
+ radial-gradient(50% 60% at 100% 6%,rgba(220,20,60,.26) 0,transparent 60%),
+ radial-gradient(60% 60% at 82% 100%,rgba(152,31,50,.22) 0,transparent 65%),
+ linear-gradient(160deg,#ffffff 0,#fbf3f5 55%,#f6e6eb 100%);background-attachment:fixed}
+:root[data-skin=burgundy][data-theme=dark] body{background:
+ radial-gradient(60% 70% at 0% 0%,rgba(152,31,50,.45) 0,transparent 62%),
+ radial-gradient(50% 60% at 100% 6%,rgba(220,20,60,.28) 0,transparent 60%),
+ radial-gradient(60% 60% at 82% 100%,rgba(255,255,255,.06) 0,transparent 65%),
+ linear-gradient(160deg,#1c0811 0,#2a0b17 50%,#12060b 100%);background-attachment:fixed}
+:root[data-skin=burgundy] #rail,:root[data-skin=burgundy] #appbar,:root[data-skin=burgundy] #status{background:transparent}
+:root[data-skin=burgundy] .card,:root[data-skin=burgundy] .tile,:root[data-skin=burgundy] #left,:root[data-skin=burgundy] #tmwrap,:root[data-skin=burgundy] #tabs,:root[data-skin=burgundy] #progress,:root[data-skin=burgundy] .hcard:not(.hfeat),:root[data-skin=burgundy] button.dkpill:not(.on){
+ background:var(--mg-glass);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--mg-edge)}
+:root[data-skin=burgundy] .ri.on,:root[data-skin=burgundy] .seg button.on{background:var(--mg-glass-hi);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+:root[data-skin=burgundy] .ri:hover:not(.on){background:var(--mg-glass)}
+:root[data-skin=burgundy] .dd,:root[data-skin=burgundy] #ctx,:root[data-skin=burgundy] .dlg-card,:root[data-skin=burgundy] #palette .pcard{background:var(--mg-glass-hi);-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);border:1px solid var(--mg-edge)}
+:root[data-skin=burgundy] .tbl th{background:transparent}
+/* the hero: burgundy into crimson into a white glow */
+:root[data-skin=burgundy] .hhero{background:radial-gradient(70% 120% at 100% 0%,rgba(255,255,255,.55) 0,transparent 55%),linear-gradient(130deg,#5c0b22 0,#981f32 42%,#dc143c 78%,#f3b6c3 100%)}
+:root[data-skin=burgundy][data-theme=dark] .hhero{background:radial-gradient(70% 120% at 100% 0%,rgba(255,255,255,.18) 0,transparent 55%),linear-gradient(130deg,#3a0716 0,#6e1426 42%,#a3122f 80%,#c75a72 100%)}
+
+ --bg:#000;--panel:#000;--card:#0a0a0a;--text:#fff;--muted:#9a9a9a;--border:#1f1f1f;--strong:#333;--hover:rgba(255,255,255,.06);--press:rgba(255,255,255,.1);
+ --fill:#141414;--tmbg:#050505;--sel:color-mix(in srgb,var(--accent) 22%,#000);--bar:var(--accent);--danger:#ff6b6b;--good:#3ddc84;--caution:#ffb020;--badc:#ff5c5c;--unk:#6b6b6b;
+ --flyout:0 0 0 1px #262626,0 12px 30px rgba(0,0,0,.9);--dialog:0 0 0 1px #262626,0 24px 60px rgba(0,0,0,.95)}
+/* sidebar: white glyphs, accent on the selected tool */
+/* surfaces */
+ background:#0a0a0a;-webkit-backdrop-filter:none;backdrop-filter:none;border:1px solid #1f1f1f;box-shadow:none}
+/* controls */
+/* menus, dialogs, palette, toast */
+/* home hero: your accent fading into black */
+ border:1px solid #1f1f1f;box-shadow:none}
+
+/* ===== Magestica, flattened: calm near-flat page, solid burgundy hero, burgundy feature tiles (no rainbow) ===== */
+:root[data-skin=burgundy] body{background:linear-gradient(180deg,#faf6f7 0,#f4eef0 100%);background-attachment:fixed}
+:root[data-skin=burgundy][data-theme=dark] body{background:linear-gradient(180deg,#160b0f 0,#100709 100%);background-attachment:fixed}
+:root[data-skin=burgundy] .hhero,:root[data-skin=burgundy][data-theme=dark] .hhero{background:linear-gradient(135deg,#8a1b2e 0,#981f32 60%,#a8263c 100%);box-shadow:0 14px 30px -22px #5c0b22}
+:root[data-skin=burgundy] .hhero::after{opacity:.5}
+:root[data-skin=burgundy] .hh-orb{background:rgba(255,255,255,.12)}
+:root[data-skin=burgundy] .hgrid .hcard.hfeat{--fc:#981f32;background:var(--mg-glass);border:1px solid var(--mg-edge);color:var(--text);box-shadow:none}
+:root[data-skin=burgundy] .hgrid .hcard.hfeat:hover{background:var(--mg-glass-hi);border-color:color-mix(in srgb,var(--accent) 35%,transparent);box-shadow:0 10px 24px -18px #5c0b22}
+:root[data-skin=burgundy] .hfeat .htxt b{color:var(--text)}:root[data-skin=burgundy] .hfeat .htxt small{color:var(--muted)}
+:root[data-skin=burgundy] .hfeat .hico{background:var(--accent);color:#fff}
+:root[data-skin=burgundy] .hfeat .hico .fi{color:#fff}
+:root[data-skin=burgundy] .hbadge{background:var(--hc)}
+
+/* ===== Darker dark mode: near-black surfaces instead of greys ===== */
+:root:not([data-skin])[data-theme=dark]{--bg:#0b0b0b;--panel:#101010;--card:#151515;--tmbg:#080808;--border:rgba(255,255,255,.07);--hover:rgba(255,255,255,.05);--press:rgba(255,255,255,.09);--fill:rgba(255,255,255,.09)}
+:root:not([data-skin])[data-theme=dark] body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 62%),#0b0b0b}
+:root[data-theme=dark]:not([data-skin=aero]) #appbar{background:transparent}
+:root:not([data-skin])[data-theme=dark] #status{background:#0b0b0b}
+:root:not([data-skin])[data-theme=dark] .card,:root:not([data-skin])[data-theme=dark] .tile,:root:not([data-skin])[data-theme=dark] .hcard:not(.hfeat){background:#151515}
+:root[data-skin=burgundy][data-theme=dark]{--bg:#0a0507;--panel:#0a0507;--card:#120b0e;--mg-glass:rgba(22,9,14,.62);--mg-glass-hi:rgba(34,12,20,.78);--oneui-field:rgba(255,255,255,.05);--fill:rgba(255,255,255,.05)}
+:root[data-skin=burgundy][data-theme=dark] body{background:linear-gradient(180deg,#0c0508 0,#070304 100%);background-attachment:fixed}
+
+/* dark themes use a light accent, so the hero darkens it to keep white text readable (Black & White draws its own) */
+:root[data-theme=dark]:not([data-skin=black]):not([data-skin=burgundy]) .hhero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 55%,#000) 0,transparent 60%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,#000) 0,color-mix(in srgb,var(--accent) 48%,#000) 50%,color-mix(in srgb,var(--accent) 35%,#2a0f4a) 100%);box-shadow:0 18px 40px -22px #000}
+
+/* ===================== Black & White (Nothing OS style) =====================
+   Flat monochrome: pure black in dark mode, pure white in light mode, hairline rules, dot-grid accents,
+   uppercase monospaced headings, inverse (black / white) buttons and selections, and your Windows accent
+   (blue if none) only as a small signal colour. No gradients, no shadows, no blur. */
+:root[data-skin=black]{--os-accent-fb:#0078d4;--accent:var(--os-accent,var(--os-accent-fb));--ink:#000;--paper:#fff;
+ --bg:#fff;--panel:#fff;--card:#fff;--text:#000;--muted:#6b6b6b;--border:#e3e3e3;--strong:#000;--hover:#f2f2f2;--press:#e8e8e8;--fill:#f2f2f2;--tmbg:#f7f7f7;
+ --sel:#000;--bar:#000;--danger:#d71921;--good:#1a7f37;--caution:#b26b00;--badc:#d71921;--unk:#8a8a8a;--dots:rgba(0,0,0,.16);
+ --flyout:0 0 0 1px #000;--dialog:0 0 0 1px #000;--nf:"Cascadia Mono","Consolas","Courier New",monospace}
+:root[data-skin=black][data-theme=dark]{--ink:#fff;--paper:#000;--bg:#000;--panel:#000;--card:#000;--text:#fff;--muted:#8f8f8f;--border:#262626;--strong:#fff;
+ --hover:#111;--press:#1a1a1a;--fill:#111;--tmbg:#050505;--sel:#fff;--bar:#fff;--danger:#ff3b3b;--good:#3ddc84;--caution:#ffb020;--badc:#ff3b3b;--unk:#6b6b6b;--dots:rgba(255,255,255,.18);
+ --flyout:0 0 0 1px #fff;--dialog:0 0 0 1px #fff}
+:root[data-skin=black] *,:root[data-skin=black] *::before,:root[data-skin=black] *::after{box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;text-shadow:none!important}
+:root[data-skin=black] body{background:var(--paper);color:var(--text);font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif}
+:root[data-skin=black] #appbar,:root[data-skin=black] #status,:root[data-skin=black] #rail{background:var(--paper);border:0}
+:root[data-skin=black] #appbar{border-bottom:1px solid var(--border)}
+:root[data-skin=black] #rail{border-right:1px solid var(--border)}
+:root[data-skin=black] #status{border-top:1px solid var(--border);font-family:var(--nf);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+:root[data-skin=black] .menu>span{border-radius:0;font-family:var(--nf);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+:root[data-skin=black] .menu>span:hover,:root[data-skin=black] .menu.open>span{background:var(--ink);color:var(--paper)}
+/* headings: Nothing's dot-matrix voice, approximated with spaced uppercase mono */
+:root[data-skin=black] .rh,:root[data-skin=black] .hsec h3,:root[data-skin=black] .tbl th,:root[data-skin=black] .card h3,:root[data-skin=black] .tile small,:root[data-skin=black] .hh-greet{font-family:var(--nf);text-transform:uppercase;letter-spacing:.14em;font-weight:400;font-size:11px;color:var(--muted)}
+:root[data-skin=black] .thead h1,:root[data-skin=black] .hhero h2{font-family:var(--nf);font-weight:400;text-transform:uppercase;letter-spacing:.06em}
+:root[data-skin=black] .tile b{font-family:var(--nf);font-weight:400}
+/* navigation: inverse selection with a small accent dot */
+:root[data-skin=black] .ri{border-radius:0;color:var(--text)}
+:root[data-skin=black] .ri:hover{background:var(--hover)}
+:root[data-skin=black] .ri.on{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .ri.on::before{left:auto;right:10px;top:50%;bottom:auto;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--accent)}
+:root[data-skin=black] .ri .fi,:root[data-skin=black] .ri.on .fi{color:inherit}
+/* surfaces: flat, hairline edges */
+:root[data-skin=black] .card,:root[data-skin=black] .tile,:root[data-skin=black] #left,:root[data-skin=black] #tmwrap,:root[data-skin=black] #tabs,:root[data-skin=black] #progress,:root[data-skin=black] .hcard:not(.hfeat),:root[data-skin=black] .banner{
+ background:var(--paper);border:1px solid var(--border);border-radius:14px}
+:root[data-skin=black] .banner{border-color:var(--ink)}
+:root[data-skin=black] .banner>.fi{color:var(--accent)}
+:root[data-skin=black] .thead>.fi,:root[data-skin=black] .hico{background:transparent;border:1px solid var(--ink);border-radius:50%;color:var(--ink)}
+:root[data-skin=black] .tbl th{background:var(--paper);border-bottom:1px solid var(--ink)}
+:root[data-skin=black] .tbl td{border-bottom:1px solid var(--border)}
+:root[data-skin=black] .tbl.hov tbody tr:hover td{background:var(--hover)}
+:root[data-skin=black] .tbl tr.sel td{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .row.sel{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .row.sel::before{display:none}
+:root[data-skin=black] .bar i,:root[data-skin=black] .cpubar i,:root[data-skin=black] .pbar i{background:var(--ink)}
+:root[data-skin=black] .hbadge{background:var(--paper);color:var(--text);border:1px solid var(--hc);border-radius:14px}
+:root[data-skin=black] .hbadge b{color:var(--hc);font-family:var(--nf);font-weight:400}
+/* controls: outlined pills, the main action is a solid inverse pill */
+:root[data-skin=black] button,:root[data-skin=black] select{background:var(--paper);color:var(--text);border:1px solid var(--ink);border-radius:999px;font-weight:500}
+:root[data-skin=black] select option{background:var(--paper);color:var(--text)}
+:root[data-skin=black] button:hover:not(:disabled){background:var(--hover);color:var(--text);border-color:var(--ink)}
+:root[data-skin=black] button.primary,:root[data-skin=black] button.primary:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+:root[data-skin=black] button.primary.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+:root[data-skin=black] button.ib,:root[data-skin=black] .ib,:root[data-skin=black] .tbar button.cmd{background:transparent;border-color:transparent}
+:root[data-skin=black] .tbar button.cmd:hover:not(:disabled){background:var(--hover)}
+:root[data-skin=black] .fi.acc{color:var(--text)}
+:root[data-skin=black] input:not([type=checkbox]),:root[data-skin=black] textarea{background:var(--paper);color:var(--text);border:0;border-bottom:1px solid var(--ink);border-radius:0}
+:root[data-skin=black] input:focus,:root[data-skin=black] select:focus,:root[data-skin=black] textarea:focus{border-color:var(--accent);outline:none}
+:root[data-skin=black] .tool input[type=checkbox]{accent-color:var(--ink)}
+:root[data-skin=black] .seg{background:transparent;border:1px solid var(--ink);border-radius:999px;padding:2px}
+:root[data-skin=black] .seg button{border:0;border-radius:999px;background:transparent}
+:root[data-skin=black] .seg button.on{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .dkpills{border-bottom:1px solid var(--border)}
+:root[data-skin=black] button.dkpill{border:0;border-radius:0;background:transparent;color:var(--muted)}
+:root[data-skin=black] button.dkpill.on{color:var(--text)}
+:root[data-skin=black] .dkpill.on::after,:root[data-skin=black] #tabbar button.on::after{background:var(--ink);height:2px;border-radius:0;left:14px;right:14px}
+/* menus, dialogs, palette, toast */
+:root[data-skin=black] .dd,:root[data-skin=black] #ctx,:root[data-skin=black] #tip{background:var(--paper);border:1px solid var(--ink);border-radius:12px}
+:root[data-skin=black] .dd div:hover,:root[data-skin=black] #ctx div:hover{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .dd div:hover kbd{color:var(--paper)}
+:root[data-skin=black] .dlg-card,:root[data-skin=black] #palette .pcard{background:var(--paper);border:1px solid var(--ink);border-radius:18px}
+:root[data-skin=black] .dbody h2{font-family:var(--nf);font-weight:400;text-transform:uppercase;letter-spacing:.06em}
+:root[data-skin=black] .dfoot{background:var(--paper);border-top:1px solid var(--border)}
+:root[data-skin=black] .dmsg .path{background:var(--fill);border:0}
+:root[data-skin=black] #dlg,:root[data-skin=black] #palette{background:color-mix(in srgb,var(--paper) 70%,transparent)}
+:root[data-skin=black] #palette .pitem.on,:root[data-skin=black] #palette .pitem:hover{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] #palette .pitem.on small,:root[data-skin=black] #palette .pitem:hover small{color:var(--paper)}
+:root[data-skin=black] #toast{background:var(--ink);color:var(--paper);border:0;border-radius:999px}
+:root[data-skin=black] ::-webkit-scrollbar-thumb{background:var(--strong);border-radius:6px;border:4px solid var(--paper);background-clip:padding-box}
+/* home: flat hero on a dot grid, monochrome feature tiles */
+:root[data-skin=black] .hhero{background:radial-gradient(var(--dots) 1.2px,transparent 1.6px) 0 0/14px 14px,var(--paper);color:var(--text);border:1px solid var(--ink);border-radius:20px}
+:root[data-skin=black] .hhero::after{display:none}
+:root[data-skin=black] .hhero h2,:root[data-skin=black] .hhero p,:root[data-skin=black] .hh-chips .fi{color:var(--text)}
+:root[data-skin=black] .hh-greet{color:var(--muted);opacity:1}
+:root[data-skin=black] #hhero .hh-search{background:var(--paper);border:1px solid var(--ink);color:var(--text);border-radius:999px}
+:root[data-skin=black] #hhero .hh-search:hover:not(:disabled){background:var(--hover);color:var(--text);border-color:var(--ink)}
+:root[data-skin=black] #hhero .hh-search .fi{color:var(--text)}
+:root[data-skin=black] .hh-search kbd{background:transparent;border:1px solid var(--border);color:var(--muted)}
+:root[data-skin=black] .hh-chips span{background:transparent;border:1px solid var(--border);font-family:var(--nf);font-weight:400;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+:root[data-skin=black] .hh-orb{background:transparent;border:1px solid var(--border)}
+:root[data-skin=black] .hh-art img{filter:grayscale(1) contrast(1.1);animation:none}
+:root[data-skin=black] .hgrid .hcard.hfeat,:root[data-skin=black] .hgrid .hcard.hfeat:hover{background:var(--paper);color:var(--text);border:1px solid var(--ink);border-radius:18px}
+:root[data-skin=black] .hgrid .hcard.hfeat:hover{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] .hgrid .hcard.hfeat:hover .htxt b,:root[data-skin=black] .hgrid .hcard.hfeat:hover .htxt small{color:var(--paper)}
+:root[data-skin=black] .hfeat .htxt b{color:var(--text);font-family:var(--nf);font-weight:400;text-transform:uppercase;letter-spacing:.04em}
+:root[data-skin=black] .hfeat .htxt small{color:var(--muted)}
+:root[data-skin=black] .hfeat .hico{background:transparent;border:1px solid currentColor;color:inherit}
+:root[data-skin=black] .hcard:not(.hfeat):hover{border-color:var(--ink);background:var(--paper)}
+:root[data-skin=black] .hico img{filter:grayscale(1)}

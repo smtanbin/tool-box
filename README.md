@@ -73,7 +73,7 @@ Design interface that follows your Windows light/dark theme and accent colour.
 **Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look with full-colour Settings-style icons, follows your
 light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
 buttons, green progress bar; always light) and **Magestica** (follows magestica.com:
-warm white, crimson accent, pill buttons; light and dark) and **Android** (Material You / Material 3: tonal surfaces, pill navigation indicator, filled text fields, outlined icons; light and dark). Remembered. Skins live in `src/web/skins.css`.
+warm white, crimson accent, pill buttons; light and dark) and **Black & White** (flat, Nothing OS-style monochrome: pure white in light mode, pure black in dark mode, with your Windows accent as a small signal colour, blue if none). Remembered. Skins live in `src/web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
