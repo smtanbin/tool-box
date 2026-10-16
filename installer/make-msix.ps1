@@ -25,9 +25,11 @@ $root = Split-Path -Parent $here
 $build = Join-Path $here "build"
 $dist = Join-Path $root "dist"
 
-$makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
-    Sort-Object FullName -Descending | Select-Object -First 1
-if (-not $makeappx) { throw "makeappx.exe not found (install the Windows 10/11 SDK)" }
+# makeappx.exe: $env:MAKEAPPX when set (e.g. from the Microsoft.Windows.SDK.BuildTools NuGet package), else the Windows SDK
+$makeappx = if ($env:MAKEAPPX -and (Test-Path $env:MAKEAPPX)) { Get-Item $env:MAKEAPPX } else {
+    Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
+        Sort-Object FullName -Descending | Select-Object -First 1 }
+if (-not $makeappx) { throw "makeappx.exe not found (install the Windows 10/11 SDK, or set MAKEAPPX to its path)" }
 
 Add-Type -AssemblyName System.Drawing
 $icon = [System.Drawing.Image]::FromFile((Join-Path $root "src\web\icon-256.png"))
