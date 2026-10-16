@@ -45,24 +45,21 @@ Everything runs on your PC. There is no account, no ads, no analytics and no tel
 ## Short description *(max 1,000)*
 
 ```
-Everyday IT tools for Windows in one app: folder size and disk health, subnet calculator, IP scanner, ping and port tester, hashing, encryption, UUID and token generator, encoders, JWT, JSON and more. Fast, private and works offline.
+Everyday IT tools for Windows in one app: folder size and disk health, subnet calculator, IP scanner, ping and port tester, hardware info, process monitor, hashing, encryption, UUID and token generator, encoders, JWT, JSON and more. Fast, private and works offline.
 ```
 
 ## What's new in this version *(max 1,500)*
 
 ```
 Version 2.0.0
-• New Environment variables and PATH editor: user and system variables, a PATH list with duplicate and missing-folder checks, automatic backup before every change.
-• New Network adapters page: IP, mask, gateway, DNS, DHCP, MAC and link speed for every adapter.
-• New DNS lookup (A, AAAA, MX, NS, TXT, CNAME, PTR, SRV, with your own DNS server) and Traceroute with live hops.
-• Also in this release line: Process monitor with kill and port owners, Hosts file editor, Disk info with maker, controller and DRAM-less detection, Image to Base64 and Image to ICO, and in-app confirmation dialogs.
-• Two new skins in the Skin dropdown: Aero (Windows 7 Explorer style), Magestica (burgundy, One UI style) and Carbon (IBM Carbon design).
-• New Home page: your recent and most used tools, all tools at a glance, and links to the developer and source code (usage stays on your PC).
-• Menus reworked: a Tools menu to jump to any tool, Home and sidebar commands, web links under Help, and Folder Size commands that grey out on other pages.
-• Sidebar groups fold and unfold in the Aero, Magestica and Android skins.
-• Subnet calculator results now show in two columns.
-• Aero skin polish: working File / View / Help menus, Windows 7 buttons, a Task Manager style ping graph and a flat DRAM badge.
-• Tidier internals and the same private, offline design.
+• New Hardware info, CPU-Z style: processor details with code name, cache and instruction sets, live graphs for every core, mainboard and BIOS, memory modules with a live memory chart, every graphics card and integrated GPU with load and video-memory charts, NPU detection, and network speed charts.
+• New tools: Environment variables and PATH editor, Network adapters, DNS lookup, Traceroute, Process monitor (end tasks, free a port) and Hosts file editor.
+• New Home page with your recent and most used tools.
+• Disk info now shows the drive maker and controller and tells you if an SSD is DRAM-less.
+• New Image to Base64 and Image to ICO.
+• Four looks, in light and dark: Fluent, Aero (Windows 7), Magestica and Carbon (IBM Carbon). Pick one from the Skin box; it is remembered.
+• Ctrl+K command palette, zoom, full screen, and menus that follow the tool you are using.
+• Still private and works offline.
 ```
 
 ## Product features *(up to 20, each max 200)*

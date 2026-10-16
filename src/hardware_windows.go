@@ -28,11 +28,12 @@ $cs=Get-CimInstance Win32_ComputerSystem|Select-Object Manufacturer,Model,System
 $mem=Get-CimInstance Win32_PhysicalMemory|Select-Object BankLabel,DeviceLocator,Capacity,Speed,ConfiguredClockSpeed,Manufacturer,PartNumber,SerialNumber,SMBIOSMemoryType,FormFactor,ConfiguredVoltage
 $gpu=Get-CimInstance Win32_VideoController|Select-Object Name,AdapterRAM,DriverVersion,VideoProcessor,CurrentHorizontalResolution,CurrentVerticalResolution,CurrentRefreshRate,@{n='DriverDate';e={D $_.DriverDate}}
 $os=Get-CimInstance Win32_OperatingSystem|Select-Object Caption,Version,BuildNumber,OSArchitecture,@{n='InstallDate';e={D $_.InstallDate}},@{n='LastBoot';e={ if($_.LastBootUpTime){ $_.LastBootUpTime.ToString('yyyy-MM-dd HH:mm') } }}
+$npu=Get-CimInstance Win32_PnPEntity -Filter "Name LIKE '%NPU%' OR Name LIKE '%AI Boost%' OR Name LIKE '%Neural%' OR Name LIKE '%Hexagon%' OR Name LIKE '%AMD IPU%' OR PNPClass='ComputeAccelerator'"|Select-Object Name,Manufacturer,Status
 $vram=@{}
 Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}'|ForEach-Object{ $p=Get-ItemProperty $_.PSPath; if($p.DriverDesc -and $p.'HardwareInformation.qwMemorySize'){ $vram[$p.DriverDesc]=[int64]$p.'HardwareInformation.qwMemorySize' } }
 $cp=Get-ItemProperty 'HKLM:\HARDWARE\DESCRIPTION\System\CentralProcessor\0'
 $ucode=if($cp.'Update Revision'){ ($cp.'Update Revision'|ForEach-Object{'{0:X2}' -f $_}) -join '' }else{''}
-@{ident="$($cp.Identifier)";ucode=$ucode;cpu=@($cpu);board=@($bb);bios=@($bios);system=@($cs);memory=@($mem);gpu=@($gpu);os=@($os);vram=$vram}|ConvertTo-Json -Depth 4 -Compress`
+@{ident="$($cp.Identifier)";ucode=$ucode;cpu=@($cpu);board=@($bb);bios=@($bios);system=@($cs);memory=@($mem);gpu=@($gpu);npu=@($npu);os=@($os);vram=$vram}|ConvertTo-Json -Depth 4 -Compress`
 
 var (
 	hwMu   sync.Mutex

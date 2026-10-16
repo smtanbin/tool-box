@@ -123,3 +123,50 @@ func TestLiveCPU(t *testing.T) {
 	}
 	t.Logf("total %.1f%% procs %d threads %d handles %d uptime %ds", r.Total, r.Processes, r.Threads, r.Handles, r.Uptime)
 }
+
+func TestDXGIAdapters(t *testing.T) {
+	list := dxgiAdapters()
+	if len(list) == 0 {
+		t.Skip("no DXGI adapters here")
+	}
+	real := 0
+	for _, a := range list {
+		t.Logf("%s | vendor %s | dedicated %d MB shared %d MB | luid %s | %s", a.Name, a.Vendor, a.Dedicated>>20, a.Shared>>20, a.LUID, a.Kind)
+		if a.Name == "" || a.LUID == "" {
+			t.Errorf("incomplete adapter: %+v", a)
+		}
+		if a.Kind != "software" {
+			real++
+		}
+	}
+	if real == 0 {
+		t.Error("only software adapters found")
+	}
+}
+
+func TestPerfCounters(t *testing.T) {
+	s := readPerf()
+	t.Logf("gpu instances: %d, network interfaces: %d", len(s.GPU), len(s.Net))
+	for _, g := range s.GPU {
+		t.Logf("  luid %s util %.1f%% dedicated %.0f MB engines %v", g.LUID, g.Util, g.Dedicated/1048576, g.Engines)
+		if g.LUID == "" || g.Util < 0 || g.Util > 100 {
+			t.Errorf("bad gpu sample %+v", g)
+		}
+	}
+	for _, n := range s.Net {
+		t.Logf("  net %s rx %.0f tx %.0f B/s link %.0f", n.Name, n.Rx, n.Tx, n.Bps)
+	}
+	if len(s.Net) == 0 {
+		t.Error("no network counters")
+	}
+	// the counters and DXGI must agree on how a LUID is spelled
+	ids := map[string]bool{}
+	for _, a := range dxgiAdapters() {
+		ids[a.LUID] = true
+	}
+	for _, g := range s.GPU {
+		if !ids[g.LUID] {
+			t.Logf("counter luid %s has no DXGI adapter (likely a process-less or removed adapter)", g.LUID)
+		}
+	}
+}

@@ -145,6 +145,7 @@ func main() {
 	registerAppInfo(mux)
 	registerHardware(mux)
 	registerHardwareLive(mux)
+	registerPerf(mux)
 	registerPrefs(mux)
 	mux.HandleFunc("/api/disks", hDisks)
 	mux.HandleFunc("/api/elevate", hElevate)

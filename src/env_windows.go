@@ -45,15 +45,15 @@ type EnvVar struct {
 const sysEnvKey = `SYSTEM\CurrentControlSet\Control\Session Manager\Environment`
 
 func envKey(scope string) (syscall.Handle, string, error) {
-	root, sub := syscall.HKEY_CURRENT_USER, "Environment"
+	root, sub := syscall.Handle(syscall.HKEY_CURRENT_USER), "Environment" // typed, so the 0x8000000x keys fit a 32-bit build
 	switch scope {
 	case "user":
 	case "system":
-		root, sub = syscall.HKEY_LOCAL_MACHINE, sysEnvKey
+		root, sub = syscall.Handle(syscall.HKEY_LOCAL_MACHINE), sysEnvKey
 	default:
 		return 0, "", fmt.Errorf("scope must be user or system")
 	}
-	return syscall.Handle(root), sub, nil
+	return root, sub, nil
 }
 
 func openEnv(scope string, access uint32) (syscall.Handle, error) {
