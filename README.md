@@ -69,7 +69,7 @@ Design interface that follows your Windows light/dark theme and accent colour.
 **Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look, follows your
 light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
 buttons, green progress bar; always light) and **Magestica** (follows magestica.com:
-warm white, crimson accent, pill buttons; light and dark) and **Mac** (macOS look: traffic lights, translucent sidebar, colour icon tiles, blue accent; light and dark). Remembered. Skins live in `web/skins.css`.
+warm white, crimson accent, pill buttons; light and dark). Remembered. Skins live in `web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
@@ -198,3 +198,9 @@ only contact the hosts you enter. Read the full
 ## Credits
 
 Designed and developed by **Tanbin** · Developer: [magestica.com](https://magestica.com/)
+
+### Third-party
+
+The **Aero** skin uses [7.css](https://khang-nd.github.io/7.css) (v0.19.0, MIT, © 2021 Khang Nguyen Duy)
+for its Windows 7 buttons, drop-downs and tables. It is bundled in `web/vendor/7.css`
+(licence in `web/vendor/7.css-LICENSE.txt`) and only loaded while that skin is on.

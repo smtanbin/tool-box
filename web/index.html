@@ -403,7 +403,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 .ubar{width:90px;height:6px;border-radius:3px;background:var(--fill);overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}.ubar i{display:block;height:100%;background:var(--accent)}
 </style>
 <link rel="stylesheet" href="/skins.css">
-<script>try{var s=localStorage.getItem("skin");if(s)document.documentElement.dataset.skin=s}catch(e){}</script>
+<script>try{var s=localStorage.getItem("skin");if(s)document.documentElement.dataset.skin=s;if(s==="aero"){var l=document.createElement("link");l.rel="stylesheet";l.id="css7";l.href="/vendor/7.css";document.head.insertBefore(l,document.querySelector("link[href=\"/skins.css\"]"))}}catch(e){}</script>
 </head>
 <body>
 <header id="appbar">
@@ -425,7 +425,6 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <div data-cmd="skin-default">Skin: Fluent<kbd></kbd></div>
       <div data-cmd="skin-aero">Skin: Aero<kbd></kbd></div>
       <div data-cmd="skin-burgundy">Skin: Magestica<kbd></kbd></div>
-      <div data-cmd="skin-mac">Skin: Mac<kbd></kbd></div>
       <hr>
       <div data-cmd="cmode-type">Treemap: color by file type</div>
       <div data-cmd="cmode-age">Treemap: color by age</div>
@@ -439,7 +438,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <div data-cmd="about">About</div></div></div>
   </nav>
   <span style="flex:1"></span>
-  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option><option value="mac">Mac</option></select></label>
+  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
 <div id="shell">
@@ -951,6 +950,8 @@ let themeMode='system';try{themeMode=localStorage.getItem('themeMode')||'system'
 const darkMQ=matchMedia('(prefers-color-scheme: dark)');
 function applyTheme(redraw){
   if(skin)document.documentElement.dataset.skin=skin;else delete document.documentElement.dataset.skin;
+  // Aero uses 7.css for its Windows 7 controls; load it only for that skin
+  {const l7=document.getElementById('css7');if(skin==='aero'&&!l7){const l=document.createElement('link');l.rel='stylesheet';l.id='css7';l.href='/vendor/7.css';document.head.insertBefore(l,document.querySelector('link[href="/skins.css"]'))}else if(skin!=='aero'&&l7)l7.remove()}
   document.documentElement.dataset.theme=skin==='aero'?'light':themeMode==='system'?(darkMQ.matches?'dark':'light'):themeMode;  // Aero is a light-only look
   try{ // readable text on whatever accent colour Windows uses
     const p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;color:var(--accent)';document.body.appendChild(p);
@@ -959,11 +960,11 @@ function applyTheme(redraw){
       document.documentElement.style.setProperty('--accent-text',L>.4?'#000':'#fff')}}catch(e){}
   for(const m of['system','light','dark']){const k=document.querySelector(`[data-cmd=theme-${m}] kbd`);if(k)k.textContent=themeMode===m?'✓':''}
   {const sel=document.getElementById('skinsel');if(sel)sel.value=skin}
-  for(const s of['default','aero','burgundy','mac']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
+  for(const s of['default','aero','burgundy']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
   if(redraw)drawTM()}
 function setThemeMode(m){themeMode=m;try{localStorage.setItem('themeMode',m)}catch(e){}applyTheme(true);toast('Theme: '+{system:'follow Windows setting',light:'light',dark:'dark'}[m])}
 document.getElementById('skinsel').addEventListener('change',e=>setSkin(e.target.value));
-const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero',mac:'Mac'};
+const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero'};
 function setSkin(s){skin=s;try{if(s)localStorage.setItem('skin',s);else localStorage.removeItem('skin')}catch(e){}applyTheme(true);toast('Skin: '+SKIN_NAMES[s]+(s==='aero'?' (always light)':''))}
 darkMQ.addEventListener('change',()=>{if(themeMode==='system')applyTheme(true)});
 applyTheme(false);
@@ -1301,7 +1302,7 @@ function showAbout(){
     <p style="color:var(--muted);font-size:12px;margin:14px 0 0">© ${new Date().getFullYear()} ${esc(AUTHOR)} · ${link(SITE,'magestica.com')}. Free for personal and business use; not for resale.</p>`)}
 async function doExit(){try{await api('/api/quit')}catch(e){}window.close();document.body.innerHTML='<div style="padding:60px;text-align:center;font:16px Roboto,Segoe UI,sans-serif">My Tool Box has closed. You can close this window.</div>'}
 const CMD={scan:()=>startScan(),browse:()=>$('#browse').click(),reset:resetAll,export:()=>$('#export').click(),explorer:()=>$('#openx').click(),exit:doExit,
-  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'skin-mac':()=>setSkin('mac'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
+  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
   refresh:()=>{if(rootId!==null)refreshAll()},up:goUp,faq:showFAQ,keys:showKeys,about:showAbout};
 $('#menubar').addEventListener('click',e=>{const it=e.target.closest('[data-cmd]'),m=e.target.closest('.menu');
   if(it){$$('.menu.open').forEach(x=>x.classList.remove('open'));CMD[it.dataset.cmd]?.();return}
@@ -1341,7 +1342,7 @@ $('#sortbtn').onclick=e=>{const names={name:'Name',size:'Size',files:'Number of 
 $('#viewbtn').onclick=e=>{const cm=$('#cmode').value;
   flyout(e.currentTarget,[{label:'Treemap: color by file type',check:cm==='type',fn:()=>CMD['cmode-type']()},{label:'Treemap: color by age',check:cm==='age',fn:()=>CMD['cmode-age']()},'-',
     {label:'Theme: use system setting',check:themeMode==='system',fn:()=>setThemeMode('system')},{label:'Theme: light',check:themeMode==='light',fn:()=>setThemeMode('light')},{label:'Theme: dark',check:themeMode==='dark',fn:()=>setThemeMode('dark')},'-',
-    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},{label:'Skin: Mac',check:skin==='mac',fn:()=>setSkin('mac')},'-',
+    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},'-',
     {label:'Details panel',check:!$('#right').classList.contains('nodetails'),fn:toggleDetails}])};
 $('#morebtn').onclick=e=>flyout(e.currentTarget,[{label:'Refresh view',fn:CMD.refresh},{label:'Export folders and files to CSV',fn:()=>{if(tmId!==null)location.href='/api/export?files=1&id='+tmId}},'-',{label:'FAQ',fn:showFAQ},{label:'Keyboard shortcuts',fn:showKeys},{label:'About',fn:showAbout},'-',{label:'Exit',fn:doExit}]);
 function toggleDetails(){const r=$('#right');r.classList.toggle('nodetails');$('#details').classList.toggle('on',!r.classList.contains('nodetails'))}

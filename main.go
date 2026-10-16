@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/skins.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -58,6 +58,8 @@ func main() {
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
 		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js":
 			name, ctype = r.URL.Path[1:], "text/javascript; charset=utf-8"
+		case "/vendor/7.css":
+			name, ctype = "vendor/7.css", "text/css; charset=utf-8"
 		case "/skins.css":
 			name, ctype = "skins.css", "text/css; charset=utf-8"
 		case "/icon-256.png", "/favicon.ico":
