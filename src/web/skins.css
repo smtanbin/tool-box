@@ -758,3 +758,15 @@
 :root[data-skin=black] .hfeat .hico{background:transparent;border:1px solid currentColor;color:inherit}
 :root[data-skin=black] .hcard:not(.hfeat):hover{border-color:var(--ink);background:var(--paper)}
 :root[data-skin=black] .hico img{filter:grayscale(1)}
+/* Black & White: solid pills instead of outlines (command bars, buttons, drop-downs, segmented controls) */
+:root[data-skin=black] button,:root[data-skin=black] select,:root[data-skin=black] #cmdbar button.cmd,:root[data-skin=black] .tbar button.cmd{background:var(--fill);border:1px solid transparent;color:var(--text)}
+:root[data-skin=black] button:hover:not(:disabled),:root[data-skin=black] #cmdbar button.cmd:hover:not(:disabled),:root[data-skin=black] .tbar button.cmd:hover:not(:disabled){background:var(--press);border-color:transparent;color:var(--text)}
+:root[data-skin=black] #cmdbar button.cmd.on{background:var(--ink);color:var(--paper)}
+:root[data-skin=black] button.primary,:root[data-skin=black] button.primary:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+:root[data-skin=black] button.primary.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+:root[data-skin=black] button.ib,:root[data-skin=black] .ib{background:transparent}
+:root[data-skin=black] button.ib:hover:not(:disabled){background:var(--fill)}
+:root[data-skin=black] .seg{background:var(--fill);border:0;padding:3px}
+:root[data-skin=black] button.dkpill{background:transparent}
+:root[data-skin=black] #hhero .hh-search{background:var(--fill);border-color:transparent}
+:root[data-skin=black] #hhero .hh-search:hover:not(:disabled){background:var(--press);border-color:transparent}
