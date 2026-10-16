@@ -23,6 +23,9 @@ Design interface that follows your Windows light/dark theme and accent colour.
   only the HMB hint.
 
 **System**
+- **Hardware info** — CPU-Z style: processor (cores, clocks, caches, socket), mainboard and BIOS, memory modules
+  (slot, size, type, speed, part number) with live usage, graphics (video memory, driver, resolution), and OS details.
+  A plain-text report can be copied (serial numbers left out).
 - **Process monitor** — live process list (CPU, memory, threads, path, listening
   ports), a Ports tab with every TCP / UDP port and the program that owns it, and
   **End process**, **End tree** and **Kill port owner** (type a port, free it).
@@ -72,8 +75,7 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 **Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look with full-colour Settings-style icons, follows your
 light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
-buttons, green progress bar; always light) and **Magestica** (follows magestica.com:
-warm white, crimson accent, pill buttons; light and dark) and **Black & White** (flat, Nothing OS-style monochrome: pure white in light mode, pure black in dark mode, with your Windows accent as a small signal colour, blue if none). Remembered. Skins live in `src/web/skins.css`.
+buttons, green progress bar; always light) and **Magestica** (the magestica.com look: warm white, huge tight type with a burgundy line, pill buttons, hairline cards; light and dark) and **Carbon** (IBM Carbon design: White theme in light mode, Gray 100 in dark; square corners, flat layers, your Windows accent as the interactive colour, Carbon blue if none). Remembered. Skins live in `src/web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 

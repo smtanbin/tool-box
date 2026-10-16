@@ -452,7 +452,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
       <hr>
       <div data-cmd="skin-default">Skin: Fluent<kbd></kbd></div>
       <div data-cmd="skin-aero">Skin: Aero<kbd></kbd></div>
-      <div data-cmd="skin-black">Skin: Black &amp; White<kbd></kbd></div>
+      <div data-cmd="skin-black">Skin: Carbon<kbd></kbd></div>
       <div data-cmd="skin-burgundy">Skin: Magestica<kbd></kbd></div>
       <hr>
       <div data-cmd="rail">Collapse / expand tool list</div>
@@ -477,7 +477,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <div id="expnav"><button id="exback" title="Back" disabled aria-label="Back">&#x2190;</button><button id="exfwd" title="Forward" disabled aria-label="Forward">&#x2192;</button></div>
   <div id="expaddr" aria-label="Address"><span id="expath"></span></div>
   <span class="apspacer" style="flex:1"></span>
-  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option><option value="black">Black &amp; White</option></select></label>
+  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option><option value="black">Carbon</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
 <div id="shell">
@@ -488,6 +488,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><i class="fi">&#xE8B7;</i><b class="lbl">Folder Size</b></a>
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
   <div class="rh">System &amp; developer</div>
+  <a class="ri" data-tool="hw" title="Hardware info: CPU, mainboard, memory, graphics"><i class="fi">&#xE950;</i><b class="lbl">Hardware info</b></a>
   <a class="ri" data-tool="proc" title="Process monitor, ports and kill"><i class="fi">&#xE9D2;</i><b class="lbl">Process monitor</b></a>
   <a class="ri" data-tool="hosts" title="Hosts file editor"><i class="fi">&#xE70F;</i><b class="lbl">Hosts file</b></a>
   <a class="ri" data-tool="env" title="Environment variables and PATH"><i class="fi">&#xE713;</i><b class="lbl">Environment & PATH</b></a>
@@ -976,6 +977,17 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
     </div>
   </div>
 </section>
+
+<!-- ===== Hardware info ===== -->
+<section class="tool" id="t-hw">
+  <div class="tbar">
+    <div class="seg" id="hwtabs"></div>
+    <span class="grow"></span>
+    <button class="cmd" id="hwcopy" title="Copy a plain-text report (serial numbers left out)"><i class="fi">&#xE8C8;</i>Copy report</button>
+    <button class="cmd" id="hwref" title="Read again (F5)"><i class="fi acc">&#xE72C;</i>Refresh</button>
+  </div>
+  <div class="tpage"><div id="hwbody"><div class="card"><div class="empty">Reading hardware…</div></div></div></div>
+</section>
 </div></div>
 <div id="status"><span id="s1"></span><span id="s2"></span><span id="s3"></span></div>
 <div id="tip"></div><div id="ctx"></div><div id="toast"></div>
@@ -1012,7 +1024,7 @@ function applyTheme(redraw){
   if(redraw)drawTM()}
 function setThemeMode(m){themeMode=m;try{localStorage.setItem('themeMode',m)}catch(e){}applyTheme(true);toast('Theme: '+{system:'follow Windows setting',light:'light',dark:'dark'}[m])}
 document.getElementById('skinsel').addEventListener('change',e=>setSkin(e.target.value));
-const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero',black:'Black & White'};
+const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero',black:'Carbon'};
 function setSkin(s){skin=s;try{if(s)localStorage.setItem('skin',s);else localStorage.removeItem('skin')}catch(e){}applyTheme(true);toast('Skin: '+SKIN_NAMES[s]+(s==='aero'?' (always light)':''))}
 darkMQ.addEventListener('change',()=>{if(themeMode==='system')applyTheme(true)});
 applyTheme(false);
@@ -1392,7 +1404,7 @@ $('#sortbtn').onclick=e=>{const names={name:'Name',size:'Size',files:'Number of 
 $('#viewbtn').onclick=e=>{const cm=$('#cmode').value;
   flyout(e.currentTarget,[{label:'Treemap: color by file type',check:cm==='type',fn:()=>CMD['cmode-type']()},{label:'Treemap: color by age',check:cm==='age',fn:()=>CMD['cmode-age']()},'-',
     {label:'Theme: use system setting',check:themeMode==='system',fn:()=>setThemeMode('system')},{label:'Theme: light',check:themeMode==='light',fn:()=>setThemeMode('light')},{label:'Theme: dark',check:themeMode==='dark',fn:()=>setThemeMode('dark')},'-',
-    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},{label:'Skin: Black & White',check:skin==='black',fn:()=>setSkin('black')},'-',
+    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},{label:'Skin: Carbon',check:skin==='black',fn:()=>setSkin('black')},'-',
     {label:'Details panel',check:!$('#right').classList.contains('nodetails'),fn:toggleDetails}])};
 $('#morebtn').onclick=e=>flyout(e.currentTarget,[{label:'Refresh view',fn:CMD.refresh},{label:'Export folders and files to CSV',fn:()=>{if(tmId!==null)location.href='/api/export?files=1&id='+tmId}},'-',{label:'FAQ',fn:showFAQ},{label:'Keyboard shortcuts',fn:showKeys},{label:'About',fn:showAbout},'-',{label:'Exit',fn:doExit}]);
 function toggleDetails(){const r=$('#right');r.classList.toggle('nodetails');$('#details').classList.toggle('on',!r.classList.contains('nodetails'))}
@@ -1436,6 +1448,7 @@ api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scann
 <script src="/env.js"></script>
 <script src="/home.js"></script>
 <script src="/menus.js"></script>
+<script src="/hw.js"></script>
 <script src="/fluent-icons.js"></script>
 <script src="/boot.js"></script>
 </body>

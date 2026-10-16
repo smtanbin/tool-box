@@ -11,6 +11,7 @@ const TOOL_ACTIONS={
   proc:[['Show processes','#pmtabs [data-v=procs]'],['Show ports','#pmtabs [data-v=ports]'],['End selected process','#pmkill','Del'],['End selected process tree','#pmtree','Shift+Del'],['Free a port…',()=>$('#pmkp').focus()]],
   hosts:[['Save','#hssave','Ctrl+S'],['Add entry','#hsadd'],['Reload from disk','#hsreload'],['Discard changes','#hsrevert'],['Flush DNS cache','#hsflush'],['Edit as raw text','#hstabs [data-v=raw]']],
   env:[['New variable','#evnew'],['User variables','#evscope [data-s=user]'],['System variables','#evscope [data-s=system]'],['Reload','#evreload']],
+  hw:[['Processor tab','#hwtabs [data-t=cpu]'],['Mainboard tab','#hwtabs [data-t=board]'],['Memory tab','#hwtabs [data-t=mem]'],['Graphics tab','#hwtabs [data-t=gpu]'],['System tab','#hwtabs [data-t=sys]'],['Copy report','#hwcopy'],['Refresh','#hwref','F5']],
   adapters:[['Refresh adapters','#adref','F5'],['Copy all details','#adcopy']],
   dns:[['Look up','#dngo','Enter'],['Edit name…',()=>$('#dnname').focus()]],
   trace:[['Start trace','#trgo'],['Stop','#trstop'],['Copy result','#trcopy']],
@@ -71,7 +72,7 @@ function allItems(){
   const L=[];
   for(const a of document.querySelectorAll('#rail .ri[data-tool]'))L.push({label:(a.querySelector('.lbl')||a).textContent.trim(),hint:'Tool',run:()=>showTool(a.dataset.tool)});
   for(const a of actionsFor(curTool))if(a.ok)L.push({label:a.label,hint:TOOL_NAMES[curTool],run:a.run});
-  for(const [k,l] of[['theme-system','Theme: use system setting'],['theme-light','Theme: light'],['theme-dark','Theme: dark'],['skin-default','Skin: Fluent'],['skin-burgundy','Skin: Magestica'],['skin-aero','Skin: Aero'],['skin-black','Skin: Black & White'],
+  for(const [k,l] of[['theme-system','Theme: use system setting'],['theme-light','Theme: light'],['theme-dark','Theme: dark'],['skin-default','Skin: Fluent'],['skin-burgundy','Skin: Magestica'],['skin-aero','Skin: Aero'],['skin-black','Skin: Carbon'],
     ['zoom-in','Zoom in'],['zoom-out','Zoom out'],['zoom-reset','Actual size'],['fullscreen','Full screen'],['opendata','Open app data folder'],['keys','Keyboard shortcuts'],['faq','FAQ'],['about','About'],['exit','Exit']])
     if(CMD[k])L.push({label:l,hint:'Command',run:CMD[k]});
   if(!info.admin)L.push({label:'Restart as administrator',hint:'Command',run:elevate});

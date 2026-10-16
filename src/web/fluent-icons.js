@@ -10,6 +10,8 @@ const I={
  home:svg(lg('fhm1','#ffb05c','#e0620d')+lg('fhm2','#ffffff','#e4e9ef',0,1),
   `<path d="M12 2.8l9.2 8.1a.8.8 0 0 1-.5 1.4H19V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20v-7.7H3.3a.8.8 0 0 1-.5-1.4z" fill="url(#fhm2)"/><path d="M12 2.8l9.2 8.1a.8.8 0 0 1-.5 1.4h-1.1L12 5.6 4.4 12.3H3.3a.8.8 0 0 1-.5-1.4z" fill="url(#fhm1)"/><rect x="9.6" y="13.2" width="4.8" height="8.3" rx="1.2" fill="url(#fhm1)"/>`),
 
+ hw:svg(lg('fhw1','#6a7a8c','#2f3b4a',0,1)+lg('fhw2','#4cc2ff','#0063d6'),
+  `<rect x="3.5" y="3.5" width="17" height="17" rx="3.2" fill="url(#fhw1)"/><rect x="8" y="8" width="8" height="8" rx="1.6" fill="url(#fhw2)"/><g stroke="#9fb0c3" stroke-width="1.6" stroke-linecap="round"><path d="M8.5 1.5v2M12 1.5v2M15.5 1.5v2M8.5 20.5v2M12 20.5v2M15.5 20.5v2M1.5 8.5h2M1.5 12h2M1.5 15.5h2M20.5 8.5h2M20.5 12h2M20.5 15.5h2"/></g>`),
  disk:svg(lg('fdk1','#b4c0cd','#6b7a8b',0,1)+lg('fdk2','#e7ecf2','#c3ccd6',0,1),
   `<rect x="2" y="6" width="20" height="12.5" rx="3" fill="url(#fdk1)"/><rect x="2" y="6" width="20" height="6" rx="3" fill="url(#fdk2)"/><rect x="5" y="14.2" width="8" height="1.6" rx=".8" fill="#4b5867"/><circle cx="18" cy="15" r="1.4" fill="#3ddc84"/>`),
  proc:svg(lg('fpr1','#4cc2ff','#0063d6'),
