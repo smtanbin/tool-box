@@ -102,7 +102,7 @@ body{font-family:Roboto,"Segoe UI",system-ui,sans-serif}
 .dd div{padding:9px 16px;display:flex;justify-content:space-between;gap:28px;cursor:pointer}
 .dd div:hover{background:var(--hover)}.dd kbd{color:var(--muted);font:inherit;font-size:12px}
 .dd hr{border:0;border-top:1px solid var(--border);margin:6px 0}
-#menubar .dd{max-height:calc(100vh - 90px);overflow:auto}body:not([data-tool=foldersize]) .dd .fs{opacity:.4;pointer-events:none}
+#menubar .dd{max-height:calc(100vh - 90px);overflow:auto}body:not([data-tool=foldersize]) .dd .fs{display:none}
 #toolbar{box-shadow:var(--e1);border:0;position:relative;z-index:10}
 button{border-radius:20px;padding:6px 16px;font-weight:500;letter-spacing:.2px;position:relative;overflow:hidden;transition:box-shadow .15s,background .15s}
 button.primary{box-shadow:var(--e1)}button.primary:hover:not(:disabled){box-shadow:var(--e2)}
@@ -1325,7 +1325,7 @@ const FAQ=[
 ['Can I use it for free? Can I sell it?','My Tool Box is licensed under the Apache License 2.0 with the Commons Clause. You may use, copy, modify and share it for free, at home or at work. You may not sell it or make money from it, for example by selling copies or charging for hosting or support based on it.'],
 ['Does it send my data anywhere?','No. It runs a tiny server on 127.0.0.1 (your own PC only) and nothing is uploaded. Closing the window quits the app.']];
 function showFAQ(){dialog('<h2>Frequently asked questions</h2>'+FAQ.map(f=>`<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join(''))}
-function showKeys(){const k=[['F5','Rescan the path'],['Ctrl+R','Reset'],['Ctrl+F','Search'],['Backspace','Up one folder'],['↑ ↓','Move selection'],['→ ←','Expand / collapse folder'],['Delete','Move selected to Recycle Bin'],['Shift+Delete','Delete permanently'],['Double-click','Open folder / show file in Explorer'],['Right-click','Context menu'],['Esc','Close menus and dialogs']];
+function showKeys(){const k=[['Ctrl+K','Go to any tool or command'],['Ctrl+= / Ctrl+-','Zoom in / out'],['Ctrl+0','Actual size'],['F11','Full screen'],['F5','Rescan the path'],['Ctrl+R','Reset'],['Ctrl+F','Search'],['Backspace','Up one folder'],['↑ ↓','Move selection'],['→ ←','Expand / collapse folder'],['Delete','Move selected to Recycle Bin'],['Shift+Delete','Delete permanently'],['Double-click','Open folder / show file in Explorer'],['Right-click','Context menu'],['Esc','Close menus and dialogs']];
   dialog('<h2>Keyboard shortcuts</h2><table>'+k.map(r=>`<tr><td><kbd>${r[0]}</kbd></td><td>${r[1]}</td></tr>`).join('')+'</table>')}
 function showAbout(){
   const REPO='https://github.com/smtanbin/tool-box', SITE='https://magestica.com/';
@@ -1427,6 +1427,7 @@ api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scann
 <script src="/sysnet.js"></script>
 <script src="/env.js"></script>
 <script src="/home.js"></script>
+<script src="/menus.js"></script>
 <script src="/fluent-icons.js"></script>
 <script src="/boot.js"></script>
 </body>

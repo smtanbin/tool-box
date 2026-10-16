@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/home.js web/fluent-icons.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/home.js web/menus.js web/fluent-icons.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -56,7 +56,7 @@ func main() {
 		case "/":
 		case "/icon.svg", "/tool-foldersize.svg":
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
-		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js", "/home.js", "/fluent-icons.js":
+		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js", "/home.js", "/menus.js", "/fluent-icons.js":
 			name, ctype = r.URL.Path[1:], "text/javascript; charset=utf-8"
 		case "/vendor/7.css":
 			name, ctype = "vendor/7.css", "text/css; charset=utf-8"
@@ -139,6 +139,7 @@ func main() {
 	registerHosts(mux)
 	registerNetInfo(mux)
 	registerEnv(mux)
+	registerAppInfo(mux)
 	mux.HandleFunc("/api/disks", hDisks)
 	mux.HandleFunc("/api/elevate", hElevate)
 

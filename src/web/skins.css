@@ -597,3 +597,22 @@
 :root[data-skin=aero] #pgclear .fi{color:#c4281b}
 :root[data-skin=aero] #pgchart{--accent:#3dff3d;--border:#1c5f1c;--muted:#9bd89b;--bad:#ff4a3a;--card:#000;background:#000;border:1px solid #5a5a5a;border-radius:2px;box-shadow:inset 0 0 0 1px #2c2c2c}
 :root[data-skin=aero] #pgchart .ctip{background:#fffff0;color:#000;border:1px solid #767676;border-radius:0;box-shadow:2px 2px 2px rgba(0,0,0,.35)}
+
+/* ===== menus and the Ctrl+K command palette (all skins) ===== */
+#menubar .dd .mh{font-size:11px;color:var(--muted);padding:6px 12px 2px;pointer-events:none;margin:0;font-weight:600}
+#menubar .dd .mh:hover{background:transparent}
+#menubar .dd div.off{opacity:.45;pointer-events:none}
+#palette{position:fixed;inset:0;display:none;align-items:flex-start;justify-content:center;padding-top:12vh;z-index:120;background:rgba(0,0,0,.25)}
+#palette.open{display:flex}
+#palette .pcard{width:min(560px,calc(100% - 32px));background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--dialog);overflow:hidden}
+#palette #palq{width:100%;height:46px;border:0;border-bottom:1px solid var(--border);border-radius:0;padding:0 16px;font-size:15px;background:transparent;box-shadow:none;color:var(--text)}
+#palette #pallist{max-height:50vh;overflow:auto;padding:6px}
+#palette .pitem{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;border-radius:8px;cursor:pointer}
+#palette .pitem small{color:var(--muted);font-size:12px}
+#palette .pitem.on,#palette .pitem:hover{background:var(--sel)}
+#palette .pempty{padding:16px;color:var(--muted);text-align:center}
+:root[data-skin=aero] #palette .pcard{border-radius:0;border:1px solid #6f8db5;background:#fff}
+:root[data-skin=aero] #palette .pitem{border-radius:3px;border:1px solid transparent}
+:root[data-skin=aero] #palette .pitem.on,:root[data-skin=aero] #palette .pitem:hover{background:var(--item-highlighted-background,#e6f0fb);border-color:var(--item-highlighted-border,#aaddfa)}
+:root[data-skin=burgundy] #palette .pcard{border:0;border-radius:24px}
+:root[data-skin=android] #palette .pcard{border:0;border-radius:28px;background:var(--md-sc-high)}
