@@ -66,10 +66,10 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 **Developer** · JWT decoder · JSON formatter · Timestamp converter · Number base converter
 
-**Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Windows 11** (default, follows your
-light / dark setting and accent colour), **Windows 7 Aero** (glass bars, glossy
-buttons, green progress bar; always light) and **Magestica burgundy** (follows magestica.com:
-warm white, crimson accent, pill buttons; light and dark). Remembered. Skins live in `web/skins.css`.
+**Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look, follows your
+light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
+buttons, green progress bar; always light) and **Magestica** (follows magestica.com:
+warm white, crimson accent, pill buttons; light and dark) and **Mac** (macOS look: traffic lights, translucent sidebar, colour icon tiles, blue accent; light and dark). Remembered. Skins live in `web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 

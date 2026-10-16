@@ -56,7 +56,7 @@ Version 2.0.0
 • New Network adapters page: IP, mask, gateway, DNS, DHCP, MAC and link speed for every adapter.
 • New DNS lookup (A, AAAA, MX, NS, TXT, CNAME, PTR, SRV, with your own DNS server) and Traceroute with live hops.
 • Also in this release line: Process monitor with kill and port owners, Hosts file editor, Disk info with maker, controller and DRAM-less detection, Image to Base64 and Image to ICO, and in-app confirmation dialogs.
-• Two new looks under View > Skin: Windows 7 Aero and Magestica burgundy (light and dark).
+• Two new skins in the Skin dropdown: Aero (Windows 7 style), Magestica (burgundy) and Mac (macOS style).
 • Tidier internals and the same private, offline design.
 ```
 

@@ -138,3 +138,153 @@
 :root[data-skin=aero] .hbadge{border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.3)}
 :root[data-skin=aero] button.primary.danger{background:linear-gradient(#e98a8a 0,#d44848 48%,#b92626 52%,#cc3d3d 100%);border-color:#7d1414;color:#fff}
 :root[data-skin=aero] button.primary.danger:hover:not(:disabled){background:linear-gradient(#f4a3a3 0,#e05d5d 48%,#c93636 52%,#d95353 100%);color:#fff}
+
+/* ===== Magestica: readable dropdowns (closed box and the open list) ===== */
+:root[data-skin=burgundy] select{background-color:var(--card);color:var(--text);border-color:var(--strong)}
+:root[data-skin=burgundy] select option,:root[data-skin=burgundy] select optgroup{background:var(--card);color:var(--text)}
+:root[data-skin=burgundy] select:hover:not(:disabled){background-color:var(--card);color:var(--accent)}
+:root[data-skin=burgundy] .skinpick select{font-weight:600}
+
+/* ===== Aero, closer to Windows 7 Explorer ===== */
+:root[data-skin=aero]{--aero-line:#a9bdd6;--aero-text:#1e395b}
+:root[data-skin=aero] body{font-size:12px}
+:root[data-skin=aero] .tool,:root[data-skin=aero] .card,:root[data-skin=aero] .tbl td,:root[data-skin=aero] input,:root[data-skin=aero] select,:root[data-skin=aero] button,:root[data-skin=aero] textarea{font-size:12px}
+:root[data-skin=aero] select,:root[data-skin=aero] select option{background-color:#fff;color:#000}
+/* the window: content is a plain white pane with a thin blue frame */
+:root[data-skin=aero] #content{background:#fff;border:1px solid #6f8db5;border-radius:0;margin:0 6px 6px 0;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+:root[data-skin=aero] .tpage{background:#fff;padding-top:8px}
+/* navigation pane: white, with Explorer's blue group headings and a rounded light-blue selection */
+:root[data-skin=aero] #rail{background:#fcfdfe;border:1px solid #6f8db5;border-radius:0;margin:0 6px 6px 6px;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+:root[data-skin=aero] .rh{color:#1e395b;font-weight:600;text-shadow:none;border-bottom:0;margin:6px 2px 0;padding:6px 6px 2px}
+:root[data-skin=aero] .ri{height:24px;min-height:24px;border-radius:3px;padding:0 8px;gap:8px;color:#000}
+:root[data-skin=aero] .ri .fi{color:#3c6ea8}
+:root[data-skin=aero] .ri:hover{background:linear-gradient(#fcfdff,#eaf3fd);border-color:#cfe0f4}
+:root[data-skin=aero] .ri.on{background:linear-gradient(#f9fcff 0,#e1effc 48%,#cfe4fa 52%,#dbeafb 100%);border-color:#a8c7ec;box-shadow:none}
+/* command bars: Explorer's pale gradient with flat buttons that turn glassy on hover */
+:root[data-skin=aero] .tbar,:root[data-skin=aero] #toolbar{background:linear-gradient(#fdfeff,#eef3f9 48%,#e4ecf6 52%,#eaf0f8);border:0;border-bottom:1px solid #c3d1e4;padding:5px 8px;margin:0 0 8px;box-shadow:none;gap:6px}
+:root[data-skin=aero] .tbar button.cmd,:root[data-skin=aero] #toolbar button:not(.primary){background:transparent;border-color:transparent;box-shadow:none;color:#1e395b}
+:root[data-skin=aero] .tbar button.cmd:hover:not(:disabled),:root[data-skin=aero] #toolbar button:not(.primary):hover:not(:disabled){background:linear-gradient(#fbfdff,#e3f0fc 48%,#cde4f9 52%,#dfedfb);border-color:#9dbde4;color:#000}
+:root[data-skin=aero] .tbar .fld>label,:root[data-skin=aero] .frm label{color:#1e395b}
+/* flat groups instead of floating cards */
+:root[data-skin=aero] .card,:root[data-skin=aero] .tile,:root[data-skin=aero] #progress{background:#fbfdff;border:1px solid #cdd9e8;border-radius:3px;box-shadow:none}
+:root[data-skin=aero] .card h3{color:#003399;font-weight:400;font-size:14px}
+:root[data-skin=aero] .card.flush{background:#fff}
+:root[data-skin=aero] .thead>.fi{background:linear-gradient(#f9fcff,#dcebfa);border-color:#a8c7ec;border-radius:3px}
+:root[data-skin=aero] .thead h1{font-size:20px;color:#1e395b}
+/* details view: Explorer's column headers and list selection */
+:root[data-skin=aero] .tbl th,:root[data-skin=aero] .cols{background:linear-gradient(#fff,#f3f7fc);color:#4c607a;border-bottom:1px solid #d5dfeb;border-right:1px solid #e1e8f1;font-weight:400}
+:root[data-skin=aero] .tbl td{border-bottom:1px solid #eef2f7}
+:root[data-skin=aero] .tbl.hov tbody tr:hover td,:root[data-skin=aero] .row:hover,:root[data-skin=aero] .lrow:hover{background:linear-gradient(#fafdff,#edf5fd);box-shadow:none}
+:root[data-skin=aero] .tbl tr.sel td,:root[data-skin=aero] .row.sel,:root[data-skin=aero] .lrow.sel{background:linear-gradient(#f2f8fe,#d8e9fb);box-shadow:none;border-color:#a8c7ec}
+/* classic Aero scrollbars */
+:root[data-skin=aero] ::-webkit-scrollbar{width:17px;height:17px}
+:root[data-skin=aero] ::-webkit-scrollbar-track{background:linear-gradient(90deg,#e9eef5,#f7f9fc 45%,#fff)}
+:root[data-skin=aero] ::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#f6f8fb,#dfe7f1 45%,#cdd8e6 55%,#dce5f0);border:1px solid #8ea4c2;border-radius:2px;background-clip:border-box}
+:root[data-skin=aero] ::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,#eaf5fd,#cde9fa 45%,#a8d6f3 55%,#c2e3f8);border-color:#3c7fb1}
+:root[data-skin=aero] ::-webkit-scrollbar-corner{background:#eef2f8}
+/* top bar: glass frame with the window title */
+:root[data-skin=aero] #appbar{height:30px;border-bottom:1px solid #6f8db5}
+:root[data-skin=aero] .skinpick select{min-width:110px}
+:root[data-skin=aero] #status{font-size:12px;color:#1e395b}
+:root[data-skin=aero] .tool input[type=checkbox]{accent-color:#2d6fbf;border-radius:2px}
+
+/* ===== Aero icons: glossy colour badges in the navigation pane, blue glass glyphs elsewhere (not the thin Fluent line icons) ===== */
+:root[data-skin=aero] .fi{background:linear-gradient(180deg,#7dbcf5 0,#2f7fd0 50%,#1b58a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 1px 0 rgba(255,255,255,.7))}
+:root[data-skin=aero] button.primary .fi,:root[data-skin=aero] button.primary.danger .fi{background:none;-webkit-text-fill-color:#fff;color:#fff;filter:none}
+:root[data-skin=aero] .banner>.fi{background:linear-gradient(#ffd75e,#e09a00);-webkit-background-clip:text;background-clip:text}
+:root[data-skin=aero] .ri{--ic:#3b7dd8}
+:root[data-skin=aero] .ri .fi{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:4px;border:1px solid rgba(0,0,0,.4);
+ background:linear-gradient(180deg,rgba(255,255,255,.65) 0,rgba(255,255,255,.12) 48%,rgba(0,0,0,.1) 52%,rgba(0,0,0,0) 100%),var(--ic);-webkit-background-clip:border-box;background-clip:border-box;
+ color:#fff;-webkit-text-fill-color:#fff;filter:none;text-shadow:0 1px 1px rgba(0,0,0,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.2)}
+:root[data-skin=aero] .ri[data-tool=disk]{--ic:#6f869f}:root[data-skin=aero] .ri[data-tool=proc]{--ic:#3fa34d}:root[data-skin=aero] .ri[data-tool=hosts]{--ic:#e08a1e}
+:root[data-skin=aero] .ri[data-tool=env]{--ic:#8a6bbf}:root[data-skin=aero] .ri[data-tool=adapters]{--ic:#2f8fd8}:root[data-skin=aero] .ri[data-tool=dns]{--ic:#1c9bb8}
+:root[data-skin=aero] .ri[data-tool=trace]{--ic:#d0562f}:root[data-skin=aero] .ri[data-tool=subnet]{--ic:#3b7dd8}:root[data-skin=aero] .ri[data-tool=ipscan]{--ic:#2b9fc9}
+:root[data-skin=aero] .ri[data-tool=ping]{--ic:#3aa55d}:root[data-skin=aero] .ri[data-tool=telnet]{--ic:#4d5b73}:root[data-skin=aero] .ri[data-tool=hash]{--ic:#8c6d3f}
+:root[data-skin=aero] .ri[data-tool=crypt]{--ic:#d1a21a}:root[data-skin=aero] .ri[data-tool=token]{--ic:#c4521e}:root[data-skin=aero] .ri[data-tool=encode]{--ic:#6b5bc7}
+:root[data-skin=aero] .ri[data-tool=img64]{--ic:#2f9e8f}:root[data-skin=aero] .ri[data-tool=ico]{--ic:#d6702a}:root[data-skin=aero] .ri[data-tool=jwt]{--ic:#b03a6a}
+:root[data-skin=aero] .ri[data-tool=json]{--ic:#4a8b2f}:root[data-skin=aero] .ri[data-tool=time]{--ic:#3a7bbd}:root[data-skin=aero] .ri[data-tool=base]{--ic:#7a5ec0}
+:root[data-skin=aero] .ri img{filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+/* page headers: the same glossy badge, larger */
+:root[data-skin=aero] .thead>.fi{background:linear-gradient(180deg,rgba(255,255,255,.65) 0,rgba(255,255,255,.12) 48%,rgba(0,0,0,.1) 52%,rgba(0,0,0,0) 100%),#3b7dd8;-webkit-background-clip:border-box;background-clip:border-box;color:#fff;-webkit-text-fill-color:#fff;filter:none;border:1px solid rgba(0,0,0,.4);border-radius:6px;text-shadow:0 1px 1px rgba(0,0,0,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 1px 2px rgba(0,0,0,.25)}
+
+/* ===================== Mac (macOS look) =====================
+   System font stack (San Francisco on a Mac, Segoe UI elsewhere), translucent sidebar, traffic-light dots,
+   blue accent, rounded controls, segmented controls and colour icon tiles like System Settings. Follows light / dark. */
+:root[data-skin=mac]{--accent:#007aff;--accent-text:#fff;--bg:#ececec;--panel:#f5f5f7;--card:#fff;--text:#1d1d1f;--muted:#6e6e73;
+ --border:rgba(0,0,0,.1);--strong:rgba(0,0,0,.2);--hover:rgba(0,0,0,.05);--press:rgba(0,0,0,.09);--tmbg:#f0f0f2;--fill:rgba(0,0,0,.08);--danger:#ff3b30;--sel:rgba(0,122,255,.16);--bar:#6aa9ff;
+ --flyout:0 10px 30px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.18);--dialog:0 22px 70px rgba(0,0,0,.35),0 0 0 .5px rgba(0,0,0,.2);--good:#34c759;--caution:#ff9f0a;--badc:#ff3b30;--mac-side:rgba(246,246,248,.78);--mac-sel:rgba(0,0,0,.09)}
+:root[data-skin=mac][data-theme=dark]{--accent:#0a84ff;--accent-text:#fff;--bg:#1e1e1e;--panel:#2a2a2c;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;
+ --border:rgba(255,255,255,.1);--strong:rgba(255,255,255,.2);--hover:rgba(255,255,255,.07);--press:rgba(255,255,255,.12);--tmbg:#232325;--fill:rgba(255,255,255,.12);--danger:#ff453a;--sel:rgba(10,132,255,.3);--bar:#2f6fc4;
+ --flyout:0 10px 30px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.14);--dialog:0 22px 70px rgba(0,0,0,.7),0 0 0 .5px rgba(255,255,255,.16);--mac-side:rgba(40,40,42,.8);--mac-sel:rgba(255,255,255,.12)}
+:root[data-skin=mac] body{font:13px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg)}
+/* title bar with traffic lights */
+:root[data-skin=mac] #appbar{height:38px;background:linear-gradient(var(--panel),var(--bg));border-bottom:1px solid var(--border);gap:2px;padding:0 14px}
+:root[data-skin=mac] #appbar::before{content:"";flex:none;width:62px;height:12px;margin-right:14px;
+ background:radial-gradient(circle at 6px 6px,#ff5f57 5.5px,transparent 6px),radial-gradient(circle at 26px 6px,#febc2e 5.5px,transparent 6px),radial-gradient(circle at 46px 6px,#28c840 5.5px,transparent 6px)}
+:root[data-skin=mac] .menu>span{border-radius:5px;font-size:13px;padding:4px 9px}
+:root[data-skin=mac] .menu>span:hover,:root[data-skin=mac] .menu.open>span{background:var(--accent);color:#fff}
+:root[data-skin=mac] .dd,:root[data-skin=mac] #ctx{background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border:.5px solid var(--strong);border-radius:8px;padding:5px}
+:root[data-skin=mac] .dd div,:root[data-skin=mac] #ctx div{border-radius:5px;padding:4px 10px}
+:root[data-skin=mac] .dd div:hover,:root[data-skin=mac] #ctx div:hover{background:var(--accent);color:#fff}
+:root[data-skin=mac] .dd div:hover kbd{color:rgba(255,255,255,.85)}
+/* sidebar: translucent, small bold group labels, rounded selection, colour tiles */
+:root[data-skin=mac] #rail{background:var(--mac-side);-webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);border-right:1px solid var(--border);padding:6px 10px 10px}
+:root[data-skin=mac] .rh{font-size:11px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;padding:12px 8px 3px}
+:root[data-skin=mac] .ri{height:28px;min-height:28px;border-radius:6px;padding:0 8px;gap:9px;font-size:13px}
+:root[data-skin=mac] .ri:hover{background:var(--hover)}
+:root[data-skin=mac] .ri.on{background:var(--mac-sel)}
+:root[data-skin=mac] .ri.on::before{display:none}
+:root[data-skin=mac] .ri{--ic:#007aff}
+:root[data-skin=mac] .ri .fi{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:5px;background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,0)),var(--ic);color:#fff;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.25)}
+:root[data-skin=mac] .ri[data-tool=disk]{--ic:#8e8e93}:root[data-skin=mac] .ri[data-tool=proc]{--ic:#34c759}:root[data-skin=mac] .ri[data-tool=hosts]{--ic:#ff9500}
+:root[data-skin=mac] .ri[data-tool=env]{--ic:#af52de}:root[data-skin=mac] .ri[data-tool=adapters]{--ic:#007aff}:root[data-skin=mac] .ri[data-tool=dns]{--ic:#30b0c7}
+:root[data-skin=mac] .ri[data-tool=trace]{--ic:#ff3b30}:root[data-skin=mac] .ri[data-tool=subnet]{--ic:#5856d6}:root[data-skin=mac] .ri[data-tool=ipscan]{--ic:#32ade6}
+:root[data-skin=mac] .ri[data-tool=ping]{--ic:#30d158}:root[data-skin=mac] .ri[data-tool=telnet]{--ic:#3a3a3c}:root[data-skin=mac] .ri[data-tool=hash]{--ic:#a2845e}
+:root[data-skin=mac] .ri[data-tool=crypt]{--ic:#ffcc00}:root[data-skin=mac] .ri[data-tool=token]{--ic:#ff6b35}:root[data-skin=mac] .ri[data-tool=encode]{--ic:#5e5ce6}
+:root[data-skin=mac] .ri[data-tool=img64]{--ic:#00c7be}:root[data-skin=mac] .ri[data-tool=ico]{--ic:#ff9f0a}:root[data-skin=mac] .ri[data-tool=jwt]{--ic:#ff2d55}
+:root[data-skin=mac] .ri[data-tool=json]{--ic:#28cd41}:root[data-skin=mac] .ri[data-tool=time]{--ic:#0a84ff}:root[data-skin=mac] .ri[data-tool=base]{--ic:#bf5af2}
+:root[data-skin=mac] #railtoggle .fi{background:none;color:var(--muted);box-shadow:none}
+:root[data-skin=mac] .thead>.fi{border-radius:12px;background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,0)),var(--accent);color:#fff}
+:root[data-skin=mac] .thead h1{font-weight:700;letter-spacing:-.02em;font-size:22px}
+/* content: toolbar, cards, tables */
+:root[data-skin=mac] .tbar,:root[data-skin=mac] #toolbar{background:transparent;border-bottom:0}
+:root[data-skin=mac] .card,:root[data-skin=mac] .tile,:root[data-skin=mac] #left,:root[data-skin=mac] #tmwrap,:root[data-skin=mac] #tabs,:root[data-skin=mac] #progress{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;border:.5px solid var(--border);border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+:root[data-skin=mac] .card h3{font-weight:600}
+:root[data-skin=mac] .tbl th,:root[data-skin=mac] .cols{background:transparent;font-size:11px;font-weight:600;color:var(--muted);border-bottom:.5px solid var(--border);text-transform:none}
+:root[data-skin=mac] .tbl td{border-bottom:.5px solid var(--border)}
+:root[data-skin=mac] .tbl tr.sel td,:root[data-skin=mac] .row.sel,:root[data-skin=mac] .lrow.sel{background:var(--sel)}
+:root[data-skin=mac] .row.sel::before{display:none}
+:root[data-skin=mac] .banner{border-radius:10px}
+/* controls */
+:root[data-skin=mac] button,:root[data-skin=mac] select{height:26px;border-radius:6px;background:var(--card);border:.5px solid var(--strong);border-bottom-color:var(--strong);box-shadow:0 1px 1px rgba(0,0,0,.08);color:var(--text);font-size:13px;padding:0 12px}
+:root[data-skin=mac] select option{background:var(--card);color:var(--text)}
+:root[data-skin=mac] button:hover:not(:disabled){background:color-mix(in srgb,var(--card) 92%,var(--text))}
+:root[data-skin=mac] button:active:not(:disabled){background:var(--press);color:var(--text)}
+:root[data-skin=mac] button.primary{background:linear-gradient(#3395ff,#007aff);border-color:#0062cc;color:#fff;font-weight:500;box-shadow:0 1px 1px rgba(0,0,0,.15)}
+:root[data-skin=mac] button.primary:hover:not(:disabled){background:linear-gradient(#4da3ff,#1a85ff)}
+:root[data-skin=mac] button.primary.danger{background:linear-gradient(#ff6259,#ff3b30);border-color:#c92a20;color:#fff}
+:root[data-skin=mac] button.danger:not(.primary){color:var(--danger)}
+:root[data-skin=mac] button.ib,:root[data-skin=mac] .ib{background:transparent;border-color:transparent;box-shadow:none;padding:0 6px}
+:root[data-skin=mac] .tbar button.cmd{background:transparent;border-color:transparent;box-shadow:none}
+:root[data-skin=mac] .tbar button.cmd:hover:not(:disabled){background:var(--hover)}
+:root[data-skin=mac] input:not([type=checkbox]),:root[data-skin=mac] textarea{height:26px;border-radius:6px;background:var(--card);border:.5px solid var(--strong);box-shadow:inset 0 1px 1px rgba(0,0,0,.06)}
+:root[data-skin=mac] textarea{height:auto}
+:root[data-skin=mac] input:focus,:root[data-skin=mac] select:focus,:root[data-skin=mac] textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3.5px color-mix(in srgb,var(--accent) 38%,transparent)}
+:root[data-skin=mac] .seg{background:var(--fill);border:0;border-radius:8px;padding:2px;height:26px}
+:root[data-skin=mac] .seg button{height:22px;border:0;background:transparent;box-shadow:none;border-radius:6px;font-size:12px}
+:root[data-skin=mac] .seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2),0 0 0 .5px rgba(0,0,0,.06)}
+:root[data-skin=mac] #tabbar button{border-radius:6px}
+:root[data-skin=mac] #tabbar button.on{color:var(--accent)}
+:root[data-skin=mac] #status{background:transparent;border-top:1px solid var(--border);font-size:11.5px}
+:root[data-skin=mac] .pbar,:root[data-skin=mac] .pbar i,:root[data-skin=mac] .cpubar{border-radius:999px}
+:root[data-skin=mac] .dlg-card{border-radius:12px;border:.5px solid var(--strong);background:var(--card)}
+:root[data-skin=mac] .dfoot{background:transparent;border-top:0;padding:8px 20px 18px}
+:root[data-skin=mac] .dbody h2{font-weight:700;font-size:17px}
+:root[data-skin=mac] #toast{background:rgba(40,40,42,.92);color:#fff;border:0;border-radius:10px;box-shadow:var(--flyout)}
+:root[data-skin=mac] #dlg{background:rgba(0,0,0,.25)}
+/* thin overlay scrollbars */
+:root[data-skin=mac] ::-webkit-scrollbar{width:11px;height:11px}
+:root[data-skin=mac] ::-webkit-scrollbar-track{background:transparent}
+:root[data-skin=mac] ::-webkit-scrollbar-thumb{background:rgba(128,128,128,.45);border-radius:6px;border:3px solid transparent;background-clip:content-box}
+:root[data-skin=mac] ::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.7);background-clip:content-box}
+:root[data-skin=mac] .skinpick{color:var(--muted)}
