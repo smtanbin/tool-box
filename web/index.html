@@ -371,6 +371,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 .dktop{display:grid;grid-template-columns:200px 1fr;gap:16px}
 @media (max-width:760px){.dktop{grid-template-columns:1fr}}
 .dkbadges{display:flex;flex-direction:column;gap:8px}
+.tbl tr.bad td{background:color-mix(in srgb,var(--bad) 14%,transparent)}
 .dropzone{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:22px;border:2px dashed var(--border);border-radius:10px;color:var(--muted);text-align:center}
 .dropzone.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}.dropzone>.fi{font-size:24px;color:var(--accent)}.dropzone b{font-weight:500}
 .imgprev{min-height:200px;max-height:300px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:repeating-conic-gradient(color-mix(in srgb,var(--muted) 18%,transparent) 0 25%,transparent 0 50%) 0 0/16px 16px}
@@ -437,6 +438,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
   <div class="rh">System</div>
   <a class="ri" data-tool="proc" title="Process monitor, ports and kill"><i class="fi">&#xE9D2;</i><b class="lbl">Process monitor</b></a>
+  <a class="ri" data-tool="hosts" title="Hosts file editor"><i class="fi">&#xE70F;</i><b class="lbl">Hosts file</b></a>
   <div class="rh">Network</div>
   <a class="ri" data-tool="subnet" title="Subnet calculator"><i class="fi">&#xE839;</i><b class="lbl">Subnet calculator</b></a>
   <a class="ri" data-tool="ipscan" title="IP scanner"><i class="fi">&#xE774;</i><b class="lbl">IP scanner</b></a>
@@ -821,6 +823,26 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
     <div class="hint" id="icoinfo"></div>
   </div>
 </div></section>
+
+<!-- ===== Hosts file ===== -->
+<section class="tool" id="t-hosts">
+  <div class="tbar">
+    <div class="seg" id="hstabs"><button data-v="list" class="on">Entries</button><button data-v="raw">Raw text</button></div>
+    <div class="fld"><label for="hsq">Filter</label><input id="hsq" style="width:220px" placeholder="IP, host name or note" spellcheck="false"></div>
+    <button class="cmd" id="hsadd"><i class="fi acc">&#xE710;</i>Add entry</button>
+    <span class="grow"></span>
+    <button class="cmd" id="hsflush" title="Clear the Windows DNS cache"><i class="fi acc">&#xE72C;</i>Flush DNS</button>
+    <button class="cmd" id="hsreload" title="Read the file again"><i class="fi">&#xE777;</i>Reload</button>
+    <button class="cmd" id="hsrevert" disabled><i class="fi">&#xE7A7;</i>Discard</button>
+    <button class="cmd" id="hssave" disabled title="Save (Ctrl+S). A backup copy is made first."><i class="fi acc">&#xE74E;</i>Save</button>
+  </div>
+  <div class="tpage">
+    <div class="banner" id="hsadmin" style="display:none"><i class="fi">&#xE7BA;</i><div><b>Run as administrator to save changes</b><span>Windows protects the hosts file. You can edit here, but saving needs an administrator copy of My Tool Box.</span></div><button class="primary" id="hselev"><i class="fi">&#xEA18;</i>Restart as administrator</button></div>
+    <div class="hint" style="margin:0 4px 8px"><span class="mono" id="hspath"></span> · <span id="hscount"></span></div>
+    <div class="card flush" id="hslist"><div class="tblwrap"><table class="tbl hov"><thead><tr><th style="width:36px"></th><th>IP address</th><th>Host names (space separated)</th><th>Note</th><th style="width:36px"></th></tr></thead><tbody id="hsrows"></tbody></table></div></div>
+    <textarea id="hsraw" class="mono" rows="26" spellcheck="false" style="display:none;width:100%"></textarea>
+  </div>
+</section>
 </div></div>
 <div id="status"><span id="s1"></span><span id="s2"></span><span id="s3"></span></div>
 <div id="tip"></div><div id="ctx"></div><div id="toast"></div>
@@ -1236,6 +1258,7 @@ api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scann
 <script src="/tools.js"></script>
 <script src="/proc.js"></script>
 <script src="/image.js"></script>
+<script src="/hosts.js"></script>
 <script src="/boot.js"></script>
 </body>
 </html>

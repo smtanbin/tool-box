@@ -189,12 +189,12 @@ func classifyDisk(d *DiskInfo) {
 		if d.Maker == "" {
 			d.Maker = pciVendors[d.SubVendor]
 		}
-		if d.Maker == "" {
-			d.Maker = d.ControllerVendor
-		}
 	}
 	if (d.Maker == "" || strings.HasPrefix(d.Maker, "Vendor ID")) && d.Model != "" { // unknown IDs: the first word of the model is usually the brand
 		d.Maker = strings.Fields(d.Model)[0]
+	}
+	if d.Maker == "" {
+		d.Maker = d.ControllerVendor
 	}
 
 	var known *knownDrive

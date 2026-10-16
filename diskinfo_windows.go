@@ -650,7 +650,11 @@ func hElevate(w http.ResponseWriter, r *http.Request) {
 	exe, _ := os.Executable()
 	verb, _ := syscall.UTF16PtrFromString("runas")
 	file, _ := syscall.UTF16PtrFromString(exe)
-	params, _ := syscall.UTF16PtrFromString("--tool=disk")
+	tool := r.URL.Query().Get("tool")
+	if tool == "" || strings.Trim(tool, "abcdefghijklmnopqrstuvwxyz0123456789") != "" {
+		tool = "disk"
+	}
+	params, _ := syscall.UTF16PtrFromString("--tool=" + tool)
 	ret, _, _ := procShellExecute.Call(0, uintptr(unsafe.Pointer(verb)), uintptr(unsafe.Pointer(file)), uintptr(unsafe.Pointer(params)), 0, 1)
 	if ret <= 32 {
 		fail(w, 400, "Administrator rights were not granted")

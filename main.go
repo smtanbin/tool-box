@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/tools.js web/proc.js web/image.js web/boot.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -56,7 +56,7 @@ func main() {
 		case "/":
 		case "/icon.svg", "/tool-foldersize.svg":
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
-		case "/tools.js", "/proc.js", "/image.js", "/boot.js":
+		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js":
 			name, ctype = r.URL.Path[1:], "text/javascript; charset=utf-8"
 		case "/icon-256.png", "/favicon.ico":
 			name, ctype = "icon-256.png", "image/png"
@@ -131,6 +131,7 @@ func main() {
 	mux.HandleFunc("/api/dupes/status", hDupesStatus)
 	registerNet(mux)
 	registerProc(mux)
+	registerHosts(mux)
 	mux.HandleFunc("/api/disks", hDisks)
 	mux.HandleFunc("/api/elevate", hElevate)
 

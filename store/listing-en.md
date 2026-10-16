@@ -55,6 +55,7 @@ Version 1.1.0
 • New Process monitor: live process list with CPU and memory, open TCP/UDP ports with the program using each one, and one-click End process / End tree / Kill port owner.
 • Disk info now shows the drive maker and controller, and tells you whether an SSD is DRAM-less (Host Memory Buffer) or has a DRAM cache.
 • New Image to Base64 (data URI, CSS, HTML) with Base64 to image decoding, and Image to ICO that packs several icon sizes into one .ico file.
+• New Hosts file editor with enable/disable, backups and DNS flush.
 • Tidier internals and the same private, offline design.
 ```
 

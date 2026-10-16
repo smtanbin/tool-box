@@ -27,6 +27,9 @@ Design interface that follows your Windows light/dark theme and accent colour.
   ports), a Ports tab with every TCP / UDP port and the program that owns it, and
   **End process**, **End tree** and **Kill port owner** (type a port, free it).
   System-critical processes are protected; some need an administrator copy.
+- **Hosts file** — edit `drivers\etc\hosts` as a table (enable / disable, add,
+  delete, notes, validation) or as raw text. A timestamped backup is made on every
+  save and the DNS cache is flushed. Saving needs an administrator copy (one click).
 
 **Network**
 - **Subnet calculator** — IPv4 address with prefix or netmask: network, broadcast,
@@ -151,12 +154,12 @@ off your PC, and closing the window quits the app.
 | `main.go` | start-up, flags, static files, route table |
 | `folder_api.go`, `scan.go`, `dupes.go` | Folder Size: scanner, tree, duplicate finder, HTTP handlers |
 | `diskinfo_windows.go`, `diskmeta_windows.go` | Disk info: SMART / NVMe health; maker, controller and DRAM detection |
-| `process_windows.go` | Process monitor: processes, ports, kill |
+| `process_windows.go`, `hosts_windows.go` | Process monitor (processes, ports, kill); hosts file editor |
 | `nettools.go`, `icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
 | `winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
 | `web/index.html` | page shell, styles and the Folder Size UI |
 | `web/tools.js` | Disk info, network, crypto and developer tool pages |
-| `web/proc.js`, `web/image.js` | Process monitor; Image to Base64 and Image to ICO |
+| `web/proc.js`, `web/hosts.js`, `web/image.js` | Process monitor; Hosts editor; Image to Base64 and Image to ICO |
 | `web/boot.js` | opens the first tool (loaded last) |
 | `installer/`, `store/` | MSI / MSIX build scripts and Microsoft Store listing |
 ## License
