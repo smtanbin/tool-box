@@ -91,10 +91,12 @@ Requires Go 1.24 or newer. No C compiler or cgo needed.
 go build -ldflags "-H windowsgui -s -w" -o ToolBox.exe .
 ```
 
-`rsrc_windows_amd64.syso` embeds the app icon (`app.ico`). To regenerate it:
+The `rsrc_windows_*.syso` files embed the app icon (`app.ico`) and the version
+info shown in Explorer's Properties > Details tab (edit `versioninfo.json`). The
+installer build regenerates them for the release version; to do it by hand:
 
 ```
-go run github.com/akavel/rsrc@v0.10.2 -ico app.ico -o rsrc_windows_amd64.syso
+powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 1.1.0
 ```
 
 ### Installer

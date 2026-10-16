@@ -82,6 +82,10 @@ $g.DrawString("v$Version", $small, (New-Object System.Drawing.SolidBrush ([Syste
 $bmp.Save((Join-Path $build "dialog.bmp"), [System.Drawing.Imaging.ImageFormat]::Bmp)
 $g.Dispose(); $bmp.Dispose(); $icon.Dispose()
 
+# Version info + icon resources (shown in Explorer's Properties > Details)
+& (Join-Path $here "make-syso.ps1") -Version $Version
+if ($LASTEXITCODE -ne 0) { throw "make-syso failed" }
+
 foreach ($a in $Arch) {
     if (-not $goArch.ContainsKey($a)) { throw "Unknown arch '$a' (use x64, x86, arm64)" }
     Write-Host "[$a] ToolBox.exe"
