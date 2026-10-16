@@ -428,3 +428,5 @@
 /* Folder Size: a monochrome folder glyph like every other tool in Fluent and Magestica; the full-colour image only in Aero */
 :root[data-skin=aero] .ri[data-tool=foldersize] img{display:block}
 :root[data-skin=aero] .ri[data-tool=foldersize] .fi{display:none}
+/* Aero: no expand / collapse button; the navigation pane is always open (it still narrows on small windows) */
+:root[data-skin=aero] #railtoggle{display:none}

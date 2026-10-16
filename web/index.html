@@ -957,6 +957,7 @@ let themeMode='system';try{themeMode=localStorage.getItem('themeMode')||'system'
 const darkMQ=matchMedia('(prefers-color-scheme: dark)');
 function applyTheme(redraw){
   if(skin)document.documentElement.dataset.skin=skin;else delete document.documentElement.dataset.skin;
+  {const r=document.getElementById('rail');if(r){if(skin==='aero')r.classList.remove('min');else{try{r.classList.toggle('min',localStorage.getItem('railMin')==='1')}catch(e){}}}}
   // Aero uses 7.css for its Windows 7 controls; load it only for that skin
   {const l7=document.getElementById('css7');if(skin==='aero'&&!l7){const l=document.createElement('link');l.rel='stylesheet';l.id='css7';l.href='/vendor/7.css';document.head.insertBefore(l,document.querySelector('link[href="/skins.css"]'))}else if(skin!=='aero'&&l7)l7.remove()}
   document.documentElement.dataset.theme=skin==='aero'?'light':themeMode==='system'?(darkMQ.matches?'dark':'light'):themeMode;  // Aero is a light-only look
@@ -1363,7 +1364,7 @@ addEventListener('keydown',e=>{if(curTool!=='foldersize')return;if(e.altKey&&e.k
 
 /* ---------- tool navigation rail ---------- */
 (function(){const rail=$('#rail');
-  try{if(localStorage.getItem('railMin')==='1')rail.classList.add('min')}catch(e){}
+  try{if(localStorage.getItem('railMin')==='1'&&skin!=='aero')rail.classList.add('min')}catch(e){}
   $('#railtoggle').onclick=()=>{rail.classList.toggle('min');try{localStorage.setItem('railMin',rail.classList.contains('min')?'1':'0')}catch(e){}};
   rail.addEventListener('click',e=>{const a=e.target.closest('.ri[data-tool]');if(!a)return;
     showTool(a.dataset.tool)})})();
