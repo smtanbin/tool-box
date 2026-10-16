@@ -218,6 +218,9 @@ input::placeholder{color:var(--muted)}
 .dbody h2{margin:0 0 14px;font-size:20px;font-weight:600}
 .dfoot{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;background:var(--bg);border-top:1px solid var(--border)}
 .dfoot button{min-width:110px}
+.dmsg{line-height:1.5;overflow-wrap:anywhere}.dmsg p{margin:0 0 10px}.dmsg ul{margin:0 0 10px;padding-left:20px}
+.dmsg .path{font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 8px;display:block;margin:0 0 10px}
+button.primary.danger{background:var(--danger);border-color:var(--danger);color:#fff}
 .dlg-card details{border-bottom:1px solid var(--border);padding:10px 0}
 .dlg-card summary{cursor:default;font-weight:600}.dlg-card details p{margin:8px 0 2px;color:var(--muted)}
 .dlg-card kbd{background:var(--bg);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:1px 8px;font:inherit;font-size:12px}
@@ -967,7 +970,10 @@ $('#crumbs').addEventListener('click',e=>{const a=e.target.closest('a');if(a){se
 $('#up').onclick=goUp;
 function goUp(){const p=parentOf.get(tmId);if(p!==undefined){selId=p;focusFolder(p).then(()=>{renderTree();updateStatus()})}}
 $('#openx').onclick=()=>{const id=selId??tmId;if(id!==null)api('/api/reveal?open=1&id='+id)};
-$('#export').onclick=()=>{if(tmId===null)return;const f=confirm('Include individual files too?\n\nOK = folders and files\nCancel = folders only');location.href='/api/export?id='+tmId+(f?'&files=1':'')};
+$('#export').onclick=async()=>{if(tmId===null)return;
+  const f=await askDialog({title:'Export to CSV',body:'<p>Include every individual file, or only folders?</p><p style="color:var(--muted)">Including files makes a much larger CSV.</p>',
+    buttons:[{label:'Cancel',value:false},{label:'Folders only',value:'dirs'},{label:'Folders and files',value:'files',primary:true}]});
+  if(f)location.href='/api/export?id='+tmId+(f==='files'?'&files=1':'')};
 $('#cmode').onchange=()=>drawTM();
 
 const cv=$('#tm'),ov=$('#tmo'),ctx2=cv.getContext('2d'),octx=ov.getContext('2d');
@@ -1095,7 +1101,7 @@ $('#dupsel').onclick=()=>$$('#duplist .di').forEach(d=>d.querySelector('input').
 $('#duplist').addEventListener('contextmenu',e=>{const r=e.target.closest('.di');if(r){e.preventDefault();showCtx(e,{id:+r.dataset.id,dir:false})}});
 $('#dupdel').onclick=async()=>{const sel=$$('#duplist .di').filter(d=>d.querySelector('input').checked);if(!sel.length)return toast('Nothing selected');
   const bytes=sel.reduce((a,d)=>a+ +d.dataset.size,0);
-  if(!confirm(`Move ${sel.length} files (${fmt(bytes)}) to the Recycle Bin?`))return;
+  if(!await askDialog({title:'Move to Recycle Bin',body:`<p>Move <b>${sel.length}</b> duplicate file${sel.length===1?'':'s'} (${fmt(bytes)}) to the Recycle Bin?</p><p style="color:var(--muted)">You can restore them from the Recycle Bin.</p>`,okText:'Move to Recycle Bin'}))return;
   const r=await api('/api/delete',{method:'POST',body:JSON.stringify({ids:sel.map(d=>+d.dataset.id)})});
   const ok=r.filter(x=>x.ok).length;toast(`${ok} recycled${ok<r.length?`, ${r.length-ok} failed`:''}`);
   sel.forEach((d,i)=>{if(r[i]?.ok)d.remove()});await refreshAll()};
@@ -1114,7 +1120,8 @@ async function doAction(a,t){const r=await api('/api/node?id='+t.id+'&limit=0');
   else if(a==='copy'){try{await navigator.clipboard.writeText(r.path);toast('Path copied')}catch(e){toast(r.path)}}
   else if(a==='recycle'||a==='perm')deleteNode(t.id,r,a==='perm')}
 async function deleteNode(id,info,perm){const n=info.node;
-  if(!confirm(`${perm?'PERMANENTLY DELETE':'Move to Recycle Bin'}:\n\n${info.path}\n\n${fmt(n.size)}${n.dir?` in ${num(n.files)} files`:''}${perm?'\n\nThis cannot be undone.':''}`))return;
+  if(!await askDialog({title:perm?'Delete permanently?':'Move to Recycle Bin?',danger:perm,okText:perm?'Delete permanently':'Move to Recycle Bin',
+    body:`<span class="path">${esc(info.path)}</span><p>${fmt(n.size)}${n.dir?` in ${num(n.files)} files`:''}</p>${perm?'<p style="color:var(--danger)"><b>This cannot be undone.</b></p>':'<p style="color:var(--muted)">You can restore it from the Recycle Bin.</p>'}`}))return;
   const r=await api('/api/delete',{method:'POST',body:JSON.stringify({ids:[id],permanent:perm})});
   if(r[0].ok){toast('Deleted — freed '+fmt(n.size));if(selId===id)selId=null;await refreshAll()}else toast('Failed: '+r[0].error)}
 async function refreshAll(){
@@ -1155,9 +1162,23 @@ async function resetAll(){
   for(const id of['#path','#q'])$(id).value='';hist.length=0;hIdx=-1;lastRoot='';updateNav();setEdit(true);$('#crumbs').innerHTML='';$('#q').placeholder='Search (* ? ok)';$('#s1').textContent='';$('#s2').textContent='';
   $('#progress').style.display='none';$('#cancel').style.display='none';$('#scan').disabled=false;toast('Reset — ready for a new scan')}
 $('#reset').onclick=resetAll;
-function dialog(html){$('#dlgcard').innerHTML='<div class="dbody">'+html+'</div><div class="dfoot"><button class="primary" id="dlgok">Close</button></div>';$('#dlg').style.display='flex';$('#dlgok').focus();$('#dlgok').onclick=closeDialog}
-function closeDialog(){$('#dlg').style.display='none'}
-$('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')closeDialog()});
+let dlgResolve=null;
+function settleDialog(v){if(dlgResolve){const r=dlgResolve;dlgResolve=null;r(v)}}
+function dialog(html){settleDialog(false);$('#dlgcard').innerHTML='<div class="dbody">'+html+'</div><div class="dfoot"><button class="primary" id="dlgok">Close</button></div>';$('#dlg').style.display='flex';$('#dlgok').focus();$('#dlgok').onclick=()=>closeDialog()}
+function closeDialog(v=false){$('#dlg').style.display='none';settleDialog(v)}
+// Our own confirm box (replaces the browser's confirm()). Resolves with the clicked button's value, or false for Esc / click outside.
+// body is HTML: escape anything that comes from the user or the file system with esc().
+function askDialog({title='',body='',okText='OK',cancelText='Cancel',danger=false,buttons}){
+  settleDialog(false);
+  const bs=buttons||[{label:cancelText,value:false},{label:okText,value:true,primary:true,danger}];
+  $('#dlgcard').setAttribute('role','alertdialog');
+  $('#dlgcard').innerHTML=`<div class="dbody">${title?`<h2>${esc(title)}</h2>`:''}<div class="dmsg">${body}</div></div><div class="dfoot">`+
+    bs.map((b,i)=>`<button data-i="${i}" class="${b.primary?'primary':''} ${b.danger?'danger':''}">${esc(b.label)}</button>`).join('')+'</div>';
+  $('#dlg').style.display='flex';
+  const btns=[...$('#dlgcard').querySelectorAll('.dfoot button')];
+  btns.forEach(el=>el.onclick=()=>closeDialog(bs[+el.dataset.i].value));
+  (danger?btns[0]:btns.find(el=>el.classList.contains('primary'))||btns[btns.length-1]).focus();  // a dangerous action never has focus by default
+  return new Promise(r=>dlgResolve=r)}
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeDialog();$$('.menu.open').forEach(m=>m.classList.remove('open'))}});
 const FAQ=[
 ['How is folder size calculated?','It adds up the logical size of every file, the same number shown as “Size” in Explorer. It is not “Size on disk”, so tiny files and compressed files can differ slightly.'],

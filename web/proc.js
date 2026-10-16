@@ -71,7 +71,9 @@ const pmPost=(url,body)=>api(url,{method:'POST',headers:{'Content-Type':'applica
 
 async function pmKill(tree,pid){pid=pid??pm.sel;const p=pm.procs.find(x=>x.pid===pid);if(!p)return;
   if(p.locked)return toast('That is a protected system process');
-  if(!confirm(`End ${p.name} (PID ${p.pid})${tree?' and everything it started':''}?\n\nUnsaved work in that program will be lost.`))return;
+  const kids=tree?pm.procs.filter(x=>x.ppid===pid).length:0;
+  if(!await askDialog({title:tree?'End process tree?':'End process?',danger:true,okText:tree?'End tree':'End process',
+    body:`<p><b>${esc(p.name)}</b> (PID ${p.pid})${tree?` and everything it started${kids?` (${kids} direct child${kids===1?'':'ren'})`:''}`:''}</p>${p.path?`<span class="path">${esc(p.path)}</span>`:''}<p style="color:var(--muted)">Unsaved work in ${tree?'these programs':'that program'} will be lost.</p>`}))return;
   try{pmReport(await pmPost('/api/proc/kill',{pids:[pid],tree}));if(pm.sel===pid)pm.sel=null}catch(e){toast(e.message)}}
 
 async function pmKillPort(){const port=+$('#pmkp').value;if(!(port>=1&&port<=65535))return toast('Enter a port from 1 to 65535');
@@ -79,5 +81,6 @@ async function pmKillPort(){const port=+$('#pmkp').value;if(!(port>=1&&port<=655
   try{owners=(await api('/api/proc/ports')).ports.filter(p=>p.port===port&&(p.state==='LISTEN'||p.state==='ESTABLISHED'||p.proto.startsWith('UDP')))}catch(e){return toast(e.message)}
   if(!owners.length)return toast(`Nothing is using port ${port}`);
   const uniq=[...new Map(owners.map(o=>[o.pid,o])).values()];
-  if(!confirm(`Port ${port} is used by:\n\n${uniq.map(o=>`  ${o.name||'?'} (PID ${o.pid})`).join('\n')}\n\nEnd ${uniq.length>1?'these processes':'this process'}?`))return;
+  if(!await askDialog({title:`Free port ${port}?`,danger:true,okText:uniq.length>1?'End processes':'End process',
+    body:`<p>Port <b>${port}</b> is used by:</p><ul>${uniq.map(o=>`<li><b>${esc(o.name||'?')}</b> (PID ${o.pid})</li>`).join('')}</ul><p style="color:var(--muted)">Unsaved work in ${uniq.length>1?'these programs':'that program'} will be lost.</p>`}))return;
   try{pmReport(await pmPost('/api/proc/killport',{port,tree:false}));$('#pmkp').value=''}catch(e){toast(e.message)}}
