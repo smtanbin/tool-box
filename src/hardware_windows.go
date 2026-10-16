@@ -183,7 +183,10 @@ func registerHardwareLive(mux *http.ServeMux) {
 		procGetPerformanceInfo.Call(uintptr(unsafe.Pointer(&pi)), uintptr(pi.Cb))
 		tick, _, _ := procGetTickCount64.Call()
 		cur, curMax, maxMhz := cpuClocks()
-		writeJSON(w, map[string]any{"cores": cores, "total": total, "speed": curMax, "core0": cur, "max": maxMhz,
+		var ms memStatus
+		ms.Len = uint32(unsafe.Sizeof(ms))
+		procGlobalMemoryStatusEx.Call(uintptr(unsafe.Pointer(&ms)))
+		writeJSON(w, map[string]any{"memTotal": ms.Total, "memUsed": ms.Total - ms.Avail, "commitUsed": ms.TotalPage - ms.AvailPage, "commitTotal": ms.TotalPage, "cores": cores, "total": total, "speed": curMax, "core0": cur, "max": maxMhz,
 			"processes": pi.ProcessCount, "threads": pi.ThreadCount, "handles": pi.HandleCount, "uptime": uint64(tick) / 1000})
 	})
 }

@@ -4,8 +4,8 @@
 "use strict";
 TOOL_NAMES.hw='Hardware info';
 
-const hw={data:null,tab:'cpu',loading:false,spd:0,hist:{total:[],cores:[]},live:null,timer:0};
-const HW_TABS=[['cpu','Processor'],['board','Mainboard'],['mem','Memory'],['spd','SPD'],['gpu','Graphics'],['sys','System']];
+const hw={data:null,tab:'cpu',loading:false,spd:0,hist:{total:[],cores:[],mem:[]},live:null,timer:0};
+const HW_TABS=[['cpu','Processor'],['board','Mainboard'],['mem','Memory'],['gpu','Graphics'],['sys','System']];
 const MEM_TYPE={20:'DDR',21:'DDR2',24:'DDR3',26:'DDR4',34:'DDR5',35:'LPDDR5'};
 const MEM_FORM={8:'DIMM',12:'SODIMM',13:'SRIMM'};
 const CPU_ARCH={0:'x86',5:'ARM',9:'x64',12:'ARM64'};
@@ -36,11 +36,12 @@ async function hwLoad(fresh){if(hw.loading)return;hw.loading=true;$('#hwref').di
 
 /* ---------- live CPU panel ---------- */
 async function hwTick(){
-  if(curTool!=='hw'||hw.tab!=='cpu'||document.hidden)return;
+  if(curTool!=='hw'||(hw.tab!=='cpu'&&hw.tab!=='mem')||document.hidden)return;
   try{const r=await api('/api/hw/cpu');hw.live=r;const H=hw.hist;
     H.total.push(r.total);if(H.total.length>HIST)H.total.shift();
     r.cores.forEach((c,i)=>{(H.cores[i]=H.cores[i]||[]).push(c);if(H.cores[i].length>HIST)H.cores[i].shift()});
-    hwUpdateLive()}catch(e){}}
+    if(r.memTotal){H.mem.push(r.memUsed/r.memTotal*100);if(H.mem.length>HIST)H.mem.shift()}
+    hwUpdateLive();hwDrawMem()}catch(e){}}
 
 function hwUpdateLive(){
   const r=hw.live,el=$('#hwlive');if(!r||!el)return;
@@ -62,6 +63,34 @@ function hwDrawGraphs(){
     if(d.length<2)continue;const x0=w-(d.length-1)*step;
     x.beginPath();d.forEach((v,i)=>i?x.lineTo(x0+i*step,y(v)):x.moveTo(x0,y(v)));
     x.strokeStyle=line;x.lineWidth=1.4;x.stroke();x.lineTo(w,h);x.lineTo(x0,h);x.closePath();x.fillStyle=withAlpha(line,.18);x.fill()}}
+
+
+function hwDrawMem(){
+  const cv=$('#hwmemchart');if(!cv)return;const r=hw.live,d=hw.hist.mem;
+  const tx=$('#hwmemtxt');if(tx&&r&&r.memTotal)tx.textContent=`${fmt(r.memUsed)} of ${fmt(r.memTotal)} (${Math.round(r.memUsed/r.memTotal*100)} %) · committed ${fmt(r.commitUsed)} of ${fmt(r.commitTotal)}`;
+  const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w)return;if(cv.width!==Math.round(w*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+  const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+  x.strokeStyle=cssColor('--border');x.lineWidth=1;x.beginPath();for(let i=1;i<20;i++){const gx=Math.round(w*i/20)+.5;x.moveTo(gx,0);x.lineTo(gx,h)}for(let i=1;i<5;i++){const gy=Math.round(h*i/5)+.5;x.moveTo(0,gy);x.lineTo(w,gy)}x.stroke();
+  if(d.length<2)return;const step=w/(HIST-1),x0=w-(d.length-1)*step,y=v=>h-1-v/100*(h-2),c=cssColor('--accent');
+  x.beginPath();d.forEach((v,i)=>i?x.lineTo(x0+i*step,y(v)):x.moveTo(x0,y(v)));x.strokeStyle=c;x.lineWidth=1.6;x.stroke();x.lineTo(w,h);x.lineTo(x0,h);x.closePath();x.fillStyle=withAlpha(c,.18);x.fill()}
+
+/* Brand badges drawn from the name (no vendor logos are copied): vendor, family line and tier number on a dark tile. */
+function hwBadge(kind,name){
+  const n=String(name||''),svg=(accent,l1,l2,l3)=>`<svg class="hwbadge" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="${esc(n)}"><rect width="96" height="96" rx="10" fill="#15171c"/><rect x="0" y="0" width="96" height="6" rx="3" fill="${accent}"/>`+
+    `<text x="48" y="27" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.5" fill="${accent}">${esc(l1)}</text>`+
+    `<text x="48" y="${l3?52:60}" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="${l2.length>9?12:l2.length>7?15:20}" font-weight="800" letter-spacing=".5" fill="#fff">${esc(l2)}</text>`+
+    (l3?`<rect x="30" y="60" width="36" height="26" rx="7" fill="none" stroke="#fff" stroke-width="2"/><text x="48" y="80" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="800" fill="#fff">${esc(l3)}</text>`:'')+`</svg>`;
+  if(kind==='cpu'){
+    if(/Threadripper/i.test(n))return svg('#f26522','AMD','THREADRIPPER','');
+    let m=n.match(/Ryzen\s*(?:AI\s*)?(\d)/i);if(m)return svg('#f26522','AMD','RYZEN',m[1]);
+    if(/EPYC/i.test(n))return svg('#f26522','AMD','EPYC','');if(/Athlon/i.test(n))return svg('#f26522','AMD','ATHLON','');
+    m=n.match(/Core\(?(?:TM)?\)?\s*(Ultra\s*\d|i\d)/i);if(m)return svg('#3d9bf0','intel','CORE',m[1].replace(/ultra\s*/i,'U'));
+    if(/Xeon/i.test(n))return svg('#3d9bf0','intel','XEON','');if(/Pentium/i.test(n))return svg('#3d9bf0','intel','PENTIUM','');if(/Celeron/i.test(n))return svg('#3d9bf0','intel','CELERON','');
+    return svg('#9aa4b2','CPU',(n.split(/\s+/)[0]||'CPU').toUpperCase().slice(0,8),'')}
+  if(/NVIDIA|GeForce|RTX|GTX|Quadro/i.test(n))return svg('#76b900','NVIDIA',/RTX/i.test(n)?'GeForce RTX':/GTX/i.test(n)?'GeForce GTX':'GeForce','');
+  if(/Radeon|AMD/i.test(n))return svg('#ed1c24','AMD','RADEON','');
+  if(/Intel/i.test(n))return svg('#3d9bf0','intel',/Arc/i.test(n)?'ARC':/Iris/i.test(n)?'IRIS Xe':'UHD','');
+  return svg('#9aa4b2','GPU',(n.split(/\s+/)[0]||'GPU').toUpperCase().slice(0,8),'')}
 
 /* ---------- data model ---------- */
 function hwModel(){
@@ -93,7 +122,7 @@ function hwCards(m){
       hwRow('In use now',tot?`${fmt(used)} (${Math.round(used/tot*100)} %)`:null),hwRow('Page file',live.pageTotal?fmt(live.pageTotal):null)],bar:tot?used/tot:null,
     note:'CAS latency, tRCD, tRP, tRAS and the other timings are read from the memory controller by CPU-Z\'s driver, so Windows apps cannot show them.'}];
   const mod=mods[Math.min(hw.spd,Math.max(0,mods.length-1))]||{},mm=mod.ConfiguredClockSpeed||mod.Speed,ty=MEM_TYPE[mod.SMBIOSMemoryType]||'';
-  out.spd=[{title:'Memory slot selection',slots:mods.map((x,i)=>`Slot #${i+1}  ${x.DeviceLocator||x.BankLabel||''}`),rows:[hwRow('Type',ty&&`${ty} (${MEM_FORM[mod.FormFactor]||'module'})`),hwRow('Module size',mod.Capacity?fmt(+mod.Capacity):null),
+  out.spd=[{title:'Module detail (SPD)',slots:mods.map((x,i)=>`Slot #${i+1}  ${x.DeviceLocator||x.BankLabel||''}`),rows:[hwRow('Type',ty&&`${ty} (${MEM_FORM[mod.FormFactor]||'module'})`),hwRow('Module size',mod.Capacity?fmt(+mod.Capacity):null),
       hwRow('Max bandwidth',mm?`${ty}-${mm} (${mm/2} MHz)`:null),hwRow('Module manufacturer',memMakerJS(mod.Manufacturer)),hwRow('Part number',hwTrim(mod.PartNumber)),hwRow('Rated speed',mod.Speed?mod.Speed+' MT/s':null),
       hwRow('Running at',mod.ConfiguredClockSpeed?mod.ConfiguredClockSpeed+' MT/s':null),hwRow('Voltage',mod.ConfiguredVoltage?(mod.ConfiguredVoltage/1000).toFixed(3)+' V':null),hwRow('Serial number',mod.SerialNumber)],
     note:'JEDEC and XMP timing tables, ranks and the DRAM manufacturer sit in the module\'s SPD chip, which Windows does not expose to normal apps.'}];
@@ -119,18 +148,22 @@ function hwLiveCard(c){
    <div class="hwside"><div><span>Base speed</span><b>${c.base?(c.base/1000).toFixed(2)+' GHz':'—'}</b></div><div><span>Sockets</span><b>1</b></div><div><span>Cores</span><b>${c.coreCount||'—'}</b></div><div><span>Logical processors</span><b>${c.threadCount||'—'}</b></div>
    <div><span>L1 cache</span><b>${l1?hwKB(l1):'—'}</b></div><div><span>L2 cache</span><b>${l2?hwKB(l2):'—'}</b></div><div><span>L3 cache</span><b>${l3?hwKB(l3):'—'}</b></div></div></div></div>`}
 
+function identityCard(c){const m=hwModel(),cpu=m.cpu,id=m.id;
+  return`<div class="card hwid">${hwBadge('cpu',cpu.Name||id.brand)}<div class="hwidtxt"><h2>${esc(hwTrim(cpu.Name)||'Processor')}</h2><p>${esc([id.codename,m.socket,id.tech,c.coreCount?c.coreCount+' cores · '+c.threadCount+' threads':''].filter(Boolean).join('  ·  '))}</p></div></div>`}
+function memChartCard(){return`<div class="card"><div class="chhead"><h3>Memory in use</h3><span class="hint" id="hwmemtxt" style="margin:0"></span></div><canvas id="hwmemchart" class="hwmemchart"></canvas></div>`}
 function hwRender(){
   if(!hw.data)return;
   $$('#hwtabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===hw.tab));
   const c=hwCards(hwModel());let html='';
   const card=x=>`<div class="card"><div class="chhead"><h3>${esc(x.title)}</h3>${x.slots?`<select id="hwslot" aria-label="Memory slot">${x.slots.map((s,i)=>`<option value="${i}"${i===hw.spd?' selected':''}>${esc(s)}</option>`).join('')}</select>`:''}</div>${x.bar!=null?`<div class="ubar hwbar"><i style="width:${Math.min(100,x.bar*100).toFixed(1)}%"></i></div>`:''}<div class="kv hwkv">${kvHTML(x.rows)}</div>${x.note?`<p class="hint hwnote">${esc(x.note)}</p>`:''}</div>`;
   if(hw.tab==='mem'){
-    html=c.mem.map(card).join('')+`<div class="card flush"><div class="chhead" style="padding:12px 16px 0"><h3>Memory modules</h3><span class="hint" style="margin:0">${c.memTable.length} slot${c.memTable.length===1?'':'s'} populated</span></div><div class="tblwrap"><table class="tbl"><thead><tr><th>Slot</th><th class="r">Size</th><th>Type</th><th class="r">Speed</th><th>Manufacturer</th><th>Part number</th></tr></thead><tbody>`+
+    html=memChartCard()+c.mem.map(card).join('')+c.spd.map(card).join('')+`<div class="card flush"><div class="chhead" style="padding:12px 16px 0"><h3>Memory modules</h3><span class="hint" style="margin:0">${c.memTable.length} slot${c.memTable.length===1?'':'s'} populated</span></div><div class="tblwrap"><table class="tbl"><thead><tr><th>Slot</th><th class="r">Size</th><th>Type</th><th class="r">Speed</th><th>Manufacturer</th><th>Part number</th></tr></thead><tbody>`+
       (c.memTable.map(x=>`<tr><td>${esc(x.DeviceLocator||x.BankLabel||'—')}</td><td class="r">${x.Capacity?fmt(+x.Capacity):'—'}</td><td>${esc(MEM_TYPE[x.SMBIOSMemoryType]||'—')} ${esc(MEM_FORM[x.FormFactor]||'')}</td><td class="r">${x.ConfiguredClockSpeed||x.Speed?(x.ConfiguredClockSpeed||x.Speed)+' MT/s':'—'}</td><td>${esc(memMakerJS(x.Manufacturer)||'—')}</td><td class="mono">${esc(hwTrim(x.PartNumber)||'—')}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">Windows did not list the memory modules.</td></tr>')+'</tbody></table></div></div>'}
-  else if(hw.tab==='cpu')html=hwLiveCard(c)+c.cpu.map(card).join('');
+  else if(hw.tab==='cpu')html=identityCard(c)+hwLiveCard(c)+c.cpu.map(card).join('');
+  else if(hw.tab==='gpu')html=c.gpu.map(x=>`<div class="card hwid hwgpu">${hwBadge('gpu',x.title)}<div class="hwidtxt"><h2>${esc(x.title)}</h2></div></div>`+card({...x,title:'Details'})).join('')||'<div class="card"><div class="empty">No graphics adapter reported.</div></div>';
   else html=(c[hw.tab]||[]).map(card).join('')||'<div class="card"><div class="empty">Nothing reported for this part.</div></div>';
   $('#hwbody').innerHTML=html;
-  if(hw.tab==='cpu'){hwUpdateLive();hwTick()}}
+  if(hw.tab==='cpu'||hw.tab==='mem'){hwUpdateLive();hwDrawMem();hwTick()}}
 
 function hwReport(){
   if(!hw.data)return'';const c=hwCards(hwModel()),L=['My Tool Box — hardware report',new Date().toLocaleString(),''];

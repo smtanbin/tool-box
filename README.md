@@ -23,7 +23,7 @@ Design interface that follows your Windows light/dark theme and accent colour.
   only the HMB hint.
 
 **System**
-- **Hardware info** — CPU-Z style tabs (Processor, Mainboard, Memory, SPD, Graphics, System): code name, package, process, family / model,
+- **Hardware info** — CPU-Z style tabs (Processor, Mainboard, Memory with per-module SPD detail, Graphics, System), brand badges drawn from the CPU / GPU name, live charts for every core and for memory use,: code name, package, process, family / model,
   instruction sets and cache levels read with CPUID, live core clock, BIOS and microcode, memory modules
   (slot, size, type, speed, part number) with live usage, graphics (video memory, driver, resolution), and OS details.
   A plain-text report can be copied (serial numbers left out).
