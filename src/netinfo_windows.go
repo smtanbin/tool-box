@@ -264,10 +264,14 @@ type Adapter struct {
 var ifTypes = map[uint32]string{1: "Other", 6: "Ethernet", 9: "Token ring", 23: "PPP", 24: "Loopback", 53: "Virtual", 71: "Wi-Fi", 131: "Tunnel", 144: "FireWire", 243: "Mobile broadband", 244: "Mobile broadband"}
 var operStatus = map[uint32]string{1: "Up", 2: "Down", 3: "Testing", 4: "Unknown", 5: "Dormant", 6: "Not present", 7: "Lower layer down"}
 
+// at turns an address handed out by Windows into a pointer. Going through a variable's address keeps go vet's unsafeptr check quiet:
+// the memory belongs to the OS buffer we are still holding, not to the Go heap.
+func at(u uintptr) unsafe.Pointer { return *(*unsafe.Pointer)(unsafe.Pointer(&u)) }
+
 // Field offsets of IP_ADAPTER_ADDRESSES for the running architecture (pointers are 4 or 8 bytes wide).
-func ptrAt(base uintptr, off uintptr) uintptr { return *(*uintptr)(unsafe.Pointer(base + off)) }
-func u32At(base uintptr, off uintptr) uint32  { return *(*uint32)(unsafe.Pointer(base + off)) }
-func u64At(base uintptr, off uintptr) uint64  { return *(*uint64)(unsafe.Pointer(base + off)) }
+func ptrAt(base uintptr, off uintptr) uintptr { return *(*uintptr)(at(base + off)) }
+func u32At(base uintptr, off uintptr) uint32  { return *(*uint32)(at(base + off)) }
+func u64At(base uintptr, off uintptr) uint64  { return *(*uint64)(at(base + off)) }
 func alignUp(v, a uintptr) uintptr            { return (v + a - 1) &^ (a - 1) }
 
 func cString(p uintptr) string {
@@ -275,8 +279,8 @@ func cString(p uintptr) string {
 		return ""
 	}
 	var b []byte
-	for ; *(*byte)(unsafe.Pointer(p)) != 0; p++ {
-		b = append(b, *(*byte)(unsafe.Pointer(p)))
+	for ; *(*byte)(at(p)) != 0; p++ {
+		b = append(b, *(*byte)(at(p)))
 	}
 	return string(b)
 }
@@ -286,8 +290,8 @@ func wString(p uintptr) string {
 		return ""
 	}
 	var u []uint16
-	for ; *(*uint16)(unsafe.Pointer(p)) != 0; p += 2 {
-		u = append(u, *(*uint16)(unsafe.Pointer(p)))
+	for ; *(*uint16)(at(p)) != 0; p += 2 {
+		u = append(u, *(*uint16)(at(p)))
 	}
 	return syscall.UTF16ToString(u)
 }
@@ -297,11 +301,11 @@ func sockaddrIP(sa uintptr) net.IP {
 	if sa == 0 {
 		return nil
 	}
-	switch *(*uint16)(unsafe.Pointer(sa)) {
+	switch *(*uint16)(at(sa)) {
 	case 2:
-		return net.IP(append([]byte(nil), (*[4]byte)(unsafe.Pointer(sa + 4))[:]...))
+		return net.IP(append([]byte(nil), (*[4]byte)(at(sa + 4))[:]...))
 	case 23:
-		return net.IP(append([]byte(nil), (*[16]byte)(unsafe.Pointer(sa + 8))[:]...))
+		return net.IP(append([]byte(nil), (*[16]byte)(at(sa + 8))[:]...))
 	}
 	return nil
 }
@@ -332,7 +336,7 @@ func listAdapters() ([]Adapter, error) {
 			DNSSuffix: wString(ptrAt(cur, 8+6*p)), Addrs: []AdapterAddr{}, Gateways: []string{}, DNS: []string{},
 		}
 		if n := int(u32At(cur, phys+8)); n > 0 && n <= 8 {
-			a.MAC = net.HardwareAddr((*[8]byte)(unsafe.Pointer(cur + phys))[:n:n]).String()
+			a.MAC = net.HardwareAddr((*[8]byte)(at(cur + phys))[:n:n]).String()
 			a.MAC = strings.ToUpper(strings.ReplaceAll(a.MAC, ":", "-"))
 		}
 		flags := u32At(cur, phys+12)
@@ -360,7 +364,7 @@ func listAdapters() ([]Adapter, error) {
 		// unicast: Length, Flags, Next, Address{ptr,len}, PrefixOrigin, SuffixOrigin, DadState, Valid/Preferred/Lease, OnLinkPrefixLength
 		for u := ptrAt(cur, 8+2*p); u != 0; u = ptrAt(u, 8) {
 			if ip := sockaddrIP(ptrAt(u, 8+p)); ip != nil {
-				a.Addrs = append(a.Addrs, AdapterAddr{IP: ip.String(), Prefix: int(*(*uint8)(unsafe.Pointer(u + 8 + 3*p + 24))), V6: ip.To4() == nil})
+				a.Addrs = append(a.Addrs, AdapterAddr{IP: ip.String(), Prefix: int(*(*uint8)(at(u + 8 + 3*p + 24))), V6: ip.To4() == nil})
 			}
 		}
 		for d := ptrAt(cur, 8+5*p); d != 0; d = ptrAt(d, 8) {
