@@ -364,11 +364,13 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 /* disk info (CrystalDiskInfo style) */
 :root{--good:#1f7ae0;--caution:#c78a00;--badc:#d13438;--unk:#8a8a8a}
 :root[data-theme=dark]{--good:#4ea1ff;--caution:#f2c94c;--badc:#ff6b6b;--unk:#9a9a9a}
-.dkpills{display:flex;flex-wrap:wrap;gap:2px;align-items:flex-end;flex:1 1 auto;border-bottom:1px solid var(--border);padding:0 4px}
-.dkpill{height:auto;min-height:44px;padding:5px 14px;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;background:transparent;box-shadow:none;margin-bottom:-1px;position:relative}
-.dkpill:hover:not(.on){background:var(--hover)}
-.dkpill.on{background:var(--card);border-color:var(--border);box-shadow:none}
-.dkpill.on::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:3px;border-radius:8px 8px 0 0;background:var(--accent)}
+.dkpills{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;flex:1 1 auto;border-bottom:1px solid var(--border);padding:0 4px}
+/* Windows 11 (WinUI Pivot): header text with a rounded accent indicator under the selected one */
+.dkpill{height:auto;min-height:44px;padding:5px 14px 9px;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:0;border-radius:6px 6px 0 0;background:transparent;box-shadow:none;margin-bottom:-1px;position:relative;color:var(--muted)}
+.dkpill b,.dkpill small{color:inherit}
+.dkpill:hover:not(.on){background:var(--hover);color:var(--text)}
+.dkpill.on{background:transparent;color:var(--text)}
+.dkpill.on::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:2px;background:var(--accent)}
 .dkpill b{font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}.dkpill small{color:var(--muted);font-size:11.5px}
 .hdot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--unk)}
 .h-Good{--hc:var(--good)}.h-Caution{--hc:var(--caution)}.h-Bad{--hc:var(--badc)}.h-Unknown{--hc:var(--unk)}
