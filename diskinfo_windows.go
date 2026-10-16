@@ -90,6 +90,17 @@ type DiskInfo struct {
 	HostWrites int64      `json:"hostWrites"`
 	NeedAdmin  bool       `json:"needAdmin"`
 	Notes      []string   `json:"notes"`
+
+	// Maker, controller and DRAM cache (see diskmeta_windows.go).
+	Maker            string `json:"maker"`
+	Controller       string `json:"controller"`
+	ControllerVendor string `json:"controllerVendor"`
+	DRAM             string `json:"dram"` // dram | dramless | dram-likely | dramless-likely | unknown | n/a
+	DRAMNote         string `json:"dramNote"`
+	HMBBytes         int64  `json:"hmbBytes"`
+	PCIVendor        uint16 `json:"pciVendor"`
+	SubVendor        uint16 `json:"subVendor"`
+	hasIdentify      bool
 }
 
 var busNames = map[uint32]string{1: "SCSI", 2: "ATAPI", 3: "ATA", 4: "IEEE 1394", 5: "SSA", 6: "Fibre Channel", 7: "USB", 8: "RAID",
@@ -152,6 +163,9 @@ func listDisks() []*DiskInfo {
 		}
 		readLayout(h, d)
 		readTemperature(h, d)
+		if d.Bus == "NVMe" {
+			readNVMeIdentify(h, d)
+		}
 		syscall.CloseHandle(h)
 		readSMART(d)
 		disks = append(disks, d)
@@ -623,6 +637,9 @@ func hDisks(w http.ResponseWriter, r *http.Request) {
 	}
 	if disks == nil {
 		disks = []*DiskInfo{}
+	}
+	for _, d := range disks {
+		classifyDisk(d)
 	}
 	writeJSON(w, map[string]any{"admin": isAdmin(), "disks": disks, "time": time.Now().Unix(),
 		"ms": map[string]int64{"drives": t1.Sub(t0).Milliseconds(), "health": time.Since(t1).Milliseconds()}})

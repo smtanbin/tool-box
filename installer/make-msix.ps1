@@ -8,7 +8,7 @@
 # Product management -> Product identity (Package/Identity/Name, Package/Identity/Publisher,
 # Package/Properties/PublisherDisplayName) exactly.
 #
-# Usage: powershell -ExecutionPolicy Bypass -File installer\make-msix.ps1 -Version 1.0.2 `
+# Usage: powershell -ExecutionPolicy Bypass -File installer\make-msix.ps1 -Version 1.1.0 `
 #          -IdentityName 12345Publisher.MyToolBox -Publisher "CN=XXXXXXXX-XXXX-..." -PublisherDisplayName "Tanbin"
 param(
     [Parameter(Mandatory)][string]$Version,

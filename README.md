@@ -16,6 +16,17 @@ Design interface that follows your Windows light/dark theme and accent colour.
   Good / Caution / Bad health badge, temperature, power-on hours and count, host
   reads / writes, and the full S.M.A.R.T. attribute table. NVMe health works as a
   normal user; SATA SMART needs **Run as administrator** (one click in the app).
+  The drive's **maker**, **controller** (vendor from the NVMe PCI ID, model from
+  a built-in list of well-known drives) and a **DRAM / DRAM-less** badge are shown
+  too. Windows has no "has DRAM" flag, so the verdict comes from the NVMe Host
+  Memory Buffer request plus the model list and is labelled "probably" when it is
+  only the HMB hint.
+
+**System**
+- **Process monitor** — live process list (CPU, memory, threads, path, listening
+  ports), a Ports tab with every TCP / UDP port and the program that owns it, and
+  **End process**, **End tree** and **Kill port owner** (type a port, free it).
+  System-critical processes are protected; some need an administrator copy.
 
 **Network**
 - **Subnet calculator** — IPv4 address with prefix or netmask: network, broadcast,
@@ -32,6 +43,12 @@ Design interface that follows your Windows light/dark theme and accent colour.
 - **Encrypt / decrypt** — AES-256-GCM with a passphrase (PBKDF2-SHA-256, 210,000 rounds).
 - **Token & UUID** — UUID v4 / v7, ULID, random tokens and passwords.
 - **Base64 & encoders** — Base64, Base64url, URL, HTML entities, hex, Unicode escapes.
+
+**Image**
+- **Image to Base64** — drop, pick or paste an image: data URI, plain Base64, CSS
+  or `<img>` output; paste Base64 to preview and save the picture back.
+- **Image to ICO** — build a multi-size `.ico` (16-256 px) from PNG, JPG, SVG or
+  WebP with fit / crop / background options. Runs entirely in the browser.
 
 **Developer** · JWT decoder · JSON formatter · Timestamp converter · Number base converter
 
@@ -91,8 +108,8 @@ Then build `dist\ToolBoxSetup-<version>-<arch>.msi` and portable
 `dist\ToolBox-<version>-<arch>.exe` for x64, x86 and arm64:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.1
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.0.1 -Arch x64
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.1.0
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 1.1.0 -Arch x64
 ```
 
 ### Releases (CI/CD)
@@ -102,8 +119,8 @@ Pushing a version tag builds the installers and publishes a GitHub Release
 (`.github/workflows/release.yml`):
 
 ```
-git tag v1.0.2
-git push origin v1.0.2
+git tag v1.1.0
+git push origin v1.1.0
 ```
 
 The installers are also published to GitHub Pages, which serves files directly
@@ -111,9 +128,9 @@ with no redirect (GitHub Release download links redirect, which the Microsoft St
 rejects). These are the URLs to use as the Store "Package URL":
 
 ```
-https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x64.msi
-https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-x86.msi
-https://smtanbin.github.io/tool-box/downloads/1.0.2/ToolBoxSetup-1.0.2-arm64.msi
+https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x64.msi
+https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x86.msi
+https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-arm64.msi
 ```
 
 One-time setup: repo **Settings → Pages → Build and deployment → Deploy from a
@@ -126,6 +143,22 @@ single-page UI (`web/`). Windows features (folder picker, Recycle Bin, drive
 list, ICMP ping) use the Win32 API directly through `syscall`. Nothing is sent
 off your PC, and closing the window quits the app.
 
+
+### Code layout
+
+| Path | What it holds |
+|------|---------------|
+| `main.go` | start-up, flags, static files, route table |
+| `folder_api.go`, `scan.go`, `dupes.go` | Folder Size: scanner, tree, duplicate finder, HTTP handlers |
+| `diskinfo_windows.go`, `diskmeta_windows.go` | Disk info: SMART / NVMe health; maker, controller and DRAM detection |
+| `process_windows.go` | Process monitor: processes, ports, kill |
+| `nettools.go`, `icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
+| `winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
+| `web/index.html` | page shell, styles and the Folder Size UI |
+| `web/tools.js` | Disk info, network, crypto and developer tool pages |
+| `web/proc.js`, `web/image.js` | Process monitor; Image to Base64 and Image to ICO |
+| `web/boot.js` | opens the first tool (loaded last) |
+| `installer/`, `store/` | MSI / MSIX build scripts and Microsoft Store listing |
 ## License
 
 Apache License 2.0 with the **Commons Clause** — see [LICENSE](LICENSE).

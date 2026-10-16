@@ -1,6 +1,6 @@
 // Copyright 2026 Tanbin (magestica.com). My Tool Box.
 // Licensed under the Apache License 2.0 with the Commons Clause (no selling); see LICENSE.
-// Network and developer tool pages. Loaded after the main script in index.html and shares its helpers ($, $$, api, esc, toast, flyout).
+// Disk, network, crypto and developer tool pages. Loaded after the main script in index.html and shares its helpers ($, $$, api, esc, toast, flyout).
 "use strict";
 
 /* ---------- tool switching ---------- */
@@ -76,11 +76,16 @@ function diskRender(){const D=dk.disks;
     ['Capacity',d.size?`${fmt(d.size)} · ${(d.size/1e9).toFixed(1)} GB (decimal)`:'—'],['Partition style',d.style||'—'],['Drive letters',d.letters.join(' ')||'—'],
     ['Power-on count',d.powerCount?d.powerCount.toLocaleString()+' times':'—'],['Power-on hours',d.powerHours?`${d.powerHours.toLocaleString()} h (${(d.powerHours/24).toFixed(0)} days)`:'—'],
     ['Host reads',d.hostReads?fmt(d.hostReads):'—'],['Host writes',d.hostWrites?fmt(d.hostWrites):'—'],['Health source',d.source||'Not available']];
+  kv.splice(3,0,['Manufacturer',d.maker],['Controller',d.controller||(d.controllerVendor?d.controllerVendor+' (model unknown)':'')],['Controller maker',d.controllerVendor]);
+  if(d.hmbBytes)kv.push(['Host Memory Buffer',fmt(d.hmbBytes)+' requested']);
   if(d.removable)kv.splice(3,0,['Removable','Yes']);
+  const dramLbl={dram:'DRAM cache','dram-likely':'Probably DRAM cache',dramless:'DRAM-less','dramless-likely':'Probably DRAM-less',unknown:'DRAM unknown'};
+  const dramHTML=dramLbl[d.dram]?`<div class="dramrow"><span class="dbadge ${d.dram}">${dramLbl[d.dram]}</span> <span class="hint" style="margin:0">${esc(d.dramNote)}</span></div>`:(d.dramNote?`<p class="hint">${esc(d.dramNote)}</p>`:'');
   let html=`<div class="card"><div class="dktop"><div class="dkbadges">
       <div class="hbadge h-${d.health}" title="${esc(d.source||'')}"><small>Health status</small><b>${hlabel}</b><span>${d.healthPct>0?d.healthPct+' %':'&nbsp;'}</span></div>
       <div class="hbadge h-${tc}"><small>Temperature</small><b>${d.temp?d.temp+' °C':'— °C'}</b><span>${d.temp?Math.round(d.temp*9/5+32)+' °F':(d.needAdmin&&!dk.admin?'needs administrator':'not reported')}</span></div></div>
     <div><div class="dkhead"><h2>${esc(d.model||'Unknown drive')}</h2><span>${fmt(d.size)} · Disk ${d.index}</span></div>
+      ${dramHTML}
       <div class="dkkv">${kv.map(([k,v])=>`<div><span class="k">${k}</span><span class="v">${esc(v||'—')}</span></div>`).join('')}</div>
       ${d.reasons.length?`<div class="reasons h-${d.health}">${d.reasons.map(esc).join('<br>')}</div>`:''}
       ${d.notes.length?`<p class="hint">${d.notes.map(esc).join('<br>')}</p>`:''}</div></div></div>`;
@@ -467,5 +472,3 @@ function baseRun(){let s=$('#nbin').value.trim().replace(/[\s_]/g,'').toLowerCas
     ['Hexadecimal (16)',v.toString(16).toUpperCase(),esc(grp(v.toString(16).toUpperCase(),2))],['Base 32',v.toString(32)],['Base 36',v.toString(36)],
     ['Bit length',String(bl)],['Bytes',String(Math.ceil(bl/8))]])}
 
-/* ---------- boot ---------- */
-(function(){let t=location.hash.slice(1);if(!TOOL_NAMES[t]){try{t=localStorage.getItem('tool')||'foldersize'}catch(e){t='foldersize'}}showTool(t)})();

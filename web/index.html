@@ -371,6 +371,17 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 .dktop{display:grid;grid-template-columns:200px 1fr;gap:16px}
 @media (max-width:760px){.dktop{grid-template-columns:1fr}}
 .dkbadges{display:flex;flex-direction:column;gap:8px}
+.dropzone{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:22px;border:2px dashed var(--border);border-radius:10px;color:var(--muted);text-align:center}
+.dropzone.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}.dropzone>.fi{font-size:24px;color:var(--accent)}.dropzone b{font-weight:500}
+.imgprev{min-height:200px;max-height:300px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:repeating-conic-gradient(color-mix(in srgb,var(--muted) 18%,transparent) 0 25%,transparent 0 50%) 0 0/16px 16px}
+.imgprev img{max-width:100%;max-height:296px;display:none}
+.sizes{display:flex;flex-wrap:wrap;gap:6px 14px;height:32px;align-items:center}.sizes label{display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+.icogrid{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-top:14px}.icogrid figure{margin:0;text-align:center;font-size:12px;color:var(--muted)}
+.icogrid canvas{display:block;margin:0 auto 4px;border:1px solid var(--border);background:repeating-conic-gradient(color-mix(in srgb,var(--muted) 18%,transparent) 0 25%,transparent 0 50%) 0 0/12px 12px}
+.dbadge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:12px;font-weight:600;color:#fff}.dbadge.dram{background:var(--ok)}.dbadge.dramless{background:var(--bad)}.dbadge.unknown{background:var(--muted)}
+.dbadge.dram-likely{background:color-mix(in srgb,var(--ok) 70%,var(--muted))}.dbadge.dramless-likely{background:color-mix(in srgb,var(--bad) 70%,var(--muted))}
+.tbl tr.sel td{background:color-mix(in srgb,var(--accent) 16%,transparent)}.tbl td.nw{white-space:nowrap}.tbl .pp{color:var(--muted);font-size:12px}
+.sortable th{cursor:pointer;user-select:none}.cpubar{display:inline-block;width:46px;height:6px;border-radius:3px;background:var(--border);margin-right:6px;vertical-align:middle;overflow:hidden}.cpubar i{display:block;height:100%;background:var(--accent)}
 .hbadge{border-radius:8px;padding:12px 14px;text-align:center;color:#fff;background:var(--hc);border:1px solid color-mix(in srgb,var(--hc) 70%,black)}
 .hbadge small{display:block;font-size:12px;opacity:.9}.hbadge b{display:block;font-size:26px;font-weight:600;line-height:1.2;font-family:"Segoe UI Variable Display","Segoe UI",sans-serif}
 .hbadge span{display:block;font-size:13px;opacity:.95}
@@ -424,6 +435,8 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   <div class="rh">Disk</div>
   <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><b class="lbl">Folder Size</b></a>
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
+  <div class="rh">System</div>
+  <a class="ri" data-tool="proc" title="Process monitor, ports and kill"><i class="fi">&#xE9D2;</i><b class="lbl">Process monitor</b></a>
   <div class="rh">Network</div>
   <a class="ri" data-tool="subnet" title="Subnet calculator"><i class="fi">&#xE839;</i><b class="lbl">Subnet calculator</b></a>
   <a class="ri" data-tool="ipscan" title="IP scanner"><i class="fi">&#xE774;</i><b class="lbl">IP scanner</b></a>
@@ -434,6 +447,9 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   <a class="ri" data-tool="crypt" title="Encrypt / decrypt"><i class="fi">&#xE72E;</i><b class="lbl">Encrypt / decrypt</b></a>
   <a class="ri" data-tool="token" title="Token &amp; UUID generator"><i class="fi">&#xE8D7;</i><b class="lbl">Token &amp; UUID</b></a>
   <a class="ri" data-tool="encode" title="Base64 &amp; encoders"><i class="fi">&#xE943;</i><b class="lbl">Base64 &amp; encoders</b></a>
+  <div class="rh">Image</div>
+  <a class="ri" data-tool="img64" title="Image to Base64"><i class="fi">&#xE91B;</i><b class="lbl">Image to Base64</b></a>
+  <a class="ri" data-tool="ico" title="Image to ICO"><i class="fi">&#xEB9F;</i><b class="lbl">Image to ICO</b></a>
   <div class="rh">Developer</div>
   <a class="ri" data-tool="jwt" title="JWT decoder"><i class="fi">&#xEA18;</i><b class="lbl">JWT decoder</b></a>
   <a class="ri" data-tool="json" title="JSON formatter"><i class="fi">&#xE8A5;</i><b class="lbl">JSON formatter</b></a>
@@ -750,6 +766,61 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   </div><div class="err" id="nberr"></div></div>
   <div class="card"><div class="kv" id="nbout"></div></div>
 </div></section>
+
+<!-- ===== Process monitor ===== -->
+<section class="tool" id="t-proc">
+  <div class="tbar">
+    <div class="seg" id="pmtabs"><button data-v="procs" class="on">Processes</button><button data-v="ports">Ports</button></div>
+    <div class="fld"><label for="pmq">Filter</label><input id="pmq" style="width:220px" placeholder="Name, PID, path or port" spellcheck="false"></div>
+    <div class="fld"><label for="pmint">Refresh</label><select id="pmint"><option value="0">Paused</option><option value="1000">1 s</option><option value="2000" selected>2 s</option><option value="5000">5 s</option></select></div>
+    <span class="sep"></span>
+    <div class="fld"><label for="pmkp">Free a port</label><input id="pmkp" class="mono" type="number" min="1" max="65535" style="width:96px" placeholder="3000"></div>
+    <button class="cmd" id="pmkpgo" title="End every process using this port"><i class="fi acc">&#xE74D;</i>Kill port owner</button>
+    <span class="grow"></span>
+    <button class="cmd" id="pmkill" disabled title="End the selected process (Delete)"><i class="fi acc">&#xE711;</i>End process</button>
+    <button class="cmd" id="pmtree" disabled title="End the selected process and everything it started"><i class="fi acc">&#xE711;</i>End tree</button>
+  </div>
+  <div class="tpage">
+    <div class="tiles" id="pmtiles"></div>
+    <div class="card flush"><div class="tblwrap" style="max-height:none"><table class="tbl hov" id="pmtbl"></table></div></div>
+  </div>
+</section>
+
+<!-- ===== Image to Base64 ===== -->
+<section class="tool" id="t-img64"><div class="tpage">
+  <div class="thead"><i class="fi">&#xE91B;</i><div><h1>Image to Base64</h1><p>Turn a picture into a Base64 string or data URI, or decode Base64 back into an image. Nothing leaves your computer.</p></div></div>
+  <div class="card">
+    <div class="dropzone" id="i64drop" tabindex="0"><i class="fi">&#xE898;</i><b>Drop an image here, paste one (Ctrl+V), or</b><button class="primary" id="i64pick">Choose image…</button><input type="file" id="i64file" accept="image/*" hidden></div>
+    <div class="two" style="margin-top:12px">
+      <div><div class="frm" style="margin-bottom:8px">
+        <div class="fld"><label for="i64fmt">Output</label><select id="i64fmt"><option value="uri">Data URI (data:image/…;base64,…)</option><option value="raw">Base64 only</option><option value="css">CSS background-image</option><option value="img">HTML &lt;img&gt; tag</option></select></div>
+        <button data-copy="#i64out"><i class="fi">&#xE8C8;</i>Copy</button><button id="i64save"><i class="fi">&#xE74E;</i>Save .txt</button></div>
+        <textarea id="i64out" rows="12" readonly spellcheck="false" placeholder="The Base64 text appears here"></textarea>
+        <div class="hint" id="i64info"></div></div>
+      <div><div class="frm" style="margin-bottom:8px"><span class="hint" style="margin:0">Preview / decode</span><span class="grow"></span><button id="i64dl" disabled><i class="fi">&#xE896;</i>Save image</button></div>
+        <div class="imgprev"><img id="i64prev" alt=""><span class="empty" id="i64none">No image yet</span></div>
+        <div class="fld" style="margin-top:8px"><label for="i64in">Or paste Base64 / data URI to see the image</label><textarea id="i64in" rows="3" spellcheck="false" placeholder="data:image/png;base64,iVBORw0…"></textarea></div>
+        <div class="err" id="i64err"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ===== Image to ICO ===== -->
+<section class="tool" id="t-ico"><div class="tpage">
+  <div class="thead"><i class="fi">&#xEB9F;</i><div><h1>Image to ICO</h1><p>Make a Windows .ico file with several sizes inside from a PNG, JPG, SVG or WebP. Built in your browser; nothing is uploaded.</p></div></div>
+  <div class="card">
+    <div class="dropzone" id="icodrop" tabindex="0"><i class="fi">&#xE898;</i><b>Drop an image here, paste one (Ctrl+V), or</b><button class="primary" id="icopick">Choose image…</button><input type="file" id="icofile" accept="image/*" hidden></div>
+    <div class="frm" style="margin-top:12px">
+      <div class="fld"><label>Sizes inside the icon</label><div class="sizes" id="icosizes"></div></div>
+      <div class="fld"><label for="icofit">Non-square image</label><select id="icofit"><option value="contain">Fit (keep all, transparent padding)</option><option value="cover">Fill (crop the edges)</option><option value="stretch">Stretch</option></select></div>
+      <div class="fld"><label for="icobg">Background</label><select id="icobg"><option value="">Transparent</option><option value="#ffffff">White</option><option value="#000000">Black</option></select></div>
+      <button class="primary" id="icodl" disabled><i class="fi">&#xE896;</i>Download .ico</button>
+    </div>
+    <div class="err" id="icoerr"></div>
+    <div class="icogrid" id="icoprev"></div>
+    <div class="hint" id="icoinfo"></div>
+  </div>
+</div></section>
 </div></div>
 <div id="status"><span id="s1"></span><span id="s2"></span><span id="s3"></span></div>
 <div id="tip"></div><div id="ctx"></div><div id="toast"></div>
@@ -784,7 +855,7 @@ applyTheme(false);
 
 /* ---------- state ---------- */
 let rootId=null, tmId=null, selId=null, tmData=null, tabName='pie';
-const AUTHOR='Tanbin', VERSION='1.0.1';
+const AUTHOR='Tanbin', VERSION='1.1.0';
 const IC_DIR='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f6b73c" d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>';
 const IC_FILE='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#90a4ae" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>';
 const kids=new Map(), parentOf=new Map(), open=new Set();
@@ -1163,5 +1234,8 @@ loadDrives();
 api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scanning)poll();else if(s.hasRoot)scanFinished(s)}).catch(()=>{});
 </script>
 <script src="/tools.js"></script>
+<script src="/proc.js"></script>
+<script src="/image.js"></script>
+<script src="/boot.js"></script>
 </body>
 </html>

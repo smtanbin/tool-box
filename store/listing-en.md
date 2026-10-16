@@ -51,11 +51,11 @@ Everyday IT tools for Windows in one app: folder size and disk health, subnet ca
 ## What's new in this version *(max 1,500)*
 
 ```
-Version 1.0.1
-• Renamed to My Tool Box.
-• Folder Size, Disk info, Subnet calculator, IP scanner, Ping, Telnet / ports, Hash text, Encrypt / decrypt, Token & UUID, Base64 & encoders, JWT decoder, JSON formatter, Timestamp converter and Number base.
-• Windows 11 Fluent Design that follows your system theme and accent colour.
-• Installers for 64-bit, 32-bit and ARM64 Windows.
+Version 1.1.0
+• New Process monitor: live process list with CPU and memory, open TCP/UDP ports with the program using each one, and one-click End process / End tree / Kill port owner.
+• Disk info now shows the drive maker and controller, and tells you whether an SSD is DRAM-less (Host Memory Buffer) or has a DRAM cache.
+• New Image to Base64 (data URI, CSS, HTML) with Base64 to image decoding, and Image to ICO that packs several icon sizes into one .ico file.
+• Tidier internals and the same private, offline design.
 ```
 
 ## Product features *(up to 20, each max 200)*
@@ -146,7 +146,7 @@ Screenshot captions (optional, max 200 each):
 My Tool Box is a standalone Windows desktop app (MSI installer, per-user, no administrator rights needed). No sign-in, account or test credentials are required.
 
 INSTALL
-Silent install: msiexec /i ToolBoxSetup-1.0.1-x64.msi /qn /norestart
+Silent install: msiexec /i ToolBoxSetup-1.1.0-x64.msi /qn /norestart
 The installer adds Desktop and Start menu shortcuts and one entry in Settings > Apps > Installed apps named "My Tool Box". It installs only this app (no bundled or third-party software) and uninstalls cleanly from there.
 
 HOW IT WORKS
@@ -177,9 +177,9 @@ Source code: https://github.com/smtanbin/tool-box
 | Minimum OS | Windows 10 version 1809 or later |
 | Needs Microsoft Edge or Chrome | Yes, built into Windows 10/11 |
 | Code signing | Required by the Store for MSI/EXE packages. Sign each installer before submitting. |
-| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-x64.msi` |
-| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-x86.msi` |
-| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/1.0.1/ToolBoxSetup-1.0.1-arm64.msi` |
+| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x64.msi` |
+| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-x86.msi` |
+| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/1.1.0/ToolBoxSetup-1.1.0-arm64.msi` |
 
 The Package URL must **not redirect**. GitHub Release links redirect (HTTP 302), so use
 the GitHub Pages URLs above (needs Settings → Pages → `gh-pages` branch, root).
