@@ -66,6 +66,11 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 **Developer** · JWT decoder · JSON formatter · Timestamp converter · Number base converter
 
+**Skins** — *View > Skin* switches the look: **Windows 11** (default, follows your
+light / dark setting and accent colour), **Windows 7 Aero** (glass bars, glossy
+buttons, green progress bar; always light) and **Magestica burgundy** (brand colours,
+light and dark). The choice is remembered. Skins live in `web/skins.css`.
+
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
 ## Install
@@ -171,7 +176,7 @@ off your PC, and closing the window quits the app.
 | `netinfo_windows.go` | network adapters (GetAdaptersAddresses), DNS lookup, traceroute hops |
 | `nettools.go`, `icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
 | `winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
-| `web/index.html` | page shell, styles and the Folder Size UI |
+| `web/index.html`, `web/skins.css` | page shell, styles and the Folder Size UI; Windows 7 Aero and Magestica burgundy skins |
 | `web/tools.js` | Disk info, network, crypto and developer tool pages |
 | `web/proc.js`, `web/hosts.js`, `web/env.js`, `web/sysnet.js`, `web/image.js` | Process monitor; Hosts editor; Environment and PATH; Adapters, DNS and Traceroute; Image tools |
 | `web/boot.js` | opens the first tool (loaded last) |

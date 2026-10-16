@@ -1,0 +1,85 @@
+/* Copyright 2026 Tanbin (magestica.com). My Tool Box.
+   Licensed under the Apache License 2.0 with the Commons Clause (no selling); see LICENSE.
+
+   Skins. The page's base look is Windows 11 (see index.html). The skin is chosen with
+   <html data-skin="aero|burgundy"> (nothing = Windows 11) and works with data-theme light / dark:
+     burgundy  Magestica brand colours, follows light / dark
+     aero      Windows 7 Aero glass, always light
+   Skins only override colour variables and a few surfaces, so every tool page picks them up. */
+
+/* ===================== Magestica burgundy ===================== */
+:root[data-skin=burgundy]{--accent:#8a1c3c;--accent-text:#fff;--bg:#f6f0f1;--panel:#faf5f6;--card:#fff;--text:#241a1d;--muted:#6f5d63;
+ --border:rgba(90,20,40,.13);--strong:rgba(90,20,40,.3);--hover:rgba(138,28,60,.07);--press:rgba(138,28,60,.13);--tmbg:#efe6e8;--fill:rgba(138,28,60,.1);--danger:#b3261e;
+ --flyout:0 8px 24px rgba(60,10,25,.18),0 0 2px rgba(60,10,25,.25);--dialog:0 32px 64px rgba(60,10,25,.3),0 0 8px rgba(60,10,25,.2);--good:#2e7d4f;--caution:#b7791f;--badc:#c0392b}
+:root[data-skin=burgundy][data-theme=dark]{--accent:#e07a96;--accent-text:#2a0a14;--bg:#1c1215;--panel:#251a1e;--card:#2b1e23;--text:#f6eef0;--muted:#b3a0a6;
+ --border:rgba(255,225,232,.11);--strong:rgba(255,225,232,.24);--hover:rgba(224,122,150,.11);--press:rgba(224,122,150,.18);--tmbg:#170f12;--fill:rgba(255,225,232,.12);--danger:#ff9aa8;
+ --flyout:0 8px 24px rgba(0,0,0,.55),0 0 2px rgba(0,0,0,.6);--dialog:0 32px 64px rgba(0,0,0,.65),0 0 8px rgba(0,0,0,.5)}
+:root[data-skin=burgundy] #appbar .logo svg path:first-child{fill:var(--accent)}
+:root[data-skin=burgundy] button.primary{background:var(--accent);border-color:transparent}
+:root[data-skin=burgundy] ::selection{background:color-mix(in srgb,var(--accent) 35%,transparent)}
+
+/* ===================== Windows 7 Aero ===================== */
+:root[data-skin=aero]{color-scheme:light;--accent:#2d6fbf;--accent-text:#fff;--bg:#d6e4f5;--panel:#eef4fb;--card:#fff;--text:#1b1b1b;--muted:#4f5b6b;
+ --border:#a9bbd2;--strong:#7f97b8;--hover:rgba(120,165,215,.2);--press:rgba(120,165,215,.35);--tmbg:#e3ecf7;--fill:#cfdcec;--danger:#b32020;--sel:rgba(110,165,230,.38);--bar:#6fa4dc;
+ --flyout:2px 3px 5px rgba(0,0,0,.35);--dialog:0 0 0 1px rgba(255,255,255,.55) inset,0 10px 30px rgba(0,0,0,.45);--good:#2e9e44;--caution:#d89b00;--badc:#d23b3b}
+:root[data-skin=aero] body{font:13px/1.35 "Segoe UI",system-ui,sans-serif;background:linear-gradient(180deg,#bcd3ee 0,#d7e5f6 140px,#e8f0fa 100%) fixed}
+/* glass bars */
+:root[data-skin=aero] #appbar,:root[data-skin=aero] #status{background:linear-gradient(180deg,#eaf2fc 0,#cfe0f4 46%,#bcd4ee 50%,#d4e5f7 100%);border:0;border-bottom:1px solid #8aa5c8;box-shadow:inset 0 1px 0 rgba(255,255,255,.85);color:#000;text-shadow:0 0 6px #fff}
+:root[data-skin=aero] #status{border-bottom:0;border-top:1px solid #8aa5c8}
+:root[data-skin=aero] #appbar .logo{text-shadow:0 0 6px #fff}
+:root[data-skin=aero] .menu>span{border:1px solid transparent;border-radius:3px}
+:root[data-skin=aero] .menu>span:hover,:root[data-skin=aero] .menu.open>span{background:linear-gradient(#f9fcff,#dcebfb 48%,#c4dcf6 52%,#d9eafb);border-color:#7da2ce;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)}
+:root[data-skin=aero] .dd,:root[data-skin=aero] #ctx{background:#f1f5fb;border:1px solid #979797;border-radius:3px;box-shadow:var(--flyout);padding:2px}
+:root[data-skin=aero] .dd div:hover,:root[data-skin=aero] #ctx div:hover{background:linear-gradient(#f6fbff,#d9ecfc 50%,#c2dcf6);box-shadow:inset 0 0 0 1px #7da2ce;border-radius:3px}
+/* navigation rail: glass sidebar */
+:root[data-skin=aero] #rail{background:linear-gradient(180deg,#e6effa,#d2e2f4);border-right:1px solid #8aa5c8;margin:0 8px 8px 0;border-radius:0 4px 4px 0;box-shadow:inset -1px 0 0 rgba(255,255,255,.7)}
+:root[data-skin=aero] .ri{border:1px solid transparent;border-radius:3px;height:32px;min-height:32px}
+:root[data-skin=aero] .ri:hover{background:linear-gradient(#fafdff,#e4f1fd 48%,#cfe6fb 52%,#e0eefc);border-color:#a9c6e8}
+:root[data-skin=aero] .ri.on{background:linear-gradient(#f2f9ff,#d0e6fb 48%,#b8d8f5 52%,#c9e2f8);border-color:#6f9bd1;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
+:root[data-skin=aero] .ri.on::before{display:none}
+:root[data-skin=aero] .rh{color:#1e395b;text-shadow:0 1px 0 #fff;border-bottom:1px solid rgba(110,140,180,.35);margin:6px 4px 2px;padding:6px 7px 2px}
+/* cards and tables */
+:root[data-skin=aero] .card,:root[data-skin=aero] .tile,:root[data-skin=aero] #left,:root[data-skin=aero] #tmwrap,:root[data-skin=aero] #tabs,:root[data-skin=aero] #progress{
+ background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;border:1px solid #8aa5c8;border-radius:4px;box-shadow:inset 0 1px 0 #fff,0 1px 3px rgba(40,70,110,.25)}
+:root[data-skin=aero] .thead>.fi{border-radius:6px;background:linear-gradient(#f4faff,#cfe3f8 50%,#b5d3f2 52%,#cde3f7);border:1px solid #7da2ce;color:#1d5aa6}
+:root[data-skin=aero] .thead h1{font-family:"Segoe UI",sans-serif;font-weight:400;color:#10305c;text-shadow:0 1px 0 #fff}
+:root[data-skin=aero] .tbl th,:root[data-skin=aero] .cols{background:linear-gradient(#fdfeff,#eaf1f9 48%,#dde8f4 52%,#e9f0f8);color:#2b3b52;border-bottom:1px solid #b6c6da;border-right:1px solid #d3dde9}
+:root[data-skin=aero] .tbl.hov tbody tr:hover td,:root[data-skin=aero] .row:hover,:root[data-skin=aero] .lrow:hover,:root[data-skin=aero] .di:hover{background:linear-gradient(#fbfdff,#e9f3fd)}
+:root[data-skin=aero] .tbl tr.sel td,:root[data-skin=aero] .row.sel,:root[data-skin=aero] .lrow.sel{background:linear-gradient(#e8f3fe,#cfe4fb);box-shadow:inset 0 0 0 1px #7da2ce}
+:root[data-skin=aero] .row.sel::before{display:none}
+:root[data-skin=aero] .row{border-radius:3px}
+:root[data-skin=aero] .bar{border-radius:2px;background:#dfe8f3;border:1px solid #b6c6da}
+:root[data-skin=aero] .banner{background:linear-gradient(#fffbe8,#fff2bd);border:1px solid #d9b94b;border-radius:4px}
+/* buttons, inputs: the classic glossy Aero control */
+:root[data-skin=aero] button,:root[data-skin=aero] select{background:linear-gradient(#f6f6f6 0,#ececec 48%,#dcdcdc 52%,#cfcfcf 100%);border:1px solid #707070;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.85);color:#000;height:26px;font-size:12px}
+:root[data-skin=aero] button:hover:not(:disabled){background:linear-gradient(#eaf6fd 0,#d9f0fc 48%,#bee6fd 52%,#a7d9f5 100%);border-color:#3c7fb1;color:#000}
+:root[data-skin=aero] button:active:not(:disabled){background:linear-gradient(#e5f4fc 0,#c4e5f6 48%,#98d1ef 52%,#68b3db 100%);border-color:#2c628b;box-shadow:inset 0 1px 3px rgba(0,0,0,.35);color:#000}
+:root[data-skin=aero] button.primary{background:linear-gradient(#6aa6e6 0,#3f84d3 48%,#2c70c0 52%,#3b7fcb 100%);border-color:#1d4e8c;color:#fff;text-shadow:0 -1px 0 rgba(0,0,0,.35);font-weight:600}
+:root[data-skin=aero] button.primary:hover:not(:disabled){background:linear-gradient(#86baf0 0,#5b9be0 48%,#3e86d4 52%,#56a0e2 100%);border-color:#1d4e8c;color:#fff}
+:root[data-skin=aero] button.danger{color:#9c1313}
+:root[data-skin=aero] button:disabled{opacity:.55}
+:root[data-skin=aero] button.ib,:root[data-skin=aero] .ib{background:transparent;border-color:transparent;box-shadow:none;height:24px}
+:root[data-skin=aero] button.ib:hover:not(:disabled){background:linear-gradient(#eaf6fd,#bee6fd);border-color:#3c7fb1}
+:root[data-skin=aero] input:not([type=checkbox]),:root[data-skin=aero] textarea{background:#fff;border:1px solid #abadb3;border-top-color:#8a8d93;border-radius:2px;box-shadow:inset 0 1px 2px rgba(0,0,0,.12);height:26px;font-size:12px}
+:root[data-skin=aero] textarea{height:auto}
+:root[data-skin=aero] input:focus,:root[data-skin=aero] select:focus,:root[data-skin=aero] textarea:focus{outline:none;border-color:#3d7bad;box-shadow:0 0 4px rgba(61,123,173,.7),inset 0 1px 2px rgba(0,0,0,.12)}
+:root[data-skin=aero] .seg{background:#eaf0f8;border:1px solid #8aa5c8;border-radius:3px;padding:1px;height:26px}
+:root[data-skin=aero] .seg button{height:22px;border-color:transparent;background:transparent;box-shadow:none}
+:root[data-skin=aero] .seg button.on{background:linear-gradient(#e4f1fc,#bcdcf6 50%,#a8d0f1);border-color:#6f9bd1;color:#000;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+:root[data-skin=aero] #tabbar{background:linear-gradient(#f6f9fd,#e3ecf7);border-bottom:1px solid #8aa5c8}
+:root[data-skin=aero] #tabbar button{height:30px;border-radius:3px 3px 0 0;border:1px solid transparent}
+:root[data-skin=aero] #tabbar button.on{background:#fff;border-color:#8aa5c8;border-bottom-color:#fff;color:#000;font-weight:400}
+:root[data-skin=aero] #tabbar button.on::after{display:none}
+/* progress: the green Aero bar */
+:root[data-skin=aero] .pbar{height:14px;border-radius:3px;background:linear-gradient(#e6e6e6,#f4f4f4);border:1px solid #8c8c8c;box-shadow:inset 0 1px 2px rgba(0,0,0,.25);overflow:hidden}
+:root[data-skin=aero] .pbar i{border-radius:2px;background:linear-gradient(#c8f6c4 0,#6fd569 48%,#27b82a 52%,#5fd45c 100%)}
+/* dialogs look like a window */
+:root[data-skin=aero] #dlg{background:rgba(120,150,190,.45)}
+:root[data-skin=aero] .dlg-card{background:#f0f0f0;border:1px solid #4d6b95;border-radius:6px;box-shadow:var(--dialog)}
+:root[data-skin=aero] .dbody{background:#fff;border-radius:5px 5px 0 0;border-bottom:1px solid #dfdfdf}
+:root[data-skin=aero] .dbody h2{color:#003399;font-weight:400;font-size:18px}
+:root[data-skin=aero] .dfoot{background:#f0f0f0;border-top:0}
+:root[data-skin=aero] #toast,:root[data-skin=aero] #tip{background:#fffbe1;color:#000;border:1px solid #767676;border-left:1px solid #767676;border-radius:3px;box-shadow:2px 2px 3px rgba(0,0,0,.3)}
+:root[data-skin=aero] .hbadge{border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.3)}
+:root[data-skin=aero] button.primary.danger{background:linear-gradient(#e98a8a 0,#d44848 48%,#b92626 52%,#cc3d3d 100%);border-color:#7d1414;color:#fff}
+:root[data-skin=aero] button.primary.danger:hover:not(:disabled){background:linear-gradient(#f4a3a3 0,#e05d5d 48%,#c93636 52%,#d95353 100%);color:#fff}
