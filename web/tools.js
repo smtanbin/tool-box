@@ -43,7 +43,7 @@ function kvHTML(rows){return rows.map(([k,v,h])=>`<div class="k">${esc(k)}</div>
 function downloadText(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 const csvCell=v=>/[",\n]/.test(v=String(v??''))?'"'+v.replace(/"/g,'""')+'"':v;
 function segInit(sel,cb){$(sel).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(x=>x.classList.toggle('on',x===b));cb(b)})}
-function cssColor(v){const p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;color:var('+v+')';document.body.appendChild(p);const c=getComputedStyle(p).color;p.remove();return c}
+function cssColor(v,host){const p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;color:var('+v+')';(host||document.body).appendChild(p);const c=getComputedStyle(p).color;p.remove();return c}
 const withAlpha=(rgb,a)=>rgb.replace(/^rgba?\(([^,]+),([^,]+),([^,)]+).*$/,`rgba($1,$2,$3,${a})`);
 function debounce(fn,ms){let h;return(...a)=>{clearTimeout(h);h=setTimeout(()=>fn(...a),ms)}}
 const fms=ms=>ms==null?'—':ms<1?'<1 ms':(ms<10?ms.toFixed(1).replace(/\.0$/,''):Math.round(ms))+' ms';
@@ -129,12 +129,13 @@ function subnetCalc(){
   const mask=maskOf(p),wild=(~mask)>>>0,net=(ip&mask)>>>0,h=hostInfo(net,p),o1=ip>>>24;
   snCur={ip,p,net};
   const cls=o1<128?'A':o1<192?'B':o1<224?'C':o1<240?'D (multicast)':'E (reserved)';
-  $('#snout').innerHTML=kvHTML([
+  const snRows=([
     ['Address',u2ip(ip)],['CIDR notation',u2ip(net)+'/'+p],['Netmask',u2ip(mask)],['Wildcard mask',u2ip(wild)],
     ['Network address',u2ip(net)],['Broadcast address',p>=31?'—':u2ip(h.bc)],['First usable host',u2ip(h.first)],['Last usable host',u2ip(h.last)],
     ['Usable hosts',h.hosts.toLocaleString()],['Total addresses',(2**(32-p)).toLocaleString()],['Host range',u2ip(h.first)+' – '+u2ip(h.last)],
     ['IP class',cls],['Address type',ipType(ip)],['Hex',ip.toString(16).toUpperCase().padStart(8,'0').replace(/(..)(?!$)/g,'$1.')],['Integer',String(ip)],
     ['Reverse DNS zone',u2ip(ip).split('.').reverse().join('.')+'.in-addr.arpa']]);
+  $('#snout').innerHTML=`<div class="kv">${kvHTML(snRows.slice(0,8))}</div><div class="kv">${kvHTML(snRows.slice(8))}</div>`;
   const bits=u=>{const s=u.toString(2).padStart(32,'0');let out='';for(let i=0;i<32;i++){if(i&&i%8===0)out+='.';out+=i<p?`<b>${s[i]}</b>`:`<i>${s[i]}</i>`}return out};
   $('#snbin').innerHTML=[['Address',ip],['Netmask',mask],['Wildcard',wild],['Network',net],['Broadcast',h.bc]].map(([k,u])=>`<span class="k">${k}</span><span>${bits(u)}</span>`).join('');
   const ss=$('#snsplit'),prev=+ss.value||0;
@@ -235,7 +236,7 @@ function pingStats(){const s=pingSummary(),has=s.recv>0;
   if(pg.running)$('#s3').textContent=`Pinging ${pg.host} — ${s.sent} sent, ${s.lossPct}% loss${has?', avg '+fms(s.avg):''}`}
 function drawPing(){const box=$('#pgchart');if(!box||!box.clientWidth)return;const cv=box.querySelector('canvas'),tip=box.querySelector('.ctip');
   const W=box.clientWidth,H=box.clientHeight,dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
-  const acc=cssColor('--accent'),bad=cssColor('--bad'),mut=cssColor('--muted'),grid=cssColor('--border');
+  const acc=cssColor('--accent',box),bad=cssColor('--bad',box),mut=cssColor('--muted',box),grid=cssColor('--border',box);
   const N=120,data=pg.samples.slice(-N),L=44,R=10,T=10,B=22,pw=W-L-R,ph=H-T-B;
   const okMax=Math.max(0,...data.filter(x=>x.ok).map(x=>x.ms));const steps=[4,8,12,20,40,60,80,100,200,400,600,800,1000,2000,4000,6000,8000,10000]; // all divide evenly into 4 gridlines
   const top=steps.find(v=>v>=okMax*1.15)||Math.ceil(okMax/4000)*4000;
@@ -253,7 +254,7 @@ function drawPing(){const box=$('#pgchart');if(!box||!box.clientWidth)return;con
   if(pg.hover==null||pg.hover<L-6){tip.style.display='none';return}
   let bi=0,bd=1e9;data.forEach((d,i)=>{const dd=Math.abs(x(i)-pg.hover);if(dd<bd){bd=dd;bi=i}});const d=data[bi],hx=x(bi);
   g.strokeStyle=mut;g.lineWidth=1;g.setLineDash([3,3]);g.beginPath();g.moveTo(Math.round(hx)+.5,T);g.lineTo(Math.round(hx)+.5,T+ph);g.stroke();g.setLineDash([]);
-  if(d.ok){g.fillStyle=acc;g.strokeStyle=cssColor('--card');g.lineWidth=2;g.beginPath();g.arc(hx,y(d.ms),5,0,7);g.fill();g.stroke()}
+  if(d.ok){g.fillStyle=acc;g.strokeStyle=cssColor('--card',box);g.lineWidth=2;g.beginPath();g.arc(hx,y(d.ms),5,0,7);g.fill();g.stroke()}
   tip.innerHTML=`<b>${d.ok?fms(d.ms):'Lost'}</b>#${d.seq} · ${new Date(d.t).toLocaleTimeString()}${d.ok?' · TTL '+d.ttl:'<br>'+esc(d.status)}`;
   tip.style.display='block';const tw=tip.offsetWidth;tip.style.left=(hx+12+tw>W?hx-12-tw:hx+12)+'px';tip.style.top=(d.ok?Math.max(0,Math.min(H-50,y(d.ms)-20)):T+10)+'px'}
 

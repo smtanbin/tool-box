@@ -292,6 +292,18 @@ body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--ac
 /* ===== tool pages ===== */
 :root{--ok:#0f7b0f;--bad:#c42b1c;--mono:"Cascadia Mono",Consolas,"Courier New",monospace}
 :root[data-theme=dark]{--ok:#6ccb5f;--bad:#ff99a4}
+.hhero h2{margin:6px 0 4px;font-size:26px;font-weight:600}.hhero p{margin:0 0 6px;color:var(--muted)}
+.hsec{margin-top:22px}.hsec h3{margin:0 0 10px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.hcard{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--panel);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;cursor:pointer}
+.hcard:hover{background:var(--hover);border-color:var(--accent)}
+.hico{flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--hover);color:var(--accent);font-size:18px}
+.hico .cicon{display:none;line-height:0}:root:not([data-skin]) .hico .cicon{display:block}:root:not([data-skin]) .hico .cicon+.fi{display:none}.hico .cicon svg{display:block;width:22px;height:22px}
+.htxt{display:flex;flex-direction:column;min-width:0}.htxt b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.htxt small{color:var(--muted);font-size:12px}
+.hempty{margin:0;color:var(--muted);font-size:13px;grid-column:1/-1}
+#homefoot{margin-top:32px;padding:16px 0 6px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;font-size:12.5px;color:var(--muted)}
+#homefoot a{color:var(--accent);text-decoration:none}#homefoot a:hover{text-decoration:underline}
+.hbrand{display:flex;align-items:center;gap:6px;font-weight:500}.hlinks{display:flex;gap:16px}.hver{margin-left:auto}
 .tool{display:none;flex:1;flex-direction:column;min-height:0}.tool.on{display:flex}
 body:not([data-tool=foldersize]) #s1,body:not([data-tool=foldersize]) #s2,body[data-tool=foldersize] #s3{display:none}
 .tpage{flex:1;overflow:auto;padding:2px 12px 12px 4px}
@@ -323,6 +335,7 @@ body:not([data-tool=foldersize]) #s1,body:not([data-tool=foldersize]) #s2,body[d
 .kv>div{padding:6px 0;border-bottom:1px solid var(--border);min-width:0;overflow-wrap:anywhere}
 .kv>.k{color:var(--muted)}.kv>.v{font-family:var(--mono);font-size:13px}
 .kv>:nth-last-child(-n+3){border-bottom:0}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}@media (max-width:900px){.kv2{grid-template-columns:1fr}.kv2>.kv:first-child>:nth-last-child(-n+3){border-bottom:1px solid var(--border)}}
 .kv .ib{width:30px;height:30px}.kv .ib .fi{font-size:13px}
 .bin{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:13px;overflow-x:auto}
 .bin .k{font-family:"Segoe UI",sans-serif;color:var(--muted)}
@@ -429,6 +442,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <hr>
       <div data-cmd="skin-default">Skin: Fluent<kbd></kbd></div>
       <div data-cmd="skin-aero">Skin: Aero<kbd></kbd></div>
+      <div data-cmd="skin-android">Skin: Android<kbd></kbd></div>
       <div data-cmd="skin-burgundy">Skin: Magestica<kbd></kbd></div>
       <hr>
       <div data-cmd="cmode-type">Treemap: color by file type</div>
@@ -445,12 +459,13 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   <div id="expnav"><button id="exback" title="Back" disabled aria-label="Back">&#x2190;</button><button id="exfwd" title="Forward" disabled aria-label="Forward">&#x2192;</button></div>
   <div id="expaddr" aria-label="Address"><span id="expath"></span></div>
   <span class="apspacer" style="flex:1"></span>
-  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option></select></label>
+  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option><option value="android">Android</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
 <div id="shell">
 <nav id="rail">
   <a class="ri" id="railtoggle" title="Collapse / expand menu"><i class="fi">&#xE700;</i></a>
+  <a class="ri" data-tool="home" title="Home: recent and most used tools"><i class="fi">&#xE80F;</i><b class="lbl">Home</b></a>
   <div class="rh">Disk</div>
   <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><i class="fi">&#xE8B7;</i><b class="lbl">Folder Size</b></a>
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
@@ -481,6 +496,13 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
   <a class="ri" data-tool="base" title="Number base converter"><i class="fi">&#xE8EF;</i><b class="lbl">Number base</b></a>
 </nav>
 <div id="content">
+<div class="tool" id="t-home">
+  <div class="tpage" id="homepage">
+    <div class="hhero"><h2>My Tool Box</h2><p>Everyday IT tools for Windows. Pick up where you left off.</p></div>
+    <div id="homebody"></div>
+    <footer id="homefoot"></footer>
+  </div>
+</div>
 <div class="tool on" id="t-foldersize">
 <div id="navrow">
   <button class="ib" id="back" title="Back (Alt+Left)" disabled><i class="fi">&#xE72B;</i></button>
@@ -581,7 +603,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
     <div class="fld grow"><label for="snip">IP address (CIDR or mask ok)</label><input id="snip" class="mono" value="192.168.1.10/24" spellcheck="false" placeholder="10.0.0.5/16 or 10.0.0.5 255.255.0.0"></div>
     <div class="fld"><label for="snmask">Prefix / netmask</label><select id="snmask"></select></div>
   </div><div class="err" id="snerr"></div></div>
-  <div class="card"><h3>Network</h3><div class="kv" id="snout"></div></div>
+  <div class="card"><h3>Network</h3><div class="kv2" id="snout"></div></div>
   <div class="card"><h3>Binary view</h3><div class="bin mono" id="snbin"></div><p class="hint">Network bits are highlighted; the rest are host bits.</p></div>
   <div class="card"><h3>Split into subnets</h3>
     <div class="frm"><div class="fld"><label for="snsplit">New prefix</label><select id="snsplit"></select></div><button id="sncsv"><i class="fi">&#xE8C8;</i>Copy as CSV</button><span class="hint" id="sninfo"></span></div>
@@ -968,11 +990,11 @@ function applyTheme(redraw){
       document.documentElement.style.setProperty('--accent-text',L>.4?'#000':'#fff')}}catch(e){}
   for(const m of['system','light','dark']){const k=document.querySelector(`[data-cmd=theme-${m}] kbd`);if(k)k.textContent=themeMode===m?'✓':''}
   {const sel=document.getElementById('skinsel');if(sel)sel.value=skin}
-  for(const s of['default','aero','burgundy']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
+  for(const s of['default','aero','burgundy','android']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
   if(redraw)drawTM()}
 function setThemeMode(m){themeMode=m;try{localStorage.setItem('themeMode',m)}catch(e){}applyTheme(true);toast('Theme: '+{system:'follow Windows setting',light:'light',dark:'dark'}[m])}
 document.getElementById('skinsel').addEventListener('change',e=>setSkin(e.target.value));
-const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero'};
+const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero',android:'Android'};
 function setSkin(s){skin=s;try{if(s)localStorage.setItem('skin',s);else localStorage.removeItem('skin')}catch(e){}applyTheme(true);toast('Skin: '+SKIN_NAMES[s]+(s==='aero'?' (always light)':''))}
 darkMQ.addEventListener('change',()=>{if(themeMode==='system')applyTheme(true)});
 applyTheme(false);
@@ -1312,7 +1334,7 @@ function showAbout(){
     <p style="color:var(--muted);font-size:12px;margin:14px 0 0">© ${new Date().getFullYear()} ${esc(AUTHOR)} · ${link(SITE,'magestica.com')}. Free for personal and business use; not for resale.</p>`)}
 async function doExit(){try{await api('/api/quit')}catch(e){}window.close();document.body.innerHTML='<div style="padding:60px;text-align:center;font:16px Roboto,Segoe UI,sans-serif">My Tool Box has closed. You can close this window.</div>'}
 const CMD={scan:()=>startScan(),browse:()=>$('#browse').click(),reset:resetAll,export:()=>$('#export').click(),explorer:()=>$('#openx').click(),exit:doExit,
-  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
+  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'skin-android':()=>setSkin('android'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
   refresh:()=>{if(rootId!==null)refreshAll()},up:goUp,faq:showFAQ,keys:showKeys,about:showAbout};
 $('#menubar').addEventListener('click',e=>{const it=e.target.closest('[data-cmd]'),m=e.target.closest('.menu');
   if(it){$$('.menu.open').forEach(x=>x.classList.remove('open'));CMD[it.dataset.cmd]?.();return}
@@ -1352,7 +1374,7 @@ $('#sortbtn').onclick=e=>{const names={name:'Name',size:'Size',files:'Number of 
 $('#viewbtn').onclick=e=>{const cm=$('#cmode').value;
   flyout(e.currentTarget,[{label:'Treemap: color by file type',check:cm==='type',fn:()=>CMD['cmode-type']()},{label:'Treemap: color by age',check:cm==='age',fn:()=>CMD['cmode-age']()},'-',
     {label:'Theme: use system setting',check:themeMode==='system',fn:()=>setThemeMode('system')},{label:'Theme: light',check:themeMode==='light',fn:()=>setThemeMode('light')},{label:'Theme: dark',check:themeMode==='dark',fn:()=>setThemeMode('dark')},'-',
-    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},'-',
+    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},{label:'Skin: Android',check:skin==='android',fn:()=>setSkin('android')},'-',
     {label:'Details panel',check:!$('#right').classList.contains('nodetails'),fn:toggleDetails}])};
 $('#morebtn').onclick=e=>flyout(e.currentTarget,[{label:'Refresh view',fn:CMD.refresh},{label:'Export folders and files to CSV',fn:()=>{if(tmId!==null)location.href='/api/export?files=1&id='+tmId}},'-',{label:'FAQ',fn:showFAQ},{label:'Keyboard shortcuts',fn:showKeys},{label:'About',fn:showAbout},'-',{label:'Exit',fn:doExit}]);
 function toggleDetails(){const r=$('#right');r.classList.toggle('nodetails');$('#details').classList.toggle('on',!r.classList.contains('nodetails'))}
@@ -1368,6 +1390,16 @@ addEventListener('keydown',e=>{if(curTool!=='foldersize')return;if(e.altKey&&e.k
   $('#railtoggle').onclick=()=>{rail.classList.toggle('min');try{localStorage.setItem('railMin',rail.classList.contains('min')?'1':'0')}catch(e){}};
   rail.addEventListener('click',e=>{const a=e.target.closest('.ri[data-tool]');if(!a)return;
     showTool(a.dataset.tool)})})();
+/* collapsible sidebar groups (all skins except Fluent; skins.css gates the look, the state is remembered) */
+(function(){const rail=$('#rail');let shut={};try{shut=JSON.parse(localStorage.getItem('railGroups'))||{}}catch(e){}
+  const groups=()=>$$('#rail .rh');
+  const members=h=>{const r=[];for(let e=h.nextElementSibling;e&&!e.classList.contains('rh');e=e.nextElementSibling)if(e.classList.contains('ri'))r.push(e);return r};
+  const apply=()=>groups().forEach(h=>{const c=!!shut[h.textContent.trim()];h.classList.toggle('gc',c);members(h).forEach(i=>i.classList.toggle('gc',c))});
+  window.railOpenFor=t=>{const a=document.querySelector('#rail .ri[data-tool="'+t+'"]');if(!a)return;
+    for(let e=a.previousElementSibling;e;e=e.previousElementSibling)if(e.classList.contains('rh')){if(shut[e.textContent.trim()]){delete shut[e.textContent.trim()];apply();try{localStorage.setItem('railGroups',JSON.stringify(shut))}catch(x){}}break}};
+  rail.addEventListener('click',e=>{const h=e.target.closest('.rh');if(!h||!document.documentElement.dataset.skin||rail.classList.contains('min'))return;
+    const k=h.textContent.trim();if(shut[k])delete shut[k];else shut[k]=1;apply();try{localStorage.setItem('railGroups',JSON.stringify(shut))}catch(x){}});
+  apply()})();
 let curTool='foldersize'; // set by showTool() in tools.js
 
 /* heartbeat so the server can exit when the window closes */
@@ -1384,6 +1416,8 @@ api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scann
 <script src="/hosts.js"></script>
 <script src="/sysnet.js"></script>
 <script src="/env.js"></script>
+<script src="/home.js"></script>
+<script src="/fluent-icons.js"></script>
 <script src="/boot.js"></script>
 </body>
 </html>

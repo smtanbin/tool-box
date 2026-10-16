@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/home.js web/fluent-icons.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -56,7 +56,7 @@ func main() {
 		case "/":
 		case "/icon.svg", "/tool-foldersize.svg":
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
-		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js":
+		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js", "/home.js", "/fluent-icons.js":
 			name, ctype = r.URL.Path[1:], "text/javascript; charset=utf-8"
 		case "/vendor/7.css":
 			name, ctype = "vendor/7.css", "text/css; charset=utf-8"
@@ -73,6 +73,7 @@ func main() {
 			b = versionDecl.ReplaceAll(b, []byte("VERSION='"+appVersion+"'"))
 		}
 		w.Header().Set("Content-Type", ctype)
+		w.Header().Set("Cache-Control", "no-cache") // a new build must never show the previous build's styles
 		w.Write(b)
 	})
 	mux.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
