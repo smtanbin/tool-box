@@ -15,7 +15,8 @@ param(
     [Parameter(Mandatory)][string]$IdentityName,
     [Parameter(Mandatory)][string]$Publisher,
     [Parameter(Mandatory)][string]$PublisherDisplayName,
-    [string[]]$Arch = @("x64", "x86", "arm64")
+    [string[]]$Arch = @("x64", "x86", "arm64"),
+    [string]$OutDir = ""   # default: dist\ (the Store build); make-sideload.ps1 passes dist\sideload
 )
 $ErrorActionPreference = "Stop"
 if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw "Version must look like 1.2.3 (got '$Version')" }
@@ -23,7 +24,8 @@ $msixVersion = "$Version.0"   # the Store reserves the last segment and requires
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $here
 $build = Join-Path $here "build"
-$dist = Join-Path $root "dist"
+$dist = if ($OutDir) { $OutDir } else { Join-Path $root "dist" }
+New-Item -ItemType Directory -Force $dist | Out-Null
 
 # makeappx.exe: $env:MAKEAPPX when set (e.g. from the Microsoft.Windows.SDK.BuildTools NuGet package), else the Windows SDK
 $makeappx = if ($env:MAKEAPPX -and (Test-Path $env:MAKEAPPX)) { Get-Item $env:MAKEAPPX } else {
