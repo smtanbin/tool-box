@@ -271,7 +271,7 @@ body{background:radial-gradient(1100px 620px at 0% 0%,color-mix(in srgb,var(--ac
 #rail{width:216px;flex:none;padding:2px 6px 8px;overflow:auto;display:flex;flex-direction:column;gap:2px;transition:width .18s ease}
 #rail.min{width:54px}#rail.min .lbl,#rail.min .rh,#rail.min .ri span{display:none}
 .ri{display:flex;align-items:center;gap:12px;height:36px;min-height:36px;padding:0 11px;border-radius:4px;cursor:default;position:relative;white-space:nowrap;color:var(--text);font-size:13px;text-decoration:none}
-.ri img{width:20px;height:20px;flex:none}.ri .fi{font-size:16px;width:20px;text-align:center;margin:0;flex:none}
+.ri img{width:20px;height:20px;flex:none;display:none}.ri .fi{font-size:16px;width:20px;text-align:center;margin:0;flex:none}
 .ri .lbl{font-weight:400;overflow:hidden;text-overflow:ellipsis}
 .ri:hover{background:var(--hover)}.ri:active{background:var(--press)}
 .ri.on{background:var(--hover)}.ri.on::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--accent)}
@@ -452,7 +452,7 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 <nav id="rail">
   <a class="ri" id="railtoggle" title="Collapse / expand menu"><i class="fi">&#xE700;</i></a>
   <div class="rh">Disk</div>
-  <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><b class="lbl">Folder Size</b></a>
+  <a class="ri on" data-tool="foldersize" title="Folder Size"><img src="/tool-foldersize.svg" alt=""><i class="fi">&#xE8B7;</i><b class="lbl">Folder Size</b></a>
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
   <div class="rh">System &amp; developer</div>
   <a class="ri" data-tool="proc" title="Process monitor, ports and kill"><i class="fi">&#xE9D2;</i><b class="lbl">Process monitor</b></a>
