@@ -713,3 +713,12 @@
 /* Hardware info */
 .hwkv{margin-top:8px}.hwbar{height:8px;border-radius:4px;background:var(--fill);overflow:hidden;margin:2px 0 10px}.hwbar i{display:block;height:100%;background:var(--accent)}
 :root[data-skin=black] .ri[data-tool=hw]{--ic:#475569}:root[data-skin=aero] .ri[data-tool=hw]{--ic:#5a6b7d}
+.hwnote{margin:10px 0 0;color:var(--muted)}
+.hwtm{display:grid;grid-template-columns:minmax(150px,200px) 1fr minmax(170px,210px);gap:16px;align-items:start}
+.hwstats{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.hwstats small,.hwside span{color:var(--muted);font-size:12px;display:block}.hwstats b{font-size:20px;font-weight:600;display:block;font-variant-numeric:tabular-nums}
+.hwgraphs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;min-width:0}
+.hwgraphs canvas{width:100%;height:64px;border:1px solid var(--border);background:color-mix(in srgb,var(--card) 70%,transparent);display:block}
+.hwside{display:grid;gap:6px}.hwside>div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding-bottom:4px}.hwside b{font-weight:600;font-variant-numeric:tabular-nums}
+@media (max-width:1000px){.hwtm{grid-template-columns:1fr}.hwstats{grid-template-columns:repeat(3,1fr)}}
+.card .chhead select{height:30px;min-width:200px}
