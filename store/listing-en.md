@@ -56,7 +56,12 @@ Version 2.0.0
 • New Network adapters page: IP, mask, gateway, DNS, DHCP, MAC and link speed for every adapter.
 • New DNS lookup (A, AAAA, MX, NS, TXT, CNAME, PTR, SRV, with your own DNS server) and Traceroute with live hops.
 • Also in this release line: Process monitor with kill and port owners, Hosts file editor, Disk info with maker, controller and DRAM-less detection, Image to Base64 and Image to ICO, and in-app confirmation dialogs.
-• Two new skins in the Skin dropdown: Aero (Windows 7 Explorer style) and Magestica (burgundy).
+• Two new skins in the Skin dropdown: Aero (Windows 7 Explorer style), Magestica (burgundy, One UI style) and Android (Material You).
+• New Home page: your recent and most used tools, all tools at a glance, and links to the developer and source code (usage stays on your PC).
+• Menus reworked: a Tools menu to jump to any tool, Home and sidebar commands, web links under Help, and Folder Size commands that grey out on other pages.
+• Sidebar groups fold and unfold in the Aero, Magestica and Android skins.
+• Subnet calculator results now show in two columns.
+• Aero skin polish: working File / View / Help menus, Windows 7 buttons, a Task Manager style ping graph and a flat DRAM badge.
 • Tidier internals and the same private, offline design.
 ```
 

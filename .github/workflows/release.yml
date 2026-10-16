@@ -44,6 +44,7 @@ jobs:
           "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: Vet
+        working-directory: src
         run: go vet ./...
 
       - name: Install WiX Toolset 5

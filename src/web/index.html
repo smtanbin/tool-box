@@ -102,6 +102,7 @@ body{font-family:Roboto,"Segoe UI",system-ui,sans-serif}
 .dd div{padding:9px 16px;display:flex;justify-content:space-between;gap:28px;cursor:pointer}
 .dd div:hover{background:var(--hover)}.dd kbd{color:var(--muted);font:inherit;font-size:12px}
 .dd hr{border:0;border-top:1px solid var(--border);margin:6px 0}
+#menubar .dd{max-height:calc(100vh - 90px);overflow:auto}body:not([data-tool=foldersize]) .dd .fs{opacity:.4;pointer-events:none}
 #toolbar{box-shadow:var(--e1);border:0;position:relative;z-index:10}
 button{border-radius:20px;padding:6px 16px;font-weight:500;letter-spacing:.2px;position:relative;overflow:hidden;transition:box-shadow .15s,background .15s}
 button.primary{box-shadow:var(--e1)}button.primary:hover:not(:disabled){box-shadow:var(--e2)}
@@ -427,12 +428,13 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
 <header id="appbar">
   <nav id="menubar">
     <div class="menu"><span>File</span><div class="dd">
-      <div data-cmd="scan">Scan folder…<kbd>F5</kbd></div>
-      <div data-cmd="browse">Browse for folder…</div>
-      <div data-cmd="reset">Reset<kbd>Ctrl+R</kbd></div>
+      <div data-cmd="home">Home<kbd>Alt+Home</kbd></div>
       <hr>
-      <div data-cmd="export">Export to CSV…</div>
-      <div data-cmd="explorer">Open selected in Explorer</div>
+      <div class="fs" data-cmd="scan" title="Folder Size tool">Scan folder…<kbd>F5</kbd></div>
+      <div class="fs" data-cmd="browse" title="Folder Size tool">Browse for folder…</div>
+      <div class="fs" data-cmd="reset" title="Folder Size tool">Reset<kbd>Ctrl+R</kbd></div>
+      <div class="fs" data-cmd="export" title="Folder Size tool">Export to CSV…</div>
+      <div class="fs" data-cmd="explorer" title="Folder Size tool">Open selected in Explorer</div>
       <hr>
       <div data-cmd="exit">Exit<kbd>Alt+F4</kbd></div></div></div>
     <div class="menu"><span>View</span><div class="dd">
@@ -445,14 +447,22 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <div data-cmd="skin-android">Skin: Android<kbd></kbd></div>
       <div data-cmd="skin-burgundy">Skin: Magestica<kbd></kbd></div>
       <hr>
-      <div data-cmd="cmode-type">Treemap: color by file type</div>
-      <div data-cmd="cmode-age">Treemap: color by age</div>
+      <div data-cmd="rail">Collapse / expand tool list</div>
+      <div class="fs" data-cmd="details" title="Folder Size tool">Details panel</div>
       <hr>
-      <div data-cmd="refresh">Refresh view</div>
-      <div data-cmd="up">Up one level<kbd>Backspace</kbd></div></div></div>
+      <div class="fs" data-cmd="cmode-type" title="Folder Size tool">Treemap: color by file type</div>
+      <div class="fs" data-cmd="cmode-age" title="Folder Size tool">Treemap: color by age</div>
+      <div class="fs" data-cmd="refresh" title="Folder Size tool">Refresh view</div>
+      <div class="fs" data-cmd="up" title="Folder Size tool">Up one level<kbd>Backspace</kbd></div></div></div>
+    <div class="menu"><span>Tools</span><div class="dd" id="toolsmenu"></div></div>
     <div class="menu"><span>Help</span><div class="dd">
       <div data-cmd="faq">FAQ</div>
       <div data-cmd="keys">Keyboard shortcuts</div>
+      <hr>
+      <div data-cmd="web-site">magestica.com</div>
+      <div data-cmd="web-repo">Source code on GitHub</div>
+      <div data-cmd="web-issue">Report an issue</div>
+      <div data-cmd="web-privacy">Privacy policy</div>
       <hr>
       <div data-cmd="about">About</div></div></div>
   </nav>

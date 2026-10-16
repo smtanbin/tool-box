@@ -24,10 +24,12 @@ jobs:
       - name: Vet
         env:
           GOARCH: ${{ matrix.goarch }}
+        working-directory: src
         run: go vet ./...
       - name: Build
         env:
           GOOS: windows
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
+        working-directory: src
         run: go build -trimpath -ldflags "-H windowsgui -s -w" -o ToolBox-${{ matrix.goarch }}.exe .

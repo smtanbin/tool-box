@@ -66,10 +66,14 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 **Developer** · JWT decoder · JSON formatter · Timestamp converter · Number base converter
 
-**Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look, follows your
+**Home** — the app opens on a Home page with your **Recent** and **Most used** tools, an all-tools grid and links to magestica.com and GitHub. Usage is counted only in the app window's local storage on your computer; nothing is sent anywhere.
+
+**Sidebar groups** — in every skin except Fluent, click a group heading (Disk, Network, ...) to fold or unfold it; the state is remembered and the group of the tool you open reopens itself.
+
+**Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look with full-colour Settings-style icons, follows your
 light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
 buttons, green progress bar; always light) and **Magestica** (follows magestica.com:
-warm white, crimson accent, pill buttons; light and dark). Remembered. Skins live in `web/skins.css`.
+warm white, crimson accent, pill buttons; light and dark) and **Android** (Material You / Material 3: tonal surfaces, pill navigation indicator, filled text fields, outlined icons; light and dark). Remembered. Skins live in `src/web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
@@ -104,11 +108,12 @@ Some data (protected folders, disk health details) needs **Run as administrator*
 Requires Go 1.24 or newer. No C compiler or cgo needed.
 
 ```
-go build -ldflags "-H windowsgui -s -w" -o ToolBox.exe .
+cd src
+go build -ldflags "-H windowsgui -s -w" -o ..\ToolBox.exe .
 ```
 
-The `rsrc_windows_*.syso` files embed the app icon (`app.ico`) and the version
-info shown in Explorer's Properties > Details tab (edit `versioninfo.json`). The
+The `src/rsrc_windows_*.syso` files embed the app icon (`src/app.ico`) and the version
+info shown in Explorer's Properties > Details tab (edit `src/versioninfo.json`). The
 installer build regenerates them for the release version; to do it by hand:
 
 ```
@@ -160,7 +165,7 @@ branch → `gh-pages` / `/ (root)`**.
 ## How it works
 
 A small Go HTTP server listens on `127.0.0.1` only and serves an embedded
-single-page UI (`web/`). Windows features (folder picker, Recycle Bin, drive
+single-page UI (`src/web/`). Windows features (folder picker, Recycle Bin, drive
 list, ICMP ping) use the Win32 API directly through `syscall`. Nothing is sent
 off your PC, and closing the window quits the app.
 
@@ -169,17 +174,18 @@ off your PC, and closing the window quits the app.
 
 | Path | What it holds |
 |------|---------------|
-| `main.go` | start-up, flags, static files, route table |
-| `folder_api.go`, `scan.go`, `dupes.go` | Folder Size: scanner, tree, duplicate finder, HTTP handlers |
-| `diskinfo_windows.go`, `diskmeta_windows.go` | Disk info: SMART / NVMe health; maker, controller and DRAM detection |
-| `process_windows.go`, `hosts_windows.go`, `env_windows.go` | Process monitor (processes, ports, kill); hosts file editor; environment variables and PATH |
-| `netinfo_windows.go` | network adapters (GetAdaptersAddresses), DNS lookup, traceroute hops |
-| `nettools.go`, `icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
-| `winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
-| `web/index.html`, `web/skins.css` | page shell, styles and the Folder Size UI; Windows 7 Aero and Magestica burgundy skins |
-| `web/tools.js` | Disk info, network, crypto and developer tool pages |
-| `web/proc.js`, `web/hosts.js`, `web/env.js`, `web/sysnet.js`, `web/image.js` | Process monitor; Hosts editor; Environment and PATH; Adapters, DNS and Traceroute; Image tools |
-| `web/boot.js` | opens the first tool (loaded last) |
+| `src/main.go` | start-up, flags, static files, route table |
+| `src/folder_api.go`, `src/scan.go`, `src/dupes.go` | Folder Size: scanner, tree, duplicate finder, HTTP handlers |
+| `src/diskinfo_windows.go`, `src/diskmeta_windows.go` | Disk info: SMART / NVMe health; maker, controller and DRAM detection |
+| `src/process_windows.go`, `src/hosts_windows.go`, `src/env_windows.go` | Process monitor (processes, ports, kill); hosts file editor; environment variables and PATH |
+| `src/netinfo_windows.go` | network adapters (GetAdaptersAddresses), DNS lookup, traceroute hops |
+| `src/nettools.go`, `src/icmp_windows.go` | Ping, port tester, IP scanner, Telnet |
+| `src/winapi_windows.go` | shared Win32 helpers (folder picker, Recycle Bin, launching the window) |
+| `src/web/index.html`, `src/web/skins.css` | page shell, styles and the Folder Size UI; Windows 7 Aero and Magestica burgundy skins |
+| `src/web/tools.js` | Disk info, network, crypto and developer tool pages |
+| `src/web/proc.js`, `src/web/hosts.js`, `src/web/env.js`, `src/web/sysnet.js`, `src/web/image.js` | Process monitor; Hosts editor; Environment and PATH; Adapters, DNS and Traceroute; Image tools |
+| `src/web/boot.js` | opens the first tool (loaded last) |
+| `src/` | all application code: Go sources, `web/` UI, icon and version resources |
 | `installer/`, `store/` | MSI / MSIX build scripts and Microsoft Store listing |
 ## License
 
@@ -202,5 +208,5 @@ Designed and developed by **Tanbin** · Developer: [magestica.com](https://mages
 ### Third-party
 
 The **Aero** skin uses [7.css](https://khang-nd.github.io/7.css) (v0.19.0, MIT, © 2021 Khang Nguyen Duy)
-for its Windows 7 buttons, drop-downs and tables. It is bundled in `web/vendor/7.css`
-(licence in `web/vendor/7.css-LICENSE.txt`) and only loaded while that skin is on.
+for its Windows 7 buttons, drop-downs and tables. It is bundled in `src/web/vendor/7.css`
+(licence in `src/web/vendor/7.css-LICENSE.txt`) and only loaded while that skin is on.

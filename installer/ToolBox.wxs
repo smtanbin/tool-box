@@ -18,7 +18,7 @@
     <MediaTemplate EmbedCab="yes" />
 
     <!-- Apps & features entry -->
-    <Icon Id="AppIcon" SourceFile="..\app.ico" />
+    <Icon Id="AppIcon" SourceFile="..\src\app.ico" />
     <Property Id="ARPPRODUCTICON" Value="AppIcon" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/smtanbin/tool-box" />
     <Property Id="ARPHELPLINK" Value="https://magestica.com" />

@@ -61,3 +61,15 @@ function renderHome(){
   links.append(mk(SITE,'magestica.com'),mk(REPO,'GitHub'),mk(REPO+'/blob/main/PRIVACY.md','Privacy'));
   const v=document.createElement('span');v.className='hver';v.textContent='© '+new Date().getFullYear()+' Magestica'+(typeof VERSION!=='undefined'?' · v'+VERSION:'');
   f.append(brand,links,v)})();
+
+/* menu bar: Tools menu built from the sidebar, shared Home / sidebar / web-link commands */
+(function(){const REPO='https://github.com/smtanbin/tool-box',SITE='https://magestica.com/';
+  const open=u=>window.open(u,'_blank','noopener');
+  Object.assign(CMD,{home:()=>showTool('home'),rail:()=>$('#railtoggle').click(),details:toggleDetails,
+    'web-site':()=>open(SITE),'web-repo':()=>open(REPO),'web-issue':()=>open(REPO+'/issues'),'web-privacy':()=>open(REPO+'/blob/main/PRIVACY.md')});
+  const m=$('#toolsmenu');if(m){
+    for(const e of $$('#rail > .rh, #rail > .ri[data-tool]')){
+      if(e.classList.contains('rh')){if(m.children.length)m.appendChild(document.createElement('hr'));continue}
+      const id=e.dataset.tool;CMD['tool-'+id]=()=>showTool(id);
+      const d=document.createElement('div');d.dataset.cmd='tool-'+id;d.textContent=TOOL_NAMES[id]||e.title;m.appendChild(d)}}
+  addEventListener('keydown',e=>{if(e.altKey&&e.key==='Home'){e.preventDefault();showTool('home')}})})();

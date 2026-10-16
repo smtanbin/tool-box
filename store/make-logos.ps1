@@ -1,9 +1,9 @@
-# Renders the Microsoft Store logo (300x300) and poster (1080x1080) from web\icon.svg
+# Renders the Microsoft Store logo (300x300) and poster (1080x1080) from src\web\icon.svg
 # using headless Microsoft Edge. Output: store\logos\
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
-$svgUrl = "file:///" + ((Join-Path $root "web\icon.svg") -replace "\\", "/")
+$svgUrl = "file:///" + ((Join-Path $root "src\web\icon.svg") -replace "\\", "/")
 $outDir = Join-Path $root "store\logos"
 New-Item -ItemType Directory -Force $outDir | Out-Null
 

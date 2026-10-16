@@ -11,7 +11,7 @@ if ($Version -notmatch '^(\d+)\.(\d+)\.(\d+)$') { throw "Version must look like 
 $maj, $min, $pat = [int]$Matches[1], [int]$Matches[2], [int]$Matches[3]
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
-$json = Get-Content (Join-Path $root "versioninfo.json") -Raw | ConvertFrom-Json
+$json = Get-Content (Join-Path $root "src\versioninfo.json") -Raw | ConvertFrom-Json
 foreach ($k in "FileVersion", "ProductVersion") {
     $json.FixedFileInfo.$k.Major = $maj; $json.FixedFileInfo.$k.Minor = $min; $json.FixedFileInfo.$k.Patch = $pat; $json.FixedFileInfo.$k.Build = 0
 }
@@ -20,7 +20,7 @@ $json.StringFileInfo.ProductVersion = "$Version.0"
 $tmp = Join-Path ([IO.Path]::GetTempPath()) "toolbox-versioninfo.json"
 [IO.File]::WriteAllText($tmp, ($json | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
 
-Push-Location $root
+Push-Location (Join-Path $root "src")
 try {
     $tool = "github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.1"
     go run $tool -icon app.ico -o rsrc_windows_amd64.syso -64 $tmp

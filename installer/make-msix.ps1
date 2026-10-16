@@ -30,7 +30,7 @@ $makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\ma
 if (-not $makeappx) { throw "makeappx.exe not found (install the Windows 10/11 SDK)" }
 
 Add-Type -AssemblyName System.Drawing
-$icon = [System.Drawing.Image]::FromFile((Join-Path $root "web\icon-256.png"))
+$icon = [System.Drawing.Image]::FromFile((Join-Path $root "src\web\icon-256.png"))
 function New-Logo([string]$path, [int]$w, [int]$h) {
     $bmp = New-Object System.Drawing.Bitmap $w, $h
     $g = [System.Drawing.Graphics]::FromImage($bmp)

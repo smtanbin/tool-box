@@ -112,7 +112,7 @@ function Crumbs($parts) {
 }
 
 # favicon / logo
-$iconSrc = Join-Path $here "..\web\icon.svg"
+$iconSrc = Join-Path $here "..\src\web\icon.svg"
 if (Test-Path $iconSrc) { Copy-Item $iconSrc (Join-Path $Root "icon.svg") -Force }
 
 $dl = Join-Path $Root "downloads"

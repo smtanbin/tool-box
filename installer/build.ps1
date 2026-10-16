@@ -51,7 +51,7 @@ $rtf = "{\rtf1\ansi\deff0{\fonttbl{\f0\fswiss Segoe UI;}}\viewkind4\uc1\pard\f0\
 
 Write-Host "Wizard images"
 Add-Type -AssemblyName System.Drawing
-$icon = [System.Drawing.Image]::FromFile((Join-Path $root "web\icon-256.png"))
+$icon = [System.Drawing.Image]::FromFile((Join-Path $root "src\web\icon-256.png"))
 $accentA = [System.Drawing.Color]::FromArgb(255, 0, 95, 184)
 $accentB = [System.Drawing.Color]::FromArgb(255, 0, 120, 212)
 
@@ -92,7 +92,7 @@ foreach ($a in $Arch) {
     $exeDir = Join-Path $build $a
     New-Item -ItemType Directory -Force $exeDir | Out-Null
     $exe = Join-Path $exeDir "ToolBox.exe"
-    Push-Location $root
+    Push-Location (Join-Path $root "src")
     $env:GOOS = "windows"; $env:GOARCH = $goArch[$a]; $env:CGO_ENABLED = "0"
     try {
         go build -trimpath -ldflags "-H windowsgui -s -w -X main.appVersion=$Version" -o $exe .
