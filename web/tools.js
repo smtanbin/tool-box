@@ -18,6 +18,7 @@ function showTool(t){
   if(location.hash.slice(1)!==t)history.replaceState(null,'','#'+t);
   if(toolInit[t]&&!toolInited.has(t)){toolInited.add(t);toolInit[t]()}
   if(t==='ping')drawPing();
+  toolNavUpdate(t);
 }
 addEventListener('hashchange',()=>showTool(location.hash.slice(1)));
 
@@ -472,3 +473,16 @@ function baseRun(){let s=$('#nbin').value.trim().replace(/[\s_]/g,'').toLowerCas
     ['Hexadecimal (16)',v.toString(16).toUpperCase(),esc(grp(v.toString(16).toUpperCase(),2))],['Base 32',v.toString(32)],['Base 36',v.toString(36)],
     ['Bit length',String(bl)],['Bytes',String(Math.ceil(bl/8))]])}
 
+
+/* ---------- Explorer-style back / forward and address bar (shown by the Aero skin) ---------- */
+const toolHist=[];let toolIdx=-1,toolSkip=false;
+function toolNavUpdate(t){
+  if(toolSkip)toolSkip=false;
+  else if(toolHist[toolIdx]!==t){toolHist.splice(toolIdx+1);toolHist.push(t);toolIdx=toolHist.length-1}
+  const a=document.querySelector(`#rail .ri[data-tool="${t}"]`);let group='';
+  for(let e=a&&a.previousElementSibling;e;e=e.previousElementSibling)if(e.classList.contains('rh')){group=e.textContent;break}
+  const ep=document.getElementById('expath');
+  if(ep)ep.innerHTML=['My Tool Box',group,TOOL_NAMES[t]].filter(Boolean).map(esc).join(' <i>&#x25B8;</i> ');
+  const b=document.getElementById('exback'),f=document.getElementById('exfwd');if(b)b.disabled=toolIdx<=0;if(f)f.disabled=toolIdx>=toolHist.length-1}
+function toolNavGo(d){const i=toolIdx+d;if(i<0||i>=toolHist.length)return;toolIdx=i;toolSkip=true;showTool(toolHist[i])}
+document.getElementById('exback').onclick=()=>toolNavGo(-1);document.getElementById('exfwd').onclick=()=>toolNavGo(1);

@@ -218,6 +218,7 @@ input::placeholder{color:var(--muted)}
 .dbody h2{margin:0 0 14px;font-size:20px;font-weight:600}
 .dfoot{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;background:var(--bg);border-top:1px solid var(--border)}
 .dfoot button{min-width:110px}
+#dlgcard>.title-bar{display:none}#dlgcard>.window-body{display:contents}#expnav,#expaddr{display:none}
 .dmsg{line-height:1.5;overflow-wrap:anywhere}.dmsg p{margin:0 0 10px}.dmsg ul{margin:0 0 10px;padding-left:20px}
 .dmsg .path{font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 8px;display:block;margin:0 0 10px}
 button.primary.danger{background:var(--danger);border-color:var(--danger);color:#fff}
@@ -441,7 +442,9 @@ pre.code .s{color:#0a7a3d}pre.code .n{color:#0b5fc6}pre.code .b{color:#a3157a}pr
       <hr>
       <div data-cmd="about">About</div></div></div>
   </nav>
-  <span style="flex:1"></span>
+  <div id="expnav"><button id="exback" title="Back" disabled aria-label="Back">&#x2190;</button><button id="exfwd" title="Forward" disabled aria-label="Forward">&#x2192;</button></div>
+  <div id="expaddr" aria-label="Address"><span id="expath"></span></div>
+  <span class="apspacer" style="flex:1"></span>
   <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
@@ -1259,7 +1262,8 @@ async function resetAll(){
 $('#reset').onclick=resetAll;
 let dlgResolve=null;
 function settleDialog(v){if(dlgResolve){const r=dlgResolve;dlgResolve=null;r(v)}}
-function dialog(html){settleDialog(false);$('#dlgcard').innerHTML='<div class="dbody">'+html+'</div><div class="dfoot"><button class="primary" id="dlgok">Close</button></div>';$('#dlg').style.display='flex';$('#dlgok').focus();$('#dlgok').onclick=()=>closeDialog()}
+function winShell(title,inner,closeFn){$("#dlgcard").className="dlg-card window active is-bright";return`<div class="title-bar"><div class="title-bar-text">${esc(title||"My Tool Box")}</div><div class="title-bar-controls"><button aria-label="Close" title="Close" id="dlgx"></button></div></div><div class="window-body">${inner}</div>`}
+function dialog(html){settleDialog(false);$("#dlgcard").innerHTML=winShell("My Tool Box",`<div class="dbody">${html}</div><div class="dfoot"><button class="primary" id="dlgok">Close</button></div>`);$("#dlg").style.display="flex";$("#dlgok").focus();$("#dlgok").onclick=()=>closeDialog();$("#dlgx").onclick=()=>closeDialog()}
 function closeDialog(v=false){$('#dlg').style.display='none';settleDialog(v)}
 // Our own confirm box (replaces the browser's confirm()). Resolves with the clicked button's value, or false for Esc / click outside.
 // body is HTML: escape anything that comes from the user or the file system with esc().
@@ -1267,8 +1271,9 @@ function askDialog({title='',body='',okText='OK',cancelText='Cancel',danger=fals
   settleDialog(false);
   const bs=buttons||[{label:cancelText,value:false},{label:okText,value:true,primary:true,danger}];
   $('#dlgcard').setAttribute('role','alertdialog');
-  $('#dlgcard').innerHTML=`<div class="dbody">${title?`<h2>${esc(title)}</h2>`:''}<div class="dmsg">${body}</div></div><div class="dfoot">`+
-    bs.map((b,i)=>`<button data-i="${i}" class="${b.primary?'primary':''} ${b.danger?'danger':''}">${esc(b.label)}</button>`).join('')+'</div>';
+  $('#dlgcard').innerHTML=winShell('My Tool Box',`<div class="dbody">${title?`<h2>${esc(title)}</h2>`:''}<div class="dmsg">${body}</div></div><div class="dfoot">`+
+    bs.map((b,i)=>`<button data-i="${i}" class="${b.primary?'primary':''} ${b.danger?'danger':''}">${esc(b.label)}</button>`).join('')+'</div>');
+  $('#dlgx').onclick=()=>closeDialog(false);
   $('#dlg').style.display='flex';
   const btns=[...$('#dlgcard').querySelectorAll('.dfoot button')];
   btns.forEach(el=>el.onclick=()=>closeDialog(bs[+el.dataset.i].value));
