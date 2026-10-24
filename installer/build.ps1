@@ -4,9 +4,9 @@
 # Requires: Go, WiX Toolset v5 (`dotnet tool install --global wix --version 5.0.2`) with extensions
 #   wix extension add -g WixToolset.UI.wixext/5.0.2
 #   wix extension add -g WixToolset.Util.wixext/5.0.2
-# Usage: powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 2.0.0] [-Arch x64,x86,arm64]
+# Usage: powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 2.2.0] [-Arch x64,x86,arm64]
 param(
-    [string]$Version = "2.0.0",
+    [string]$Version = "2.2.0",
     [string[]]$Arch = @("x64", "x86", "arm64"),
     # Optional code signing (needed for Microsoft Store policy 10.2.9). When a PFX is given,
     # ToolBox.exe and every MSI are signed with signtool (SHA256 + RFC3161 timestamp).

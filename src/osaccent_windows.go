@@ -12,7 +12,7 @@ import (
 )
 
 // osAccent returns the Windows accent colour as #RRGGBB, or Windows blue when it cannot be read.
-// The browser's CSS AccentColor does not follow the Windows setting, so the Black skin uses this instead.
+// The browser's CSS AccentColor does not follow the Windows setting, so the page gets the accent from here instead.
 func osAccent() string {
 	const fallback = "#0078d4"
 	var h syscall.Handle

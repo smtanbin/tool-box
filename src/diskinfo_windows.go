@@ -148,30 +148,116 @@ func queryProp(h syscall.Handle, id uint32, extra []byte, outSize int) ([]byte, 
 	return ioctl(h, ioctlStorageQueryProperty, in, outSize)
 }
 
+// diskReadTimeout bounds how long Windows may take to answer for all the drives. A sleeping HDD, a failing disk
+// or a stalled USB adapter can block DeviceIoControl for minutes, and the page must not wait for it.
+const diskReadTimeout = 6 * time.Second
+
+// diskBusy marks drives whose earlier read is still blocked in the kernel. That call cannot be cancelled, so
+// a refresh skips the drive instead of stacking another blocked thread behind it on every press of Refresh.
+var (
+	diskBusyMu sync.Mutex
+	diskBusy   = map[int]bool{}
+)
+
+type diskReply struct {
+	i int
+	d *DiskInfo // nil when there is no such drive
+}
+
+func newDisk(i int) *DiskInfo {
+	return &DiskInfo{Index: i, Health: "Unknown", Parts: []DiskPart{}, Letters: []string{}, Attrs: []DiskAttr{}, Reasons: []string{}, Notes: []string{}}
+}
+
+// unresponsiveDisk is the placeholder for a drive that did not answer in time, so it still shows in the list.
+func unresponsiveDisk(i int) *DiskInfo {
+	d := newDisk(i)
+	d.Notes = append(d.Notes, "Windows did not answer for this drive within a few seconds. It may be asleep, failing or behind a stalled USB adapter. Press Refresh to try again.")
+	return d
+}
+
+// listDisks reads every physical drive in parallel, so one stuck drive costs at most diskReadTimeout.
 func listDisks() []*DiskInfo {
 	procSetErrorMode.Call(0x0001 | 0x8000) // no "insert a disk" boxes: SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX
-	var disks []*DiskInfo
+	deadline := time.Now().Add(diskReadTimeout)
+	opened := make(chan int, 32)        // a drive handle is open, so the drive exists and is being read
+	replies := make(chan diskReply, 32) // buffered: a read that outlives the deadline never blocks
+	var stuck [32]bool
+	pending := 0
 	for i := 0; i < 32; i++ {
-		h, err := openDev(fmt.Sprintf(`\\.\PhysicalDrive%d`, i), 0)
-		if err != nil {
+		diskBusyMu.Lock()
+		if diskBusy[i] {
+			stuck[i] = true
+		} else {
+			diskBusy[i] = true
+		}
+		diskBusyMu.Unlock()
+		if stuck[i] {
 			continue
 		}
-		d := &DiskInfo{Index: i, Health: "Unknown", Parts: []DiskPart{}, Letters: []string{}, Attrs: []DiskAttr{}, Reasons: []string{}, Notes: []string{}}
-		readDescriptor(h, d)
-		if b, err := ioctl(h, ioctlDiskGetDriveGeometryEx, nil, 256); err == nil && len(b) >= 32 {
-			d.Size = int64(le64(b, 24))
-		}
-		readLayout(h, d)
-		readTemperature(h, d)
-		if d.Bus == "NVMe" {
-			readNVMeIdentify(h, d)
-		}
-		syscall.CloseHandle(h)
-		readSMART(d)
-		disks = append(disks, d)
+		pending++
+		go func(i int) {
+			d := readOneDisk(i, opened)
+			diskBusyMu.Lock()
+			delete(diskBusy, i)
+			diskBusyMu.Unlock()
+			replies <- diskReply{i, d}
+		}(i)
 	}
-	mapLetters(disks)
+	var found [32]*DiskInfo
+	var answered, opening [32]bool
+	timeout := time.After(time.Until(deadline))
+	for remaining := pending; remaining > 0; {
+		select {
+		case i := <-opened:
+			opening[i] = true
+		case r := <-replies:
+			answered[r.i], found[r.i] = true, r.d
+			remaining--
+		case <-timeout:
+			remaining = 0
+		}
+	}
+	for drained := false; !drained; { // a read that finished just at the deadline may still have queued its open signal
+		select {
+		case i := <-opened:
+			opening[i] = true
+		default:
+			drained = true
+		}
+	}
+	disks := []*DiskInfo{}
+	for i := 0; i < 32; i++ {
+		switch {
+		case answered[i] && found[i] != nil:
+			disks = append(disks, found[i])
+		case !answered[i] && (opening[i] || stuck[i]):
+			disks = append(disks, unresponsiveDisk(i))
+		}
+	}
+	mapLetters(disks, deadline)
 	return disks
+}
+
+// readOneDisk returns nil when there is no such drive. It signals on opened once the drive handle is open.
+func readOneDisk(i int, opened chan<- int) *DiskInfo {
+	h, err := openDev(fmt.Sprintf(`\\.\PhysicalDrive%d`, i), 0)
+	if err != nil {
+		return nil
+	}
+	opened <- i
+	d := newDisk(i)
+	readDescriptor(h, d)
+	if b, err := ioctl(h, ioctlDiskGetDriveGeometryEx, nil, 256); err == nil && len(b) >= 32 {
+		d.Size = int64(le64(b, 24))
+	}
+	readLayout(h, d)
+	readTemperature(h, d)
+	if d.Bus == "NVMe" {
+		readNVMeIdentify(h, d)
+	}
+	syscall.CloseHandle(h)
+	readSMART(d)
+	return d
 }
 
 func readDescriptor(h syscall.Handle, d *DiskInfo) {
@@ -244,9 +330,19 @@ func readLayout(h syscall.Handle, d *DiskInfo) {
 	sort.Slice(d.Parts, func(i, j int) bool { return d.Parts[i].Offset < d.Parts[j].Offset })
 }
 
-// mapLetters matches every drive letter's volume extent back to its disk partition.
-func mapLetters(disks []*DiskInfo) {
+// volHit is one disk extent of a drive letter's volume, found by probeVolume.
+type volHit struct {
+	letter, label, fs string
+	free              int64
+	disk              int
+	offset            int64
+}
+
+// mapLetters matches every drive letter's volume extent back to its disk partition. Volumes are probed in
+// parallel and only the answers that arrive before the deadline are applied, so a stalled volume costs its letter.
+func mapLetters(disks []*DiskInfo, deadline time.Time) {
 	mask, _, _ := procGetLogicalDrives2.Call()
+	var letters []string
 	for i := 0; i < 26; i++ {
 		if mask&(1<<uint(i)) == 0 {
 			continue
@@ -262,32 +358,63 @@ func mapLetters(disks []*DiskInfo) {
 			strings.HasPrefix(syscall.UTF16ToString(target[:]), `\??\`) {
 			continue // a SUBST drive pointing at a folder, not a volume
 		}
-		h, err := openDev(`\\.\`+letter, 0)
-		if err != nil {
+		letters = append(letters, letter)
+	}
+	probes := make(chan []volHit, len(letters)) // buffered: a late probe never blocks
+	for _, letter := range letters {
+		go func(letter string) { probes <- probeVolume(letter) }(letter)
+	}
+	defer func() { // probes finish in any order
+		for _, d := range disks {
+			sort.Strings(d.Letters)
+		}
+	}()
+	expired := time.After(time.Until(deadline))
+	for range letters {
+		select {
+		case hits := <-probes:
+			for _, v := range hits {
+				applyVolume(disks, v)
+			}
+		case <-expired:
+			return
+		}
+	}
+}
+
+// probeVolume opens one volume and returns a hit for each disk extent it sits on.
+func probeVolume(letter string) []volHit {
+	h, err := openDev(`\\.\`+letter, 0)
+	if err != nil {
+		return nil
+	}
+	b, err := ioctl(h, ioctlVolumeGetDiskExtents, nil, 8+24*8)
+	syscall.CloseHandle(h)
+	if err != nil || len(b) < 32 {
+		return nil
+	}
+	var label, fs [261]uint16
+	root, _ := syscall.UTF16PtrFromString(letter + `\`)
+	procGetVolumeInfo.Call(uintptr(unsafe.Pointer(root)), uintptr(unsafe.Pointer(&label[0])), 261, 0, 0, 0, uintptr(unsafe.Pointer(&fs[0])), 261)
+	var free, total, tf uint64
+	procGetDiskFreeSpaceEx.Call(uintptr(unsafe.Pointer(root)), uintptr(unsafe.Pointer(&free)), uintptr(unsafe.Pointer(&total)), uintptr(unsafe.Pointer(&tf)))
+	var hits []volHit
+	for e := 0; e < int(le32(b, 0)) && 8+(e+1)*24 <= len(b); e++ {
+		hits = append(hits, volHit{letter: letter, label: syscall.UTF16ToString(label[:]), fs: syscall.UTF16ToString(fs[:]), free: int64(free),
+			disk: int(le32(b, 8+e*24)), offset: int64(le64(b, 16+e*24))})
+	}
+	return hits
+}
+
+func applyVolume(disks []*DiskInfo, v volHit) {
+	for _, d := range disks {
+		if d.Index != v.disk {
 			continue
 		}
-		b, err := ioctl(h, ioctlVolumeGetDiskExtents, nil, 8+24*8)
-		syscall.CloseHandle(h)
-		if err != nil || len(b) < 32 {
-			continue
-		}
-		var label, fs [261]uint16
-		root, _ := syscall.UTF16PtrFromString(letter + `\`)
-		procGetVolumeInfo.Call(uintptr(unsafe.Pointer(root)), uintptr(unsafe.Pointer(&label[0])), 261, 0, 0, 0, uintptr(unsafe.Pointer(&fs[0])), 261)
-		var free, total, tf uint64
-		procGetDiskFreeSpaceEx.Call(uintptr(unsafe.Pointer(root)), uintptr(unsafe.Pointer(&free)), uintptr(unsafe.Pointer(&total)), uintptr(unsafe.Pointer(&tf)))
-		for e := 0; e < int(le32(b, 0)) && 8+(e+1)*24 <= len(b); e++ {
-			num, off := int(le32(b, 8+e*24)), int64(le64(b, 16+e*24))
-			for _, d := range disks {
-				if d.Index != num {
-					continue
-				}
-				for k := range d.Parts { // virtual volumes (e.g. Google Drive) match no partition and are skipped
-					if d.Parts[k].Offset == off {
-						d.Letters = append(d.Letters, letter)
-						d.Parts[k].Letter, d.Parts[k].Label, d.Parts[k].FS, d.Parts[k].Free = letter, syscall.UTF16ToString(label[:]), syscall.UTF16ToString(fs[:]), int64(free)
-					}
-				}
+		for k := range d.Parts { // virtual volumes (e.g. Google Drive) match no partition and are skipped
+			if d.Parts[k].Offset == v.offset {
+				d.Letters = append(d.Letters, v.letter)
+				d.Parts[k].Letter, d.Parts[k].Label, d.Parts[k].FS, d.Parts[k].Free = v.letter, v.label, v.fs, v.free
 			}
 		}
 	}

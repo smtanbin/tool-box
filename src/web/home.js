@@ -31,7 +31,7 @@ function ago(ts){const s=Math.max(1,Math.round((Date.now()-ts)/1000));
   const h=Math.round(m/60);if(h<24)return h+' h ago';const d=Math.round(h/24);return d+(d===1?' day ago':' days ago')}
 
 /* short descriptions shown on the home cards */
-const HOME_DESC={foldersize:'See what fills your disks',disk:'Health, SMART, DRAM-less check',hw:'CPU, board, memory, graphics',proc:'Processes, ports, end tasks',hosts:'Edit the hosts file safely',
+const HOME_DESC={foldersize:'See what fills your disks',disk:'Health, SMART, DRAM-less check',hw:'CPU, board, memory, graphics',temps:'Live graphs of every temperature sensor',proc:'Processes, ports, end tasks',hosts:'Edit the hosts file safely',
   env:'Variables and PATH, with backups',adapters:'IP, gateway, DNS, MAC, speed',dns:'Any record, any DNS server',trace:'Follow the route hop by hop',
   subnet:'Networks, masks and ranges',ipscan:'Find devices on a network',ping:'Live latency and packet loss',telnet:'Test ports, raw TCP console',
   hash:'MD5, SHA-1, SHA-256 and more',crypt:'AES-256 with a passphrase',token:'UUIDs, tokens, passwords',encode:'Base64, URL, hex, HTML',

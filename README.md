@@ -76,7 +76,7 @@ Design interface that follows your Windows light/dark theme and accent colour.
 
 **Skins** — the *Skin* dropdown in the top bar (or *View > Skin*) switches the look: **Fluent** (default, Windows 11 look with full-colour Settings-style icons, follows your
 light / dark setting and accent colour), **Aero** (Windows 7 Explorer look: glass bars, glossy colour icons, glossy
-buttons, green progress bar; always light) and **Magestica** (the magestica.com look: warm white, huge tight type with a burgundy line, pill buttons, hairline cards; light and dark) and **Carbon** (IBM Carbon design: White theme in light mode, Gray 100 in dark; square corners, flat layers, your Windows accent as the interactive colour, Carbon blue if none). Remembered. Skins live in `src/web/skins.css`.
+buttons, green progress bar; always light) and **Magestica** (the magestica.com look: warm white, huge tight type with a burgundy line, pill buttons, hairline cards; light and dark). Remembered. Skins live in `src/web/skins.css`.
 
 Everything runs on your PC; the crypto and developer tools work entirely offline.
 
@@ -120,7 +120,7 @@ info shown in Explorer's Properties > Details tab (edit `src/versioninfo.json`).
 installer build regenerates them for the release version; to do it by hand:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 2.0.0
+powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 2.2.0
 ```
 
 ### Installer
@@ -137,8 +137,8 @@ Then build `dist\ToolBoxSetup-<version>-<arch>.msi` and portable
 `dist\ToolBox-<version>-<arch>.exe` for x64, x86 and arm64:
 
 ```
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.0.0
-powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.0.0 -Arch x64
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.2.0
+powershell -ExecutionPolicy Bypass -File installer\build.ps1 -Version 2.2.0 -Arch x64
 ```
 
 ### Releases (CI/CD)
@@ -148,8 +148,8 @@ Pushing a version tag builds the installers and publishes a GitHub Release
 (`.github/workflows/release.yml`):
 
 ```
-git tag v2.0.0
-git push origin v2.0.0
+git tag v2.2.0
+git push origin v2.2.0
 ```
 
 The installers are also published to GitHub Pages, which serves files directly
@@ -157,9 +157,9 @@ with no redirect (GitHub Release download links redirect, which the Microsoft St
 rejects). These are the URLs to use as the Store "Package URL":
 
 ```
-https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x64.msi
-https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x86.msi
-https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-arm64.msi
+https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-x64.msi
+https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-x86.msi
+https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-arm64.msi
 ```
 
 One-time setup: repo **Settings → Pages → Build and deployment → Deploy from a

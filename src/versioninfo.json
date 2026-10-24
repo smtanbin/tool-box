@@ -11,12 +11,12 @@
   "StringFileInfo": {
     "CompanyName": "Tanbin (magestica.com)",
     "FileDescription": "My Tool Box",
-    "FileVersion": "2.0.0",
+    "FileVersion": "2.2.0",
     "InternalName": "ToolBox",
     "LegalCopyright": "Copyright 2026 Tanbin (magestica.com). Apache-2.0 with Commons Clause.",
     "OriginalFilename": "ToolBox.exe",
     "ProductName": "My Tool Box",
-    "ProductVersion": "2.0.0",
+    "ProductVersion": "2.2.0",
     "Comments": "Folder size, disk info, process monitor, hosts and environment editors, network, DNS, crypto, image and developer tools."
   },
   "VarFileInfo": { "Translation": { "LangID": "0409", "CharsetID": "04B0" } },

@@ -4,9 +4,11 @@
 package main
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"flag"
+	"io/fs"
 	"fmt"
 	"net"
 	"net/http"
@@ -17,7 +19,7 @@ import (
 	"time"
 )
 
-//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/home.js web/menus.js web/hw.js web/fluent-icons.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
+//go:embed web/index.html web/skins.css web/vendor/7.css web/tools.js web/proc.js web/image.js web/boot.js web/hosts.js web/sysnet.js web/env.js web/home.js web/menus.js web/hw.js web/temps.js web/fluent-icons.js web/icon.svg web/icon-256.png web/tool-foldersize.svg
 var webFS embed.FS
 
 var (
@@ -31,6 +33,9 @@ var (
 	appVersion  = ""
 	versionDecl = regexp.MustCompile(`VERSION='[^']*'`)
 )
+
+// devReloadScript is added to the page in -dev mode: it polls the folder's newest modification time and reloads on change.
+const devReloadScript = `<script>(function(){let last=null;setInterval(async()=>{try{const t=await (await fetch('/api/devstamp',{cache:'no-store'})).text();if(last!==null&&t!==last)location.reload();last=t}catch(e){}},700)})()</script>`
 
 func writeJSON(w http.ResponseWriter, v any) {
 	w.Header().Set("Content-Type", "application/json")
@@ -46,6 +51,7 @@ func main() {
 	port := flag.Int("port", 0, "port to listen on (0 = random)")
 	noBrowser := flag.Bool("nobrowser", false, "do not open a window; keep running")
 	openTool := flag.String("tool", "", "tool page to open, e.g. disk or ping")
+	devDir := flag.String("dev", "", "hot reload: serve the UI from this folder (e.g. web) and reload the page when a file changes")
 	flag.Parse()
 	autoExit = !*noBrowser
 
@@ -56,7 +62,7 @@ func main() {
 		case "/":
 		case "/icon.svg", "/tool-foldersize.svg":
 			name, ctype = r.URL.Path[1:], "image/svg+xml"
-		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js", "/home.js", "/menus.js", "/hw.js", "/fluent-icons.js":
+		case "/tools.js", "/proc.js", "/image.js", "/boot.js", "/hosts.js", "/sysnet.js", "/env.js", "/home.js", "/menus.js", "/hw.js", "/temps.js", "/fluent-icons.js":
 			name, ctype = r.URL.Path[1:], "text/javascript; charset=utf-8"
 		case "/vendor/7.css":
 			name, ctype = "vendor/7.css", "text/css; charset=utf-8"
@@ -68,9 +74,17 @@ func main() {
 			http.NotFound(w, r)
 			return
 		}
-		b, _ := webFS.ReadFile("web/" + name)
+		var b []byte
+		if *devDir != "" {
+			b, _ = os.ReadFile(filepath.Join(*devDir, filepath.FromSlash(name)))
+		} else {
+			b, _ = webFS.ReadFile("web/" + name)
+		}
 		if name == "index.html" {
 			b = injectAccent(injectPrefs(b))
+		}
+		if name == "index.html" && *devDir != "" {
+			b = bytes.Replace(b, []byte("</body>"), []byte(devReloadScript+"</body>"), 1)
 		}
 		if name == "index.html" && appVersion != "" {
 			b = versionDecl.ReplaceAll(b, []byte("VERSION='"+appVersion+"'"))
@@ -79,6 +93,20 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache") // a new build must never show the previous build's styles
 		w.Write(b)
 	})
+	if *devDir != "" {
+		mux.HandleFunc("/api/devstamp", func(w http.ResponseWriter, r *http.Request) {
+			var newest int64
+			filepath.WalkDir(*devDir, func(p string, d fs.DirEntry, err error) error {
+				if err == nil && !d.IsDir() {
+					if fi, e := d.Info(); e == nil && fi.ModTime().UnixNano() > newest {
+						newest = fi.ModTime().UnixNano()
+					}
+				}
+				return nil
+			})
+			writeJSON(w, newest)
+		})
+	}
 	mux.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		lastPing.Store(time.Now().UnixNano())
 		w.WriteHeader(204)
@@ -146,6 +174,7 @@ func main() {
 	registerHardware(mux)
 	registerHardwareLive(mux)
 	registerPerf(mux)
+	registerTemps(mux)
 	registerPrefs(mux)
 	mux.HandleFunc("/api/disks", hDisks)
 	mux.HandleFunc("/api/elevate", hElevate)

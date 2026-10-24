@@ -82,9 +82,13 @@ function diskRender(){const D=dk.disks;
   if(d.removable)kv.splice(3,0,['Removable','Yes']);
   const dramLbl={dram:'DRAM cache','dram-likely':'Probably DRAM cache',dramless:'DRAM-less','dramless-likely':'Probably DRAM-less',unknown:'DRAM unknown'};
   const dramHTML=dramLbl[d.dram]?`<div class="dramrow"><span class="dbadge ${d.dram}">${dramLbl[d.dram]}</span> <span class="hint" style="margin:0">${esc(d.dramNote)}</span></div>`:(d.dramNote?`<p class="hint">${esc(d.dramNote)}</p>`:'');
+  // current use: space used across the drive's partitions that have a letter
+  const lp=d.parts.filter(p=>p.letter&&p.size),lpTot=lp.reduce((a,p)=>a+p.size,0),lpFree=lp.reduce((a,p)=>a+p.free,0),lpUsed=lpTot?(lpTot-lpFree)/lpTot:0;
+  const useTc=lpUsed>=.97?'Bad':lpUsed>=.9?'Caution':'Good',tempWord={Good:'Normal',Caution:'Warm',Bad:'Hot'}[tc]||'';
+  const C=2*Math.PI*26,useHTML=lp.length?`<div class="hbadge h-${useTc} usebadge"><small>Current use</small><svg viewBox="0 0 64 64" width="56" height="56" style="display:block;margin:6px auto 4px"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="8"/><circle cx="32" cy="32" r="26" fill="none" stroke="#fff" stroke-width="8" stroke-dasharray="${(lpUsed*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)"/></svg><b>${Math.round(lpUsed*100)} %</b><span>${fmt(lpTot-lpFree)} of ${fmt(lpTot)} used</span></div>`:'';
   let html=`<div class="card"><div class="dktop"><div class="dkbadges">
       <div class="hbadge h-${d.health}" title="${esc(d.source||'')}"><small>Health status</small><b>${hlabel}</b><span>${d.healthPct>0?d.healthPct+' %':'&nbsp;'}</span></div>
-      <div class="hbadge h-${tc}"><small>Temperature</small><b>${d.temp?d.temp+' °C':'— °C'}</b><span>${d.temp?Math.round(d.temp*9/5+32)+' °F':(d.needAdmin&&!dk.admin?'needs administrator':'not reported')}</span></div></div>
+      <div class="hbadge h-${tc}"><small>Temperature</small><b>${d.temp?d.temp+' °C':'— °C'}</b><span>${d.temp?Math.round(d.temp*9/5+32)+' °F · '+tempWord:(d.needAdmin&&!dk.admin?'needs administrator':'not reported')}</span>${d.temp?`<span class="dkgauge"><i style="width:${Math.min(100,d.temp/80*100).toFixed(1)}%"></i></span>`:''}</div>${useHTML}</div>
     <div><div class="dkhead"><h2>${esc(d.model||'Unknown drive')}</h2><span>${fmt(d.size)} · Disk ${d.index}</span></div>
       ${dramHTML}
       <div class="dkkv">${kv.map(([k,v])=>`<div><span class="k">${k}</span><span class="v">${esc(v||'—')}</span></div>`).join('')}</div>
@@ -164,7 +168,7 @@ toolInit.ipscan=async()=>{
     ...isRes.map(r=>[r.ip,r.host,r.via==='arp'?'':r.ms,r.mac,r.ports.join(' '),r.via].map(csvCell).join(','))].join('\r\n'),'text/csv');
   $('#istbl thead').addEventListener('click',e=>{const k=e.target.closest('th[data-k]')?.dataset.k;if(!k)return;isSort={k,d:isSort.k===k?-isSort.d:1};ipScanRender()});
   $('#istbl tbody').addEventListener('click',e=>{const b=e.target.closest('button[data-act]');if(!b)return;const ip=b.closest('tr').dataset.ip;
-    if(b.dataset.act==='ping'){$('#pghost').value=ip;showTool('ping');pingStart(true)}
+    if(b.dataset.act==='ping'){pgOpen(ip);showTool('ping');pingStart(true)}
     else if(b.dataset.act==='ports'){$('#pthost').value=ip;$('#tnhost').value=ip;showTool('telnet');portTest()}
     else copyText(ip)});
   try{isNets=await api('/api/net/local')}catch(e){}
@@ -192,52 +196,85 @@ function ipScanRender(){const tb=$('#istbl tbody');
   tb.innerHTML=rows.map(r=>`<tr data-ip="${esc(r.ip)}"><td class="mono">${esc(r.ip)}</td><td>${esc(r.host)||'<span style="color:var(--muted)">—</span>'}</td><td class="r">${r.via==='arp'?'—':fms(r.ms)}</td><td class="mono">${esc(r.mac)||'—'}</td><td>${r.ports.map(p=>`<span class="port">${p}</span>`).join('')||'—'}</td><td>${{ping:'Ping',port:'Port',arp:'ARP'}[r.via]||esc(r.via)}</td><td class="acts"><button data-act="ping" title="Ping this host">Ping</button><button data-act="ports" title="Test ports on this host">Ports</button><button data-act="copy" title="Copy IP">${CP}</button></td></tr>`).join('')}
 
 /* ================= Ping ================= */
-let pg={samples:[],running:false,host:'',wake:null,seq:0};
+// One tab per host. Each tab keeps its own samples, log, chart and running state; count, interval, timeout and bytes are shared.
+let pg={tabs:[],cur:null,nextId:1};
+function pgNew(host){const s={id:pg.nextId++,host,ran:'',samples:[],log:[],running:false,tok:null,wake:null,seq:0,hover:null};pg.tabs.push(s);return s}
+function pgEnsure(){if(!toolInited.has('ping')){toolInited.add('ping');toolInit.ping()}}
 toolInit.ping=()=>{
-  $('#pggo').onclick=()=>pingStart(false);$('#pgstop').onclick=pingStop;
-  $('#pgclear').onclick=()=>{pg.samples=[];pg.seq=0;$('#pglog').innerHTML='';pingStats();drawPing()};
-  $('#pghost').addEventListener('keydown',e=>{if(e.key==='Enter'&&!pg.running)pingStart(false)});
+  $('#pggo').onclick=()=>pingStart(false);$('#pgstop').onclick=()=>pingStop(pg.cur);
+  $('#pgclear').onclick=()=>{const s=pg.cur;s.samples=[];s.seq=0;s.log=[];pgRefresh()};
+  $('#pghost').addEventListener('keydown',e=>{if(e.key==='Enter'&&!pg.cur.running)pingStart(false)});
+  $('#pghost').addEventListener('input',e=>{pg.cur.host=e.target.value.trim();pgRefresh()});
+  $('#pgtabs').addEventListener('click',e=>{
+    if(e.target.closest('[data-add]'))return pgOpen('');
+    const x=e.target.closest('[data-x]');if(x)return pgClose(+x.dataset.x);
+    const b=e.target.closest('[data-id]');if(b)pgOpen(null,+b.dataset.id)});
   const box=$('#pgchart');new ResizeObserver(()=>drawPing()).observe(box);
-  box.addEventListener('mousemove',e=>{const r=box.getBoundingClientRect();pg.hover=e.clientX-r.left;drawPing()});
-  box.addEventListener('mouseleave',()=>{pg.hover=null;drawPing()});
+  box.addEventListener('mousemove',e=>{const r=box.getBoundingClientRect();pg.cur.hover=e.clientX-r.left;drawPing()});
+  box.addEventListener('mouseleave',()=>{pg.cur.hover=null;drawPing()});
   new MutationObserver(()=>drawPing()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','style']});
-  pingStats();
+  pg.cur=pgNew($('#pghost').value.trim());pgRefresh();
 };
-function pingLog(text,bad){const l=$('#pglog'),stick=l.scrollTop+l.clientHeight>=l.scrollHeight-4,d=document.createElement('div');d.textContent=text;if(bad)d.className='bad';l.appendChild(d);
+// select the tab for `host` (or a new one), or the tab with `id`; a new tab with no host is left empty for typing
+function pgOpen(host,id){pgEnsure();
+  if(id!=null){pg.cur=pg.tabs.find(t=>t.id===id)||pg.cur}
+  else if(host){pg.cur=pg.tabs.find(t=>t.host===host&&!t.running)||pg.tabs.find(t=>t.host===host)||pgNew(host)}
+  else pg.cur=pgNew('');
+  pgRefresh();$('#pghost').focus()}
+function pgClose(id){const i=pg.tabs.findIndex(t=>t.id===id);if(i<0)return;const s=pg.tabs[i];
+  if(s.running)pingStop(s);
+  pg.tabs.splice(i,1);
+  if(!pg.tabs.length)pgNew('');
+  if(pg.cur===s)pg.cur=pg.tabs[Math.min(i,pg.tabs.length-1)];
+  pgRefresh()}
+// redraw the whole tool for the selected tab
+function pgRefresh(){const c=pg.cur;
+  if($('#pghost').value!==c.host)$('#pghost').value=c.host;
+  $('#pgtitle').textContent='Latency — '+(c.host||'no host');
+  pgTabs();pgControls();pgLogRender();pingStats();drawPing()}
+// each host tab gets its own colour, so several pings are easy to tell apart
+// the tab strip uses the same .dkpill markup as the Disk tool, so it follows every skin
+function pgTabs(){$('#pgtabs').innerHTML=pg.tabs.map(s=>{const sm=pingSummary(s);
+    return `<button class="dkpill${s===pg.cur?' on':''}" data-id="${s.id}" title="${esc(s.host||'No host')}"><b><span class="hdot h-${s.running?'Good':'Unknown'}"></span>${esc(s.host||'New host')}<span data-x="${s.id}" title="Close tab">×</span></b><small>${s.running?'Running':'Idle'}${sm.sent?' · '+sm.lossPct+'% loss':''}</small></button>`}).join('')
+    +'<button class="cmd" data-add title="Ping another host">+ Add host</button>'}function pgControls(){const r=pg.cur.running;$('#pggo').style.display=r?'none':'';$('#pgstop').style.display=r?'':'none'}
+function pgLogRender(){const l=$('#pglog');l.innerHTML='';for(const e of pg.cur.log){const d=document.createElement('div');d.textContent=e.text;if(e.bad)d.className='bad';l.appendChild(d)}l.scrollTop=l.scrollHeight}
+function pingLog(s,text,bad){s.log.push({text,bad});if(s.log.length>500)s.log.shift();
+  if(s!==pg.cur)return;const l=$('#pglog'),stick=l.scrollTop+l.clientHeight>=l.scrollHeight-4,d=document.createElement('div');d.textContent=text;if(bad)d.className='bad';l.appendChild(d);
   while(l.childNodes.length>500)l.firstChild.remove();if(stick)l.scrollTop=l.scrollHeight}
-async function pingStart(fresh){if(!toolInited.has('ping')){toolInited.add('ping');toolInit.ping()}
-  if(pg.running){pingStop();await sleep(50)}
-  const host=$('#pghost').value.trim();if(!host)return toast('Enter a host name or IPv4 address');
-  if(fresh||host!==pg.host){pg.samples=[];pg.seq=0;$('#pglog').innerHTML=''}
-  pg.host=host;pg.running=true;$('#pggo').style.display='none';$('#pgstop').style.display='';
+async function pingStart(fresh){pgEnsure();const s=pg.cur;
+  if(s.running){pingStop(s);await sleep(50)}
+  const host=s.host;if(!host)return toast('Enter a host name or IPv4 address');
+  if(fresh||host!==s.ran){s.samples=[];s.seq=0;s.log=[]}
+  s.ran=host;s.running=true;const tok=s.tok={};pgRefresh();
+  const alive=()=>s.tok===tok;
   const count=+$('#pgcount').value,interval=+$('#pgint').value,to=+$('#pgto').value,size=Math.max(0,Math.min(65500,+$('#pgsize').value||0));
-  $('#pgtitle').textContent='Latency — '+host;
   let n=0,first=true;
-  while(pg.running&&(count===0||n<count)){const t0=performance.now();let r;
+  while(alive()&&(count===0||n<count)){const t0=performance.now();let r;
     try{r=await api(`/api/net/ping?host=${encodeURIComponent(host)}&timeout=${to}&size=${size}`)}
-    catch(e){pingLog(e.message,true);toast(e.message);break}
-    if(first){pingLog(`Pinging ${host}${r.ip!==host?' ['+r.ip+']':''} with ${size} bytes of data:`);first=false}
-    if(!pg.running)break;
-    pg.seq++;n++;pg.samples.push({seq:pg.seq,ok:r.ok,ms:r.ms,ttl:r.ttl,status:r.status,t:Date.now(),ip:r.ip});
-    if(pg.samples.length>5000)pg.samples.shift();
-    pingLog(r.ok?`Reply from ${r.ip}: bytes=${size} time${r.ms<1?'<1ms':'='+r.ms+'ms'} TTL=${r.ttl}`:(r.status==='Request timed out'?'Request timed out.':`${r.status}.`),!r.ok);
-    pingStats();drawPing();
+    catch(e){pingLog(s,e.message,true);toast(e.message);break}
+    if(first){pingLog(s,`Pinging ${host}${r.ip!==host?' ['+r.ip+']':''} with ${size} bytes of data:`);first=false}
+    if(!alive())break;
+    s.seq++;n++;s.samples.push({seq:s.seq,ok:r.ok,ms:r.ms,ttl:r.ttl,status:r.status,t:Date.now(),ip:r.ip});
+    if(s.samples.length>5000)s.samples.shift();
+    pingLog(s,r.ok?`Reply from ${r.ip}: bytes=${size} time${r.ms<1?'<1ms':'='+r.ms+'ms'} TTL=${r.ttl}`:(r.status==='Request timed out'?'Request timed out.':`${r.status}.`),!r.ok);
+    pgTabs();if(s===pg.cur){pingStats();drawPing()}
     const wait=interval-(performance.now()-t0);
-    if(pg.running&&(count===0||n<count)&&wait>0)await new Promise(res=>{pg.wake=res;setTimeout(res,wait)})}
-  if(n){const s=pingSummary();pingLog(`Ping statistics for ${host}: sent = ${s.sent}, received = ${s.recv}, lost = ${s.lost} (${s.lossPct}% loss)`+(s.recv?`, min = ${s.min} ms, max = ${s.max} ms, avg = ${s.avg} ms`:''))}
-  pg.running=false;$('#pggo').style.display='';$('#pgstop').style.display='none';$('#s3').textContent=''}
-function pingStop(){pg.running=false;if(pg.wake)pg.wake()}
-function pingSummary(){const s=pg.samples,ok=s.filter(x=>x.ok),ms=ok.map(x=>x.ms);let j=0;for(let i=1;i<ms.length;i++)j+=Math.abs(ms[i]-ms[i-1]);
-  return{sent:s.length,recv:ok.length,lost:s.length-ok.length,lossPct:s.length?Math.round((s.length-ok.length)/s.length*100):0,
-    min:ms.length?Math.min(...ms):0,max:ms.length?Math.max(...ms):0,avg:ms.length?Math.round(ms.reduce((a,b)=>a+b,0)/ms.length):0,jit:ms.length>1?j/(ms.length-1):0,last:s[s.length-1]}}
-function pingStats(){const s=pingSummary(),has=s.recv>0;
+    if(alive()&&(count===0||n<count)&&wait>0)await new Promise(res=>{s.wake=res;setTimeout(res,wait)})}
+  if(s.tok===tok){s.tok=null;s.running=false}
+  if(n){const sm=pingSummary(s);pingLog(s,`Ping statistics for ${host}: sent = ${sm.sent}, received = ${sm.recv}, lost = ${sm.lost} (${sm.lossPct}% loss)`+(sm.recv?`, min = ${sm.min} ms, max = ${sm.max} ms, avg = ${sm.avg} ms`:''))}
+  s.wake=null;pgTabs();if(s===pg.cur){pgControls();pgLogRender();pingStats();drawPing();$('#s3').textContent=''}}
+function pingStop(s){s.running=false;s.tok=null;if(s.wake)s.wake()}
+function pingSummary(s){const v=s.samples,ok=v.filter(x=>x.ok),ms=ok.map(x=>x.ms);let j=0;for(let i=1;i<ms.length;i++)j+=Math.abs(ms[i]-ms[i-1]);
+  return{sent:v.length,recv:ok.length,lost:v.length-ok.length,lossPct:v.length?Math.round((v.length-ok.length)/v.length*100):0,
+    min:ms.length?Math.min(...ms):0,max:ms.length?Math.max(...ms):0,avg:ms.length?Math.round(ms.reduce((a,b)=>a+b,0)/ms.length):0,jit:ms.length>1?j/(ms.length-1):0,last:v[v.length-1]}}
+function pingStats(){const c=pg.cur,s=pingSummary(c),has=s.recv>0;
   $('#pgtiles').innerHTML=[['Sent',s.sent],['Received',s.recv],['Lost',`${s.lost} (${s.lossPct}%)`,s.lost>0],['Minimum',has?fms(s.min):'—'],['Average',has?fms(s.avg):'—'],['Maximum',has?fms(s.max):'—'],['Jitter',s.recv>1?fms(s.jit):'—'],
     ['Last',s.last?(s.last.ok?fms(s.last.ms):'Lost'):'—',s.last&&!s.last.ok]].map(([k,v,bad])=>`<div class="tile${bad?' bad':''}"><small>${k}</small><b>${v}</b></div>`).join('');
-  if(pg.running)$('#s3').textContent=`Pinging ${pg.host} — ${s.sent} sent, ${s.lossPct}% loss${has?', avg '+fms(s.avg):''}`}
-function drawPing(){const box=$('#pgchart');if(!box||!box.clientWidth)return;const cv=box.querySelector('canvas'),tip=box.querySelector('.ctip');
+  if(c.running)$('#s3').textContent=`Pinging ${c.host} — ${s.sent} sent, ${s.lossPct}% loss${has?', avg '+fms(s.avg):''}`}
+function drawPing(){const box=$('#pgchart');if(!box||!box.clientWidth)return;const cv=box.querySelector('canvas'),tip=box.querySelector('.ctip'),c=pg.cur;
   const W=box.clientWidth,H=box.clientHeight,dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
   const acc=cssColor('--accent',box),bad=cssColor('--bad',box),mut=cssColor('--muted',box),grid=cssColor('--border',box);
-  const N=120,data=pg.samples.slice(-N),L=44,R=10,T=10,B=22,pw=W-L-R,ph=H-T-B;
+  const N=120,data=c.samples.slice(-N),L=44,R=10,T=10,B=22,pw=W-L-R,ph=H-T-B;
   const okMax=Math.max(0,...data.filter(x=>x.ok).map(x=>x.ms));const steps=[4,8,12,20,40,60,80,100,200,400,600,800,1000,2000,4000,6000,8000,10000]; // all divide evenly into 4 gridlines
   const top=steps.find(v=>v>=okMax*1.15)||Math.ceil(okMax/4000)*4000;
   g.font='11px "Segoe UI",sans-serif';g.textBaseline='middle';g.textAlign='right';
@@ -251,12 +288,13 @@ function drawPing(){const box=$('#pgchart');if(!box||!box.clientWidth)return;con
     g.beginPath();s.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.strokeStyle=acc;g.lineWidth=2;g.lineJoin='round';g.stroke();
     if(s.length===1){g.fillStyle=acc;g.beginPath();g.arc(s[0][0],s[0][1],4,0,7);g.fill()}}
   g.textAlign='left';g.fillStyle=mut;g.fillText('#'+data[0].seq,x(0),H-9);g.textAlign='right';g.fillText('#'+data[data.length-1].seq,W-R,H-9);
-  if(pg.hover==null||pg.hover<L-6){tip.style.display='none';return}
-  let bi=0,bd=1e9;data.forEach((d,i)=>{const dd=Math.abs(x(i)-pg.hover);if(dd<bd){bd=dd;bi=i}});const d=data[bi],hx=x(bi);
+  if(c.hover==null||c.hover<L-6){tip.style.display='none';return}
+  let bi=0,bd=1e9;data.forEach((d,i)=>{const dd=Math.abs(x(i)-c.hover);if(dd<bd){bd=dd;bi=i}});const d=data[bi],hx=x(bi);
   g.strokeStyle=mut;g.lineWidth=1;g.setLineDash([3,3]);g.beginPath();g.moveTo(Math.round(hx)+.5,T);g.lineTo(Math.round(hx)+.5,T+ph);g.stroke();g.setLineDash([]);
   if(d.ok){g.fillStyle=acc;g.strokeStyle=cssColor('--card',box);g.lineWidth=2;g.beginPath();g.arc(hx,y(d.ms),5,0,7);g.fill();g.stroke()}
   tip.innerHTML=`<b>${d.ok?fms(d.ms):'Lost'}</b>#${d.seq} · ${new Date(d.t).toLocaleTimeString()}${d.ok?' · TTL '+d.ttl:'<br>'+esc(d.status)}`;
   tip.style.display='block';const tw=tip.offsetWidth;tip.style.left=(hx+12+tw>W?hx-12-tw:hx+12)+'px';tip.style.top=(d.ok?Math.max(0,Math.min(H-50,y(d.ms)-20)):T+10)+'px'}
+
 
 /* ================= Telnet / ports ================= */
 const SERVICES={20:'FTP data',21:'FTP',22:'SSH',23:'Telnet',25:'SMTP',53:'DNS',67:'DHCP',69:'TFTP',80:'HTTP',88:'Kerberos',110:'POP3',123:'NTP',135:'MS RPC',137:'NetBIOS',139:'NetBIOS / SMB',143:'IMAP',161:'SNMP',389:'LDAP',443:'HTTPS',445:'SMB',465:'SMTPS',514:'Syslog',587:'SMTP submission',636:'LDAPS',993:'IMAPS',995:'POP3S',1433:'SQL Server',1521:'Oracle',1883:'MQTT',2049:'NFS',3306:'MySQL',3389:'Remote Desktop',5060:'SIP',5432:'PostgreSQL',5900:'VNC',5985:'WinRM',5986:'WinRM HTTPS',6379:'Redis',8080:'HTTP alt',8443:'HTTPS alt',9200:'Elasticsearch',27017:'MongoDB'};

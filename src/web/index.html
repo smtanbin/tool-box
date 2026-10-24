@@ -139,11 +139,10 @@ input,select{border-radius:6px;padding:7px 10px}
 .seg{display:inline-flex;border:1px solid var(--border);border-radius:20px;overflow:hidden}
 .seg button{border:0;border-radius:0;padding:5px 14px}.seg button.on{background:var(--sel);color:var(--accent)}
 /* ===== Windows 11 Fluent layer ===== */
-:root{color-scheme:light dark;--accent:#0067c0;--accent-text:#fff;
+:root{color-scheme:light dark;--accent:var(--os-accent,#0067c0);--accent-text:#fff;
  --bg:#f3f3f3;--panel:#f9f9f9;--card:#fff;--text:#1a1a1a;--muted:#5f5f5f;--border:rgba(0,0,0,.08);--strong:rgba(0,0,0,.2);
  --hover:rgba(0,0,0,.05);--press:rgba(0,0,0,.08);--tmbg:#ececec;--fill:rgba(0,0,0,.09);
  --flyout:0 8px 24px rgba(0,0,0,.16),0 0 2px rgba(0,0,0,.2);--dialog:0 32px 64px rgba(0,0,0,.28),0 0 8px rgba(0,0,0,.2);--danger:#c42b1c}
-@supports (color:AccentColor){:root{--accent:AccentColor;--accent-text:AccentColorText}}
 :root[data-theme=dark]{color-scheme:dark;--bg:#202020;--panel:#272727;--card:#2c2c2c;--text:#fff;--muted:#a8a8a8;--border:rgba(255,255,255,.08);--strong:rgba(255,255,255,.2);
  --hover:rgba(255,255,255,.06);--press:rgba(255,255,255,.1);--tmbg:#1b1b1b;--fill:rgba(255,255,255,.12);--danger:#ff99a4;--flyout:0 8px 24px rgba(0,0,0,.5),0 0 2px rgba(0,0,0,.6);--dialog:0 32px 64px rgba(0,0,0,.6),0 0 8px rgba(0,0,0,.5)}
 :root[data-theme=light]{color-scheme:light}
@@ -430,7 +429,7 @@ function sync(){clearTimeout(t);t=setTimeout(function(){var o={};try{for(var i=0
 S.setItem=function(k,v){set.call(this,k,v);if(this===window.localStorage)sync()};
 S.removeItem=function(k){rem.call(this,k);if(this===window.localStorage)sync()};
 S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</script>
-<script>try{var s=localStorage.getItem("skin");if(s)document.documentElement.dataset.skin=s;if(s==="aero"){var l=document.createElement("link");l.rel="stylesheet";l.id="css7";l.href="/vendor/7.css";document.head.insertBefore(l,document.querySelector("link[href=\"/skins.css\"]"))}}catch(e){}</script>
+<script>try{var s=localStorage.getItem("skin");if(s==="black"||s==="antd"||s==="win10")s="";if(s)document.documentElement.dataset.skin=s;if(s==="aero"){var l=document.createElement("link");l.rel="stylesheet";l.id="css7";l.href="/vendor/7.css";document.head.insertBefore(l,document.querySelector("link[href=\"/skins.css\"]"))}}catch(e){}</script>
 </head>
 <body>
 <header id="appbar">
@@ -452,7 +451,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
       <hr>
       <div data-cmd="skin-default">Skin: Fluent<kbd></kbd></div>
       <div data-cmd="skin-aero">Skin: Aero<kbd></kbd></div>
-      <div data-cmd="skin-black">Skin: Carbon<kbd></kbd></div>
+      
       <div data-cmd="skin-burgundy">Skin: Magestica<kbd></kbd></div>
       <hr>
       <div data-cmd="rail">Collapse / expand tool list</div>
@@ -477,7 +476,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <div id="expnav"><button id="exback" title="Back" disabled aria-label="Back">&#x2190;</button><button id="exfwd" title="Forward" disabled aria-label="Forward">&#x2192;</button></div>
   <div id="expaddr" aria-label="Address"><span id="expath"></span></div>
   <span class="apspacer" style="flex:1"></span>
-  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option><option value="black">Carbon</option></select></label>
+  <label class="skinpick" title="Change the look of the app"><span>Skin</span><select id="skinsel" aria-label="Skin"><option value="">Fluent</option><option value="burgundy">Magestica</option><option value="aero">Aero</option></select></label>
 </header>
 <div id="dlg"><div class="dlg-card" id="dlgcard"></div></div>
 <div id="shell">
@@ -489,6 +488,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <a class="ri" data-tool="disk" title="Disk info (SMART health)"><i class="fi">&#xEDA2;</i><b class="lbl">Disk info</b></a>
   <div class="rh">System &amp; developer</div>
   <a class="ri" data-tool="hw" title="Hardware info: CPU, mainboard, memory, graphics"><i class="fi">&#xE950;</i><b class="lbl">Hardware info</b></a>
+  <a class="ri" data-tool="temps" title="Temperatures: live graphs of every sensor"><i class="fi">&#xE9CA;</i><b class="lbl">Temperatures</b></a>
   <a class="ri" data-tool="proc" title="Process monitor, ports and kill"><i class="fi">&#xE9D2;</i><b class="lbl">Process monitor</b></a>
   <a class="ri" data-tool="hosts" title="Hosts file editor"><i class="fi">&#xE70F;</i><b class="lbl">Hosts file</b></a>
   <a class="ri" data-tool="env" title="Environment variables and PATH"><i class="fi">&#xE713;</i><b class="lbl">Environment & PATH</b></a>
@@ -528,6 +528,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <button class="ib" id="fwd" title="Forward (Alt+Right)" disabled><i class="fi">&#xE72A;</i></button>
   <button class="ib" id="up" title="Up one level (Backspace)"><i class="fi">&#xE74A;</i></button>
   <button class="ib" id="refresh" title="Rescan (F5)"><i class="fi">&#xE72C;</i></button>
+  <button class="primary" id="browse" title="Browse for a folder (scans it straight away)" style="height:32px;margin:0 6px 0 2px;white-space:nowrap"><i class="fi">&#xE8B7;</i>Browse…</button>
   <div id="addr" class="edit">
     <button class="ib" id="drivebtn" title="Drives"><i class="fi">&#xEDA2;</i></button>
     <div id="crumbs"></div>
@@ -536,9 +537,8 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   <div id="searchbox"><input id="q" type="search" placeholder="Search (* ? ok)" title="Search names (Ctrl+F)"><i class="fi">&#xE721;</i></div>
 </div>
 <div id="cmdbar">
-  <button id="scan" class="cmd" title="Scan the path in the address bar"><i class="fi acc">&#xE768;</i>Scan</button>
+  <button id="scan" class="cmd" style="display:none" title="Scan the path in the address bar"><i class="fi acc">&#xE768;</i>Scan</button>
   <button id="cancel" class="cmd" style="display:none"><i class="fi acc">&#xE711;</i>Cancel</button>
-  <button id="browse" class="cmd"><i class="fi">&#xE8B7;</i>Browse…</button>
   <button id="reset" class="cmd" title="Clear the current scan (Ctrl+R)"><i class="fi">&#xE777;</i>Reset</button>
   <span class="sep"></span>
   <button id="openx" class="cmd" title="Open selected folder in File Explorer"><i class="fi">&#xED25;</i>Explorer</button>
@@ -565,14 +565,6 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   </section>
   <div id="split"></div>
   <section id="right">
-    <div id="tmwrap">
-      <div id="tmhead">
-        <b style="flex:1;font-weight:600">Treemap</b>
-        <label style="color:var(--muted)">Color by</label>
-        <select id="cmode"><option value="type">File type</option><option value="age">Age</option></select>
-      </div>
-      <div id="tmbox"><canvas id="tm"></canvas><canvas id="tmo"></canvas></div>
-    </div>
     <div id="tabs">
       <div id="tabbar">
         <button data-t="pie" class="on">Pie chart</button>
@@ -596,6 +588,14 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
         </div>
         <div id="duplist"><div class="empty">Finds identical files (by content) inside the folder shown in the treemap.</div></div>
       </div>
+    </div>
+    <div id="tmwrap">
+      <div id="tmhead">
+        <b style="flex:1;font-weight:600">Treemap</b>
+        <label style="color:var(--muted)">Color by</label>
+        <select id="cmode"><option value="type">File type</option><option value="age">Age</option></select>
+      </div>
+      <div id="tmbox"><canvas id="tm"></canvas><canvas id="tmo"></canvas></div>
     </div>
   </section>
 </div>
@@ -653,7 +653,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
 <!-- ===== Ping ===== -->
 <section class="tool" id="t-ping">
   <div class="tbar">
-    <div class="fld"><label for="pghost">Host or IPv4 address</label><input id="pghost" class="mono" style="width:240px" value="8.8.8.8" spellcheck="false"></div>
+    <div class="fld"><label for="pghost">Host or IPv4 address</label><input id="pghost" class="mono" style="width:240px" value="magestica.com" spellcheck="false"></div>
     <div class="fld"><label for="pgcount">Count</label><select id="pgcount"><option value="0">Continuous</option><option value="4">4</option><option value="10">10</option><option value="50">50</option><option value="100">100</option></select></div>
     <div class="fld"><label for="pgint">Interval</label><select id="pgint"><option value="250">0.25 s</option><option value="500">0.5 s</option><option value="1000" selected>1 s</option><option value="2000">2 s</option><option value="5000">5 s</option></select></div>
     <div class="fld"><label for="pgto">Timeout</label><select id="pgto"><option value="500">500 ms</option><option value="1000">1 s</option><option value="2000" selected>2 s</option><option value="5000">5 s</option></select></div>
@@ -664,6 +664,7 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
     <button class="cmd" id="pgclear"><i class="fi">&#xE894;</i>Clear</button>
   </div>
   <div class="tpage">
+    <div class="dkpills" id="pgtabs"></div>
     <div class="tiles" id="pgtiles"></div>
     <div class="card"><div class="chhead"><h3 id="pgtitle">Latency</h3><span class="hint">Last 120 replies · red marks are lost packets</span></div><div class="chart" id="pgchart"><canvas></canvas><div class="ctip"></div></div></div>
     <div class="card"><h3>Log</h3><div class="log mono" id="pglog"></div></div>
@@ -988,6 +989,12 @@ S.clear=function(){clr.call(this);if(this===window.localStorage)sync()}})()</scr
   </div>
   <div class="tpage"><div id="hwbody"><div class="card"><div class="empty">Reading hardware…</div></div></div></div>
 </section>
+
+<!-- ===== Temperatures ===== -->
+<section class="tool" id="t-temps">
+  <div class="tbar"><span class="grow"></span><button class="cmd" id="tpref" title="Read again"><i class="fi acc">&#xE72C;</i>Refresh</button></div>
+  <div class="tpage"><div id="tpbody"><div class="tpgrid"><div class="card tpcard tpskel"><i class="sk sk1"></i><i class="sk sk2"></i><i class="sk sk3"></i></div><div class="card tpcard tpskel"><i class="sk sk1"></i><i class="sk sk2"></i><i class="sk sk3"></i></div><div class="card tpcard tpskel"><i class="sk sk1"></i><i class="sk sk2"></i><i class="sk sk3"></i></div><div class="card tpcard tpskel"><i class="sk sk1"></i><i class="sk sk2"></i><i class="sk sk3"></i></div></div><p class="hint tpload" style="margin:8px 4px"><span class="tpspin"></span>Reading sensors…</p></div></div>
+</section>
 </div></div>
 <div id="status"><span id="s1"></span><span id="s2"></span><span id="s3"></span></div>
 <div id="tip"></div><div id="ctx"></div><div id="toast"></div>
@@ -1005,6 +1012,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';cl
 /* ---------- theme ---------- */
 // Default follows the Windows light/dark setting live; the user can pin Light or Dark from View.
 let skin='';try{skin=localStorage.getItem('skin')||''}catch(e){}
+if(skin==='black'||skin==='antd'||skin==='win10')skin='';  // retired skins fall back to Fluent
 let themeMode='system';try{themeMode=localStorage.getItem('themeMode')||'system'}catch(e){}
 const darkMQ=matchMedia('(prefers-color-scheme: dark)');
 function applyTheme(redraw){
@@ -1020,18 +1028,18 @@ function applyTheme(redraw){
       document.documentElement.style.setProperty('--accent-text',L>.4?'#000':'#fff')}}catch(e){}
   for(const m of['system','light','dark']){const k=document.querySelector(`[data-cmd=theme-${m}] kbd`);if(k)k.textContent=themeMode===m?'✓':''}
   {const sel=document.getElementById('skinsel');if(sel)sel.value=skin}
-  for(const s of['default','aero','burgundy','black']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
+  for(const s of['default','aero','burgundy']){const k=document.querySelector(`[data-cmd=skin-${s}] kbd`);if(k)k.textContent=(skin||'default')===s?'✓':''}
   if(redraw)drawTM()}
 function setThemeMode(m){themeMode=m;try{localStorage.setItem('themeMode',m)}catch(e){}applyTheme(true);toast('Theme: '+{system:'follow Windows setting',light:'light',dark:'dark'}[m])}
 document.getElementById('skinsel').addEventListener('change',e=>setSkin(e.target.value));
-const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero',black:'Carbon'};
+const SKIN_NAMES={'':'Fluent',burgundy:'Magestica',aero:'Aero'};
 function setSkin(s){skin=s;try{if(s)localStorage.setItem('skin',s);else localStorage.removeItem('skin')}catch(e){}applyTheme(true);toast('Skin: '+SKIN_NAMES[s]+(s==='aero'?' (always light)':''))}
 darkMQ.addEventListener('change',()=>{if(themeMode==='system')applyTheme(true)});
 applyTheme(false);
 
 /* ---------- state ---------- */
 let rootId=null, tmId=null, selId=null, tmData=null, tabName='pie';
-const AUTHOR='Tanbin', VERSION='2.0.0';
+const AUTHOR='Tanbin', VERSION='2.2.0';
 const IC_DIR='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f6b73c" d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>';
 const IC_FILE='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#90a4ae" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>';
 const kids=new Map(), parentOf=new Map(), open=new Set();
@@ -1047,7 +1055,7 @@ function ageColor(m){const d=Math.max(0,(Date.now()/1000-m)/86400);const t=Math.
 /* ---------- toolbar / scan ---------- */
 let drives=[];
 async function loadDrives(){try{drives=await api('/api/drives')}catch(e){}}
-$('#browse').onclick=async()=>{const r=await api('/api/browse');if(r.path)$('#path').value=r.path};
+$('#browse').onclick=async()=>{const r=await api('/api/browse');if(r.path){$('#path').value=r.path;startScan(r.path)}};
 $('#path').addEventListener('keydown',e=>{if(e.key==='Enter')startScan()});
 $('#scan').onclick=()=>startScan();
 $('#cancel').onclick=()=>api('/api/cancel');
@@ -1364,7 +1372,7 @@ function showAbout(){
     <p style="color:var(--muted);font-size:12px;margin:14px 0 0">© ${new Date().getFullYear()} ${esc(AUTHOR)} · ${link(SITE,'magestica.com')}. Free for personal and business use; not for resale.</p>`)}
 async function doExit(){try{await api('/api/quit')}catch(e){}window.close();document.body.innerHTML='<div style="padding:60px;text-align:center;font:16px Roboto,Segoe UI,sans-serif">My Tool Box has closed. You can close this window.</div>'}
 const CMD={scan:()=>startScan(),browse:()=>$('#browse').click(),reset:resetAll,export:()=>$('#export').click(),explorer:()=>$('#openx').click(),exit:doExit,
-  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'skin-black':()=>setSkin('black'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
+  'theme-system':()=>setThemeMode('system'),'theme-light':()=>setThemeMode('light'),'theme-dark':()=>setThemeMode('dark'),'skin-default':()=>setSkin(''),'skin-aero':()=>setSkin('aero'),'skin-burgundy':()=>setSkin('burgundy'),'cmode-type':()=>{$('#cmode').value='type';drawTM()},'cmode-age':()=>{$('#cmode').value='age';drawTM()},
   refresh:()=>{if(rootId!==null)refreshAll()},up:goUp,faq:showFAQ,keys:showKeys,about:showAbout};
 $('#menubar').addEventListener('click',e=>{const it=e.target.closest('[data-cmd]'),m=e.target.closest('.menu');
   if(it){$$('.menu.open').forEach(x=>x.classList.remove('open'));CMD[it.dataset.cmd]?.();return}
@@ -1404,7 +1412,7 @@ $('#sortbtn').onclick=e=>{const names={name:'Name',size:'Size',files:'Number of 
 $('#viewbtn').onclick=e=>{const cm=$('#cmode').value;
   flyout(e.currentTarget,[{label:'Treemap: color by file type',check:cm==='type',fn:()=>CMD['cmode-type']()},{label:'Treemap: color by age',check:cm==='age',fn:()=>CMD['cmode-age']()},'-',
     {label:'Theme: use system setting',check:themeMode==='system',fn:()=>setThemeMode('system')},{label:'Theme: light',check:themeMode==='light',fn:()=>setThemeMode('light')},{label:'Theme: dark',check:themeMode==='dark',fn:()=>setThemeMode('dark')},'-',
-    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},{label:'Skin: Carbon',check:skin==='black',fn:()=>setSkin('black')},'-',
+    {label:'Skin: Fluent',check:!skin,fn:()=>setSkin('')},{label:'Skin: Aero',check:skin==='aero',fn:()=>setSkin('aero')},{label:'Skin: Magestica',check:skin==='burgundy',fn:()=>setSkin('burgundy')},'-',
     {label:'Details panel',check:!$('#right').classList.contains('nodetails'),fn:toggleDetails}])};
 $('#morebtn').onclick=e=>flyout(e.currentTarget,[{label:'Refresh view',fn:CMD.refresh},{label:'Export folders and files to CSV',fn:()=>{if(tmId!==null)location.href='/api/export?files=1&id='+tmId}},'-',{label:'FAQ',fn:showFAQ},{label:'Keyboard shortcuts',fn:showKeys},{label:'About',fn:showAbout},'-',{label:'Exit',fn:doExit}]);
 function toggleDetails(){const r=$('#right');r.classList.toggle('nodetails');$('#details').classList.toggle('on',!r.classList.contains('nodetails'))}
@@ -1449,6 +1457,7 @@ api('/api/status').then(s=>{if(s.scanRoot)$('#path').value=s.scanRoot;if(s.scann
 <script src="/home.js"></script>
 <script src="/menus.js"></script>
 <script src="/hw.js"></script>
+<script src="/temps.js"></script>
 <script src="/fluent-icons.js"></script>
 <script src="/boot.js"></script>
 </body>

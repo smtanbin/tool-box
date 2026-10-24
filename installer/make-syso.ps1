@@ -4,7 +4,7 @@
 # Regenerates the Windows resource files (rsrc_windows_*.syso): app icon plus the version info
 # shown in Explorer's Properties > Details tab. The version comes from -Version (x.y.z).
 #
-# Usage: powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 2.0.0
+# Usage: powershell -ExecutionPolicy Bypass -File installer\make-syso.ps1 -Version 2.2.0
 param([Parameter(Mandatory)][string]$Version)
 $ErrorActionPreference = "Stop"
 if ($Version -notmatch '^(\d+)\.(\d+)\.(\d+)$') { throw "Version must look like 1.2.3 (got '$Version')" }

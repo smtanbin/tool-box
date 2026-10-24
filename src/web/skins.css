@@ -582,137 +582,13 @@
 :root[data-skin=burgundy][data-theme=dark]{--bg:#0a0507;--panel:#0a0507;--card:#120b0e;--mg-glass:rgba(22,9,14,.62);--mg-glass-hi:rgba(34,12,20,.78);--oneui-field:rgba(255,255,255,.05);--fill:rgba(255,255,255,.05)}
 :root[data-skin=burgundy][data-theme=dark] body{background:linear-gradient(180deg,#0c0508 0,#070304 100%);background-attachment:fixed}
 
-/* dark themes use a light accent, so the hero darkens it to keep white text readable (Black & White draws its own) */
-:root[data-theme=dark]:not([data-skin=black]):not([data-skin=burgundy]) .hhero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 55%,#000) 0,transparent 60%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,#000) 0,color-mix(in srgb,var(--accent) 48%,#000) 50%,color-mix(in srgb,var(--accent) 35%,#2a0f4a) 100%);box-shadow:0 18px 40px -22px #000}
+/* dark themes use a light accent, so the hero darkens it to keep white text readable */
+:root[data-theme=dark]:not([data-skin]) .hhero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 55%,#000) 0,transparent 60%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,#000) 0,color-mix(in srgb,var(--accent) 48%,#000) 50%,color-mix(in srgb,var(--accent) 35%,#2a0f4a) 100%);box-shadow:0 18px 40px -22px #000}
 
-
-/* ===================== Carbon (IBM Carbon style; formerly Black & White) =====================
-   Carbon's White theme in light mode and Gray 100 in dark mode: square corners, flat layers instead of
-   shadows, a black UI-shell header, filled fields with a bottom rule, rectangular buttons (blue primary,
-   grey secondary, ghost in toolbars), line tabs and 3px selection bars. The interactive colour is your
-   Windows accent, or Carbon blue (#0f62fe) when none is set. IBM Plex Sans is used if it is installed. */
-:root[data-skin=black]{--os-accent-fb:#0f62fe;--accent:var(--os-accent,var(--os-accent-fb));--accent-text:#fff;
- --cb-bg:#ffffff;--cb-layer:#f4f4f4;--cb-layer-hover:#e8e8e8;--cb-layer-sel:#e0e0e0;--cb-field:#f4f4f4;--cb-border-subtle:#e0e0e0;--cb-border-strong:#8d8d8d;
- --cb-text:#161616;--cb-text-2:#525252;--cb-secondary:#393939;--cb-secondary-hover:#4c4c4c;--cb-header:#161616;--cb-danger:#da1e28;
- --bg:var(--cb-bg);--panel:var(--cb-bg);--card:var(--cb-layer);--text:var(--cb-text);--muted:var(--cb-text-2);--border:var(--cb-border-subtle);--strong:var(--cb-border-strong);
- --hover:var(--cb-layer-hover);--press:var(--cb-layer-sel);--fill:var(--cb-layer);--tmbg:#f4f4f4;--sel:var(--cb-layer-sel);--bar:var(--accent);--danger:var(--cb-danger);
- --good:#24a148;--caution:#f1c21b;--badc:#da1e28;--unk:#8d8d8d;--flyout:0 2px 6px rgba(0,0,0,.3);--dialog:0 2px 6px rgba(0,0,0,.3);
- --cb-font:"IBM Plex Sans","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;--cb-mono:"IBM Plex Mono","Cascadia Mono",Consolas,monospace}
-:root[data-skin=black][data-theme=dark]{--cb-bg:#161616;--cb-layer:#262626;--cb-layer-hover:#333333;--cb-layer-sel:#393939;--cb-field:#262626;--cb-border-subtle:#393939;--cb-border-strong:#6f6f6f;
- --cb-text:#f4f4f4;--cb-text-2:#c6c6c6;--cb-secondary:#6f6f6f;--cb-secondary-hover:#606060;--cb-danger:#fa4d56;--tmbg:#1f1f1f;--good:#42be65;--badc:#fa4d56;--flyout:0 2px 6px rgba(0,0,0,.8);--dialog:0 2px 6px rgba(0,0,0,.8)}
-:root[data-skin=black] *{border-radius:0!important}
-:root[data-skin=black] .hdot,:root[data-skin=black] .sdot,:root[data-skin=black] .st::before,:root[data-skin=black] input[type=checkbox]{border-radius:50%!important}
-:root[data-skin=black] input[type=checkbox]{border-radius:0!important}
-:root[data-skin=black] body{background:var(--cb-bg);color:var(--cb-text);font-family:var(--cb-font);font-size:14px;letter-spacing:.16px}
-/* UI shell: black header, plain side nav */
-:root[data-skin=black] #appbar{background:var(--cb-header);color:#f4f4f4;border:0;border-bottom:1px solid #393939;height:48px;box-shadow:none}
-:root[data-skin=black] #appbar .skinpick{color:#c6c6c6}
-:root[data-skin=black] #appbar .skinpick select{background:#262626;color:#f4f4f4;border:0;border-bottom:1px solid #6f6f6f}
-:root[data-skin=black] .menu>span{color:#c6c6c6;padding:0 16px;height:48px;line-height:48px;font-size:14px}
-:root[data-skin=black] .menu>span:hover,:root[data-skin=black] .menu.open>span{background:#353535;color:#f4f4f4}
-:root[data-skin=black] #rail{background:var(--cb-bg);border-right:1px solid var(--cb-border-subtle);padding:8px 0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-skin=black] .rh{color:var(--cb-text-2);font-size:12px;font-weight:600;letter-spacing:.32px;text-transform:none;padding:16px 16px 6px}
-:root[data-skin=black] .ri{height:32px;min-height:32px;padding:0 16px;color:var(--cb-text-2);font-size:14px;font-weight:400}
-:root[data-skin=black] .ri:hover{background:var(--cb-layer-hover);color:var(--cb-text)}
-:root[data-skin=black] .ri.on{background:var(--cb-layer-sel);color:var(--cb-text);font-weight:600}
-:root[data-skin=black] .ri.on::before{left:0;top:0;bottom:0;width:3px;height:auto;margin:0;background:var(--accent)}
-:root[data-skin=black] .ri .fi{color:inherit}
-/* layers instead of cards */
-:root[data-skin=black] .card,:root[data-skin=black] .tile,:root[data-skin=black] #left,:root[data-skin=black] #tmwrap,:root[data-skin=black] #tabs,:root[data-skin=black] #progress,:root[data-skin=black] .hcard:not(.hfeat){
- background:var(--cb-layer);border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-skin=black] .card{padding:16px}
-:root[data-skin=black] .card h3,:root[data-skin=black] .hsec h3{font-size:16px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--cb-text)}
-:root[data-skin=black] .tile small{color:var(--cb-text-2);font-size:12px;letter-spacing:.32px}
-:root[data-skin=black] .tile b{font-weight:300;font-size:28px}
-:root[data-skin=black] .thead h1{font-size:28px;font-weight:300;letter-spacing:0}
-:root[data-skin=black] .thead>.fi{background:transparent;color:var(--accent);width:32px;height:32px;font-size:24px}
-/* inline notification */
-:root[data-skin=black] .banner{background:color-mix(in srgb,#f1c21b 18%,var(--cb-bg));border:0;border-left:3px solid #f1c21b}
-:root[data-skin=black] .banner>.fi{color:var(--cb-text)}
-/* data table */
-:root[data-skin=black] .tbl th{background:var(--cb-layer-sel);color:var(--cb-text);font-weight:600;font-size:14px;letter-spacing:.16px;text-transform:none;border:0;padding:12px 16px}
-:root[data-skin=black] .tbl td{background:var(--cb-layer);border-bottom:1px solid var(--cb-border-subtle);padding:12px 16px}
-:root[data-skin=black] .card.flush .tbl td{background:var(--cb-layer)}
-:root[data-skin=black] .tbl.hov tbody tr:hover td{background:var(--cb-layer-hover)}
-:root[data-skin=black] .tbl tr.sel td{background:var(--cb-layer-sel)}
-:root[data-skin=black] .row.sel{background:var(--cb-layer-sel)}
-:root[data-skin=black] .row.sel::before{background:var(--accent);top:0;bottom:0;width:3px}
-:root[data-skin=black] .bar i,:root[data-skin=black] .cpubar i,:root[data-skin=black] .pbar i{background:var(--accent)}
-:root[data-skin=black] .hbadge{border:0;background:var(--hc);color:#fff}
-/* buttons: secondary by default, blue primary, ghost in toolbars */
-:root[data-skin=black] button,:root[data-skin=black] #cmdbar button.cmd,:root[data-skin=black] .tbar button.cmd{height:32px;padding:0 16px;font-family:var(--cb-font);font-size:14px;font-weight:400;letter-spacing:.16px;
- background:var(--cb-secondary);color:#fff;border:1px solid transparent;box-shadow:none;text-shadow:none}
-:root[data-skin=black] button:hover:not(:disabled){background:var(--cb-secondary-hover);color:#fff;border-color:transparent}
-:root[data-skin=black] button.primary,:root[data-skin=black] button.primary:hover:not(:disabled){background:var(--accent);color:#fff;border-color:transparent}
-:root[data-skin=black] button.primary:hover:not(:disabled){filter:brightness(.9)}
-:root[data-skin=black] button.primary.danger,:root[data-skin=black] button.primary.danger:hover:not(:disabled){background:var(--cb-danger);color:#fff}
-:root[data-skin=black] button.danger:not(.primary){background:transparent;color:var(--cb-danger);border-color:var(--cb-danger)}
-:root[data-skin=black] #cmdbar button.cmd,:root[data-skin=black] .tbar button.cmd,:root[data-skin=black] button.ib,:root[data-skin=black] .ib{background:transparent;color:var(--accent)}
-:root[data-skin=black] #cmdbar button.cmd:hover:not(:disabled),:root[data-skin=black] .tbar button.cmd:hover:not(:disabled),:root[data-skin=black] button.ib:hover:not(:disabled){background:var(--cb-layer-hover);color:var(--accent)}
-:root[data-skin=black] #cmdbar button.cmd .fi,:root[data-skin=black] .tbar button.cmd .fi{color:inherit}
-:root[data-skin=black] #cmdbar button.cmd.on{background:var(--cb-layer-sel);color:var(--cb-text)}
-:root[data-skin=black] button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-/* fields: filled with a bottom rule, blue focus box */
-:root[data-skin=black] input:not([type=checkbox]),:root[data-skin=black] textarea,:root[data-skin=black] select{height:40px;background:var(--cb-field);color:var(--cb-text);border:0;border-bottom:1px solid var(--cb-border-strong);padding:0 16px;box-shadow:none;font-family:var(--cb-font)}
-:root[data-skin=black] select{color:var(--cb-text);background-color:var(--cb-field)}
-:root[data-skin=black] select:hover:not(:disabled){background:var(--cb-layer-hover);color:var(--cb-text)}
-:root[data-skin=black] select option{background:var(--cb-layer);color:var(--cb-text)}
-:root[data-skin=black] textarea{height:auto;padding:11px 16px}
-:root[data-skin=black] input:focus,:root[data-skin=black] select:focus,:root[data-skin=black] textarea:focus{outline:2px solid var(--accent);outline-offset:-2px;box-shadow:none;border-bottom-color:transparent}
-:root[data-skin=black] .tool input[type=checkbox]{accent-color:var(--cb-text)}
-/* content switcher and line tabs */
-:root[data-skin=black] .seg{background:transparent;border:1px solid var(--cb-text);padding:0;height:40px;gap:0}
-:root[data-skin=black] .seg button{height:38px;background:transparent;color:var(--cb-text-2);border:0}
-:root[data-skin=black] .seg button:hover:not(:disabled){background:var(--cb-layer-hover);color:var(--cb-text)}
-:root[data-skin=black] .seg button.on{background:var(--cb-text);color:var(--cb-bg)}
-:root[data-skin=black] .dkpills{border-bottom:0}
-:root[data-skin=black] button.dkpill,:root[data-skin=black] #tabbar button{background:transparent;color:var(--cb-text-2);border:0;border-bottom:2px solid var(--cb-border-subtle);height:auto}
-:root[data-skin=black] button.dkpill:hover:not(.on):not(:disabled),:root[data-skin=black] #tabbar button:hover{background:transparent;color:var(--cb-text);border-bottom-color:var(--cb-border-strong)}
-:root[data-skin=black] button.dkpill.on,:root[data-skin=black] #tabbar button.on{color:var(--cb-text);font-weight:600;border-bottom-color:var(--accent)}
-:root[data-skin=black] .dkpill.on::after,:root[data-skin=black] #tabbar button.on::after{display:none}
-/* menus, modal, palette, toast */
-:root[data-skin=black] .dd,:root[data-skin=black] #ctx,:root[data-skin=black] #tip{background:var(--cb-layer);border:0;padding:0;box-shadow:var(--flyout)}
-:root[data-skin=black] .dd div,:root[data-skin=black] #ctx div{padding:11px 16px;margin:0;color:var(--cb-text-2)}
-:root[data-skin=black] .dd div:hover,:root[data-skin=black] #ctx div:hover{background:var(--cb-layer-hover);color:var(--cb-text)}
-:root[data-skin=black] .dd hr{margin:0;border-top:1px solid var(--cb-border-subtle)}
-:root[data-skin=black] .dlg-card{background:var(--cb-layer);border:0;box-shadow:var(--dialog);padding:0}
-:root[data-skin=black] .dbody{padding:16px 16px 24px}
-:root[data-skin=black] .dbody h2{font-size:20px;font-weight:400}
-:root[data-skin=black] .dmsg .path{background:var(--cb-field);border:0;border-bottom:1px solid var(--cb-border-strong)}
-:root[data-skin=black] .dfoot{padding:0;gap:0;border:0;background:transparent}
-:root[data-skin=black] .dfoot button{flex:1;height:64px;justify-content:flex-start;align-items:flex-start;padding:14px 16px;min-width:0}
-:root[data-skin=black] #dlg{background:rgba(22,22,22,.5);-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-skin=black] #palette .pcard{background:var(--cb-layer);border:0;box-shadow:var(--dialog)}
-:root[data-skin=black] #palette #palq{background:var(--cb-field);border-bottom:1px solid var(--cb-border-strong);height:48px}
-:root[data-skin=black] #palette .pitem.on,:root[data-skin=black] #palette .pitem:hover{background:var(--cb-layer-sel)}
-:root[data-skin=black] #toast{background:#393939;color:#f4f4f4;border:0;border-left:3px solid var(--accent);box-shadow:var(--flyout)}
-:root[data-skin=black] #status{background:var(--cb-bg);border-top:1px solid var(--cb-border-subtle);color:var(--cb-text-2)}
-:root[data-skin=black] ::-webkit-scrollbar-thumb{background:var(--cb-border-strong);border:3px solid var(--cb-bg);background-clip:padding-box}
-/* home: a Carbon-style lead space (black band, light type) and plain tiles */
-:root[data-skin=black] .hhero{background:#161616;color:#f4f4f4;border:0;box-shadow:none;padding:32px}
-:root[data-skin=black][data-theme=dark] .hhero{background:#262626}
-:root[data-skin=black] .hhero::after{display:none}
-:root[data-skin=black] .hhero h2{font-size:42px;font-weight:300;letter-spacing:0;color:#f4f4f4}
-:root[data-skin=black] .hhero p{color:#c6c6c6}
-:root[data-skin=black] .hh-greet{color:#c6c6c6;letter-spacing:.32px;font-weight:400;text-transform:none;font-size:14px;opacity:1}
-:root[data-skin=black] #hhero .hh-search{background:#393939;color:#c6c6c6;border:0;border-bottom:1px solid #6f6f6f;height:48px;padding:0 16px}
-:root[data-skin=black] #hhero .hh-search:hover:not(:disabled){background:#4c4c4c;color:#f4f4f4}
-:root[data-skin=black] .hh-search kbd{background:transparent;border:1px solid #6f6f6f;color:#c6c6c6}
-:root[data-skin=black] .hh-chips span{background:#393939;color:#f4f4f4;font-weight:400}
-:root[data-skin=black] .hh-orb{display:none}
-:root[data-skin=black] .hh-art img{animation:none;filter:none}
-:root[data-skin=black] .hgrid .hcard.hfeat,:root[data-skin=black] .hgrid .hcard.hfeat:hover{background:var(--cb-layer);color:var(--cb-text);border:0;border-top:3px solid var(--fc);min-height:128px}
-:root[data-skin=black] .hgrid .hcard.hfeat:hover{background:var(--cb-layer-hover)}
-:root[data-skin=black] .hfeat .htxt b{color:var(--cb-text);font-weight:400;font-size:16px}
-:root[data-skin=black] .hfeat .htxt small{color:var(--cb-text-2)}
-:root[data-skin=black] .hfeat .hico,:root[data-skin=black] .hico{background:transparent;color:var(--accent);width:32px;height:32px}
-:root[data-skin=black] .hcard:not(.hfeat):hover{background:var(--cb-layer-hover);transform:none}
-:root[data-skin=black] .hcard{transition:background .11s}
-:root[data-skin=black] .hfeat{transition:background .11s}
 
 /* Hardware info */
 .hwkv{margin-top:8px}.hwbar{height:8px;border-radius:4px;background:var(--fill);overflow:hidden;margin:2px 0 10px}.hwbar i{display:block;height:100%;background:var(--accent)}
-:root[data-skin=black] .ri[data-tool=hw]{--ic:#475569}:root[data-skin=aero] .ri[data-tool=hw]{--ic:#5a6b7d}
+:root[data-skin=aero] .ri[data-tool=hw]{--ic:#5a6b7d}
 .hwnote{margin:10px 0 0;color:var(--muted)}
 .hwtm{display:grid;grid-template-columns:minmax(150px,200px) 1fr minmax(170px,210px);gap:16px;align-items:start}
 .hwstats{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
@@ -726,12 +602,13 @@
 .hwid{display:flex;align-items:center;gap:18px;padding:16px 20px}.hwid .hwbadge{flex:none;border-radius:10px;box-shadow:0 6px 16px -10px rgba(0,0,0,.6)}
 .hwidtxt h2{margin:0 0 4px;font-size:22px;font-weight:600;letter-spacing:-.01em}.hwidtxt p{margin:0;color:var(--muted)}
 .hwgpu{margin-bottom:8px}.hwmemchart{width:100%;height:160px;display:block;border:1px solid var(--border);margin-top:8px;background:color-mix(in srgb,var(--card) 70%,transparent)}
-:root[data-skin=black] .hwid .hwbadge,:root[data-skin=black] .hwmemchart,:root[data-skin=black] .hwgraphs canvas{border-radius:0}
 
 .hwchart{width:100%;height:110px;display:block;border:1px solid var(--border);margin-top:8px;background:color-mix(in srgb,var(--card) 70%,transparent)}
+#t-temps .tpage{height:100%}.tpgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;align-content:start}.tpgroup{grid-column:1/-1;margin:10px 4px 0;font-size:14px}.tpgrid .card{margin:0}.tpval{font-size:26px;font-variant-numeric:tabular-nums}.tpbar{width:100%!important;max-width:none!important}.tpcard .hwchart{height:clamp(110px,22vh,260px)}
+.tpskel{min-height:200px;display:flex;flex-direction:column;gap:14px;padding:18px}.sk{display:block;border-radius:4px;background:linear-gradient(90deg,var(--border) 25%,color-mix(in srgb,var(--border) 45%,var(--text,#fff) 14%) 50%,var(--border) 75%);background-size:200% 100%;animation:tpshimmer 1.3s linear infinite}.sk1{height:16px;width:45%}.sk2{height:10px}.sk3{flex:1;min-height:80px}
+@keyframes tpshimmer{to{background-position:-200% 0}}.tpload{display:flex;align-items:center;gap:8px}.tpspin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:tpspin .8s linear infinite}@keyframes tpspin{to{transform:rotate(360deg)}}
 .hwnetline{font-size:14px;margin:4px 0}.hwnetline b{font-variant-numeric:tabular-nums}
 .hwnpubadge{width:96px;height:96px;border-radius:10px;background:#15171c;color:#a78bfa;display:flex;align-items:center;justify-content:center;font:800 22px "Segoe UI",sans-serif;letter-spacing:1px;border-top:6px solid #a78bfa;box-sizing:border-box}
-:root[data-skin=black] .hwchart{border-radius:0}
 
 /* Magestica: calmer page headers on the tool pages (the big type is for the Home hero) */
 :root[data-skin=burgundy] .tpage{padding:4px 22px 22px 14px}
@@ -741,3 +618,29 @@
 :root[data-skin=burgundy] .thead>.fi{width:44px;height:44px;font-size:22px;margin:0;border-radius:50%;background:var(--mag-tint)}
 :root[data-skin=burgundy] .tbar{padding:6px 14px 14px}
 :root[data-skin=burgundy] .card h3{font-size:20px;letter-spacing:-.04em;margin-bottom:14px}
+/* Magestica: ping host tabs as a One UI style pill group */
+:root[data-skin=burgundy] #pgtabs{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;padding:4px;margin:6px 0 14px;border:0;border-radius:999px;background:var(--tmbg,var(--panel));width:max-content;max-width:100%}
+:root[data-skin=burgundy] #pgtabs .dkpill{flex-direction:row;align-items:center;gap:8px;min-height:0;height:36px;padding:0 16px 0 14px;margin:0;border:0;border-radius:999px;background:transparent;color:var(--muted);box-shadow:none}
+:root[data-skin=burgundy] #pgtabs .dkpill::after{display:none}
+:root[data-skin=burgundy] #pgtabs .dkpill:hover:not(.on){background:var(--hover);color:var(--text)}
+:root[data-skin=burgundy] #pgtabs .dkpill.on{background:var(--accent);color:var(--accent-text);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+:root[data-skin=burgundy] #pgtabs .dkpill b{gap:6px;font-size:13px;font-weight:600;color:inherit}
+:root[data-skin=burgundy] #pgtabs .dkpill small{font-size:12px;color:inherit;opacity:.75;white-space:nowrap}
+:root[data-skin=burgundy] #pgtabs .dkpill span[data-x]{margin-left:2px;padding:0 4px;border-radius:999px;font-size:15px;line-height:1;opacity:.7}
+:root[data-skin=burgundy] #pgtabs .dkpill span[data-x]:hover{opacity:1;background:rgba(0,0,0,.12)}
+:root[data-skin=burgundy] #pgtabs .hdot{width:7px;height:7px}
+:root[data-skin=burgundy] #pgtabs button[data-add]{height:36px;padding:0 16px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--accent);font-weight:600}
+/* Fluent (default skin) follows WinUI 3: Windows 11 type scale, 8px panels, 4px controls, a faint Mica-style tint at the top */
+:root:not([data-skin]) body{font-family:"Segoe UI Variable Text","Segoe UI Variable",system-ui,sans-serif;font-size:14px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 6%,var(--bg)) 0,var(--bg) 240px) fixed}
+:root:not([data-skin]) .thead h1{font-size:28px;font-weight:600;letter-spacing:-.01em}
+:root:not([data-skin]) .card h3,:root:not([data-skin]) .hsec h3{font-size:20px;font-weight:600;letter-spacing:0}
+:root:not([data-skin]) .card,:root:not([data-skin]) .tile,:root:not([data-skin]) .dd,:root:not([data-skin]) .dlg-card,:root:not([data-skin]) #palette .pcard{border-radius:8px}
+:root:not([data-skin]) button,:root:not([data-skin]) input:not([type=checkbox]),:root:not([data-skin]) select,:root:not([data-skin]) textarea,:root:not([data-skin]) .ri{border-radius:4px}
+/* Disk: gauge bars inside the Health, Temperature and Current use badges */
+.dkgauge{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.3);margin-top:8px;overflow:hidden}
+.dkgauge i{display:block;height:100%;background:rgba(255,255,255,.95);border-radius:3px}
+/* Magestica: tab pills in the Folder Size, Ping and other tool tab bars; full pill shape, no clipped bottom border */
+:root[data-skin=burgundy] #tabbar{gap:6px;padding:6px 8px;align-items:center}
+:root[data-skin=burgundy] #tabbar button{height:34px;margin:0;padding:0 16px;border:0;border-bottom:0;border-radius:999px;line-height:1;display:inline-flex;align-items:center;color:var(--muted);background:transparent;box-shadow:none}
+:root[data-skin=burgundy] #tabbar button:hover:not(.on){background:var(--hover);color:var(--text)}
+:root[data-skin=burgundy] #tabbar button.on{background:var(--mag-tint);color:var(--accent);font-weight:600;border:0;border-bottom:0}
