@@ -72,8 +72,8 @@ jobs:
             | 32-bit (x86) | `ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi` | `ToolBox-${{ steps.ver.outputs.version }}-x86.zip` |
             | ARM64 | `ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi` | `ToolBox-${{ steps.ver.outputs.version }}-arm64.zip` |
 
-            The installer is per-user (no administrator rights) and adds Desktop and Start menu shortcuts.
-            Silent install: `msiexec /i ToolBoxSetup-<version>-<arch>.msi /qn /norestart`
+            The installer asks whether to install only for you (no administrator rights) or for everyone on the PC (Program Files, needs administrator rights), and adds Desktop and Start menu shortcuts.
+            Silent install: `msiexec /i ToolBoxSetup-<version>-<arch>.msi /qn /norestart` (just you), add `ALLUSERS=1` from an elevated prompt for everyone.
 
             The `.msixbundle` is the Microsoft Store package (it is signed by the Store, so it cannot be installed by hand).
             Nothing needs to be installed first: the .NET and Windows App SDK runtimes are inside the app.

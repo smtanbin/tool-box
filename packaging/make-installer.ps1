@@ -3,8 +3,9 @@
 #
 # Builds the classic Windows installer, dist\ToolBoxSetup-<version>-<arch>.msi, from a published ToolBox folder
 # (build.ps1 publishes it into dist\publish\<arch>). Called by build.ps1 -Installer.
-# It is per-user (no administrator rights), shows the licence, adds Desktop and Start menu shortcuts and offers to launch the app.
-# Silent install: msiexec /i ToolBoxSetup-<version>-x64.msi /qn /norestart
+# The wizard shows the licence and asks: only for me (user folder, no admin rights) or everyone (Program Files, admin). It adds
+# Desktop and Start menu shortcuts and offers to launch the app.
+# Silent install: msiexec /i ToolBoxSetup-<version>-x64.msi /qn /norestart   (add ALLUSERS=1 from an elevated prompt for everyone)
 #
 # Needs the WiX Toolset v5 command line tool. It is installed here on first use (a .NET global tool):
 #   dotnet tool install --global wix --version 5.0.2

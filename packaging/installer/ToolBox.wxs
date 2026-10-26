@@ -1,7 +1,11 @@
 <!--
   My Tool Box installer (WiX Toolset v5). Build it with  build.ps1 -Installer.
-  Per-user install: no administrator rights needed. Installs to %LocalAppData%\Programs\My Tool Box
-  and adds Desktop and Start menu shortcuts. Every file of the published app is picked up automatically.
+  The wizard asks where to install:
+    "Only for me"                        -> %LocalAppData%\Programs\My Tool Box   (no administrator rights needed)
+    "Anyone who uses this computer"      -> C:\Program Files\My Tool Box           (asks for administrator rights)
+  Silent: msiexec /i ToolBoxSetup-<version>-<arch>.msi /qn            (just for the current user)
+          msiexec /i ToolBoxSetup-<version>-<arch>.msi ALLUSERS=1 /qn  (everyone; run from an elevated prompt)
+  Adds Desktop and Start menu shortcuts. Every file of the published app is picked up automatically.
   Copyright 2026 Tanbin (www.magestica.com). Apache License 2.0 with Commons Clause.
 -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
@@ -10,7 +14,7 @@
            Manufacturer="Tanbin (Magestica)"
            Version="$(var.Version)"
            UpgradeCode="6F2B8C1E-4A7D-4E3B-9C55-2D1A7B3E9F40"
-           Scope="perUser"
+           Scope="perUserOrMachine"
            Compressed="yes">
 
     <SummaryInformation Description="My Tool Box $(var.Version) Setup" Manufacturer="Tanbin (Magestica)" />
@@ -24,11 +28,13 @@
     <Property Id="ARPHELPLINK" Value="https://www.magestica.com/" />
     <Property Id="ARPNOREPAIR" Value="1" />
 
-    <!-- Wizard: licence page, install, then an optional "launch" tick box -->
+    <!-- Wizard: licence page, "just for me / everyone" and folder choice, install, then an optional "launch" tick box -->
     <WixVariable Id="WixUILicenseRtf" Value="$(var.BuildDir)\License.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="$(var.BuildDir)\banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.BuildDir)\dialog.bmp" />
-    <ui:WixUI Id="WixUI_Minimal" />
+    <Property Id="ApplicationFolderName" Value="My Tool Box" />
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+    <ui:WixUI Id="WixUI_Advanced" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch My Tool Box" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
     <SetProperty Id="WixShellExecTarget" Value="[INSTALLFOLDER]ToolBox.exe" After="CostFinalize" Sequence="both" />
@@ -38,10 +44,9 @@
                Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
     </UI>
 
-    <StandardDirectory Id="LocalAppDataFolder">
-      <Directory Id="UserProgramsDir" Name="Programs">
-        <Directory Id="INSTALLFOLDER" Name="My Tool Box" />
-      </Directory>
+    <!-- WixUI_Advanced moves INSTALLFOLDER to %LocalAppData%\Programs for "Only for me" -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" />
     </StandardDirectory>
     <StandardDirectory Id="DesktopFolder" />
     <StandardDirectory Id="ProgramMenuFolder" />
@@ -54,9 +59,8 @@
     <ComponentGroup Id="Extras" Directory="INSTALLFOLDER">
       <Component Id="cmpLicense" Guid="5B90E3D7-8C21-4A6F-9E4D-1F7A2C6B08E5">
         <File Id="LicenseTxt" Source="$(var.LicenseFile)" Name="LICENSE.txt" />
-        <RegistryValue Root="HKCU" Key="Software\Magestica\My Tool Box" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <RegistryValue Root="HKMU" Key="Software\Magestica\My Tool Box" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
         <RemoveFolder Id="rmInstallFolder" On="uninstall" />
-        <RemoveFolder Id="rmUserPrograms" Directory="UserProgramsDir" On="uninstall" />
       </Component>
       <Component Id="cmpShortcuts" Guid="A7E14C93-2D6B-4F58-B0E1-93C5D7F2A846">
         <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="My Tool Box"
@@ -65,7 +69,7 @@
         <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="My Tool Box"
                   Description="Everyday IT tools for Windows"
                   Target="[INSTALLFOLDER]ToolBox.exe" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
-        <RegistryValue Root="HKCU" Key="Software\Magestica\My Tool Box" Name="Shortcuts" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKMU" Key="Software\Magestica\My Tool Box" Name="Shortcuts" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 

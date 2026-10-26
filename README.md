@@ -22,7 +22,7 @@ The **Home** page shows live CPU, memory, disk and network figures, your recent 
 
 Get a build from the [Releases](https://github.com/smtanbin/tool-box/releases) page:
 
-* **Installer:** `ToolBoxSetup-<version>-x64.msi` (or `-x86`, `-arm64`). Per-user, no administrator rights, adds Desktop and Start menu shortcuts. Silent install: `msiexec /i ToolBoxSetup-<version>-x64.msi /qn /norestart`.
+* **Installer:** `ToolBoxSetup-<version>-x64.msi` (or `-x86`, `-arm64`). The wizard asks where to install: *Only for me* (your user folder, no administrator rights) or *Anyone who uses this computer* (Program Files, asks for administrator rights). Adds Desktop and Start menu shortcuts. Silent install: `msiexec /i ToolBoxSetup-<version>-x64.msi /qn /norestart` (just you) or add `ALLUSERS=1` from an elevated prompt (everyone).
 * **Portable:** `ToolBox-<version>-x64.zip` (or `-x86`, `-arm64`). Unzip anywhere and run `ToolBox.exe`.
 * **Microsoft Store:** the `.msixbundle` is the Store package.
 
