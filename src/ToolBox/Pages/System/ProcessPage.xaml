@@ -1,0 +1,64 @@
+<Page x:Class="ToolBox.Pages.ProcessPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:ToolBox.Pages">
+  <Grid Padding="24,8,24,16" RowSpacing="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <TextBlock Text="Process monitor" Style="{StaticResource TitleTextBlockStyle}"/>
+    <Grid Grid.Row="1" ColumnSpacing="8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <AutoSuggestBox x:Name="Search" PlaceholderText="Search name, PID, path or port" QueryIcon="Find" TextChanged="Search_TextChanged"/>
+      <Button x:Name="EndTask" Grid.Column="1" Content="End task" IsEnabled="False" Click="EndTask_Click"/>
+      <Button x:Name="EndTree" Grid.Column="2" Content="End process tree" IsEnabled="False" Click="EndTree_Click"/>
+      <TextBlock x:Name="Summary" Grid.Column="3" VerticalAlignment="Center" Opacity="0.7"/>
+    </Grid>
+    <Grid Grid.Row="2" Padding="12,0,28,0" ColumnSpacing="8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2*"/>
+        <ColumnDefinition Width="80"/>
+        <ColumnDefinition Width="90"/>
+        <ColumnDefinition Width="110"/>
+        <ColumnDefinition Width="80"/>
+        <ColumnDefinition Width="3*"/>
+      </Grid.ColumnDefinitions>
+      <HyperlinkButton Content="Name" Tag="Name" Click="Sort_Click" Padding="0"/>
+      <HyperlinkButton Grid.Column="1" Content="PID" Tag="Pid" Click="Sort_Click" Padding="0" HorizontalAlignment="Right"/>
+      <HyperlinkButton Grid.Column="2" Content="CPU %" Tag="Cpu" Click="Sort_Click" Padding="0" HorizontalAlignment="Right"/>
+      <HyperlinkButton Grid.Column="3" Content="Memory" Tag="Mem" Click="Sort_Click" Padding="0" HorizontalAlignment="Right"/>
+      <HyperlinkButton Grid.Column="4" Content="Threads" Tag="Threads" Click="Sort_Click" Padding="0" HorizontalAlignment="Right"/>
+      <HyperlinkButton Grid.Column="5" Content="Path" Tag="Path" Click="Sort_Click" Padding="0"/>
+    </Grid>
+    <ListView x:Name="List" Grid.Row="3" SelectionMode="Single" SelectionChanged="List_SelectionChanged">
+      <ListView.ItemTemplate>
+        <DataTemplate x:DataType="local:ProcRow">
+          <Grid ColumnSpacing="8" Height="34">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="2*"/>
+              <ColumnDefinition Width="80"/>
+              <ColumnDefinition Width="90"/>
+              <ColumnDefinition Width="110"/>
+              <ColumnDefinition Width="80"/>
+              <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="1" Text="{x:Bind Pid}" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="Consolas"/>
+            <TextBlock Grid.Column="2" Text="{x:Bind CpuText}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="3" Text="{x:Bind MemText}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="4" Text="{x:Bind Threads}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="5" Text="{x:Bind Path}" VerticalAlignment="Center" Opacity="0.65" TextTrimming="CharacterEllipsis"/>
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
+</Page>

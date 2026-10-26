@@ -1,9 +1,9 @@
 # Privacy Policy
 
-**My Tool Box** · Effective date: 15 October 2026
+**My Tool Box** · Effective date: 24 October 2026
 
 My Tool Box is a desktop application for Windows developed by Tanbin
-([magestica.com](https://magestica.com)). This policy explains what information
+([www.magestica.com](https://www.magestica.com/)). This policy explains what information
 the app handles and what it does with it.
 
 ## Summary
@@ -15,9 +15,8 @@ the app handles and what it does with it.
 
 ## How the app works
 
-My Tool Box runs a small local web server that listens only on `127.0.0.1` (your own
-computer) and shows its interface in a Microsoft Edge or Google Chrome app window.
-That server cannot be reached from other computers. Closing the window quits the app.
+My Tool Box is a native Windows app (WinUI 3). It has no web server and no embedded browser:
+it opens no listening network port, and closing the window quits the app.
 
 ## Information the app reads on your computer
 
@@ -51,17 +50,19 @@ Only scan networks and devices you own or are allowed to test.
 
 ## Information stored by the app
 
-My Tool Box saves a few display preferences in the app window's local browser storage
-on your computer: the last tool you opened, the light/dark theme choice and whether
-the side menu is collapsed. These contain no personal data, are never transmitted,
-and can be removed by clearing the site data for `127.0.0.1` in Edge or Chrome.
+My Tool Box saves two small files on your computer, in `%LocalAppData%\MyToolBox`:
 
-The installer records the install folder in the Windows registry
-(`HKEY_CURRENT_USER\Software\magestica\My Tool Box`), which is removed when you uninstall.
+- `usage.json`: which tools you opened recently and how often, used for the Recent and Most used lists on the Home page.
+- `env-backups\`: a copy of your environment variables, made just before you change one, so a mistake can be undone by hand.
+  The newest 30 are kept.
+
+Hosts file edits also leave a backup next to the hosts file (`hosts.bak-<date>`). Nothing here contains personal data, none
+of it is transmitted, and all of it can be deleted at any time. If the app hits an error it writes the details to
+`%TEMP%\toolbox-crash.log`; that file stays on your PC and is never sent anywhere.
 
 ## Links to other websites
 
-The About dialog links to GitHub and magestica.com. Those links open in your web
+The Home and About pages link to GitHub and www.magestica.com. Those links open in your web
 browser, and those websites have their own privacy policies.
 
 ## Children's privacy
@@ -78,4 +79,4 @@ If this policy changes, the updated version will be published at
 
 Questions about this policy: open an issue at
 <https://github.com/smtanbin/tool-box/issues> or contact
-[magestica.com](https://magestica.com).
+[www.magestica.com](https://www.magestica.com/).

@@ -1,0 +1,10 @@
+<Project>
+  <!-- One version for the whole repository. build.ps1 and the CI release workflow read it from here. -->
+  <PropertyGroup>
+    <Version>3.0.0</Version>
+    <Authors>Tanbin</Authors>
+    <Company>Magestica</Company>
+    <Product>My Tool Box</Product>
+    <Copyright>Copyright 2026 Tanbin (www.magestica.com)</Copyright>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,22 @@
+<Page x:Class="ToolBox.Pages.HardwarePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid Padding="24,8,24,0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid>
+      <TextBlock Text="Hardware info" Style="{StaticResource TitleTextBlockStyle}"/>
+      <Button Content="Refresh" HorizontalAlignment="Right" Click="Refresh_Click"/>
+    </Grid>
+    <ProgressRing x:Name="Busy" Grid.Row="1" IsActive="True" Width="36" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Pivot x:Name="Tabs" Grid.Row="1" Visibility="Collapsed" Margin="-12,8,-12,0" SelectionChanged="Tabs_SelectionChanged">
+      <PivotItem Header="Processor"><ContentControl x:Name="CpuTab" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></PivotItem>
+      <PivotItem Header="Memory"><ContentControl x:Name="MemTab" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></PivotItem>
+      <PivotItem Header="Graphics"><ContentControl x:Name="GpuTab" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></PivotItem>
+      <PivotItem Header="Network"><ContentControl x:Name="NetTab" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></PivotItem>
+      <PivotItem Header="System"><ContentControl x:Name="SysTab" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/></PivotItem>
+    </Pivot>
+  </Grid>
+</Page>

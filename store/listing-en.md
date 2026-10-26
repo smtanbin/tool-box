@@ -14,10 +14,10 @@ My Tool Box
 ## Description *(10–10,000 characters, ~2,000 used)*
 
 ```
-My Tool Box puts the everyday IT tools you reach for into one fast, clean Windows app. See where your disk space went, check your drives' health, calculate subnets, scan your network, ping and test ports, and hash, encrypt, encode and generate things, all without a browser tab, an account or an internet connection.
+My Tool Box puts the everyday IT tools you reach for into one fast, clean Windows app. See where your disk space went, check your drives' health, calculate subnets, scan your network, ping and test ports, and hash, encrypt, encode and generate things, all in one native app, without an account or an internet connection.
 
 DISK
-• Folder Size – scan any drive or folder in seconds and see exactly what is using the space. An interactive treemap, pie chart, file-type breakdown, largest-files list, name search with wildcards and a content-based duplicate finder. Move files to the Recycle Bin, open them in File Explorer or export the results to CSV.
+• Folder Size – scan any drive or folder in seconds and see exactly what is using the space. An interactive treemap, pie chart, file-type breakdown, largest-files list, name search with wildcards and a content-based duplicate finder. Open items in File Explorer or export the results to CSV.
 • Disk info – drive model, serial number, firmware, interface (NVMe, SATA, USB), capacity, partitions and a clear Good / Caution / Bad health badge, with temperature, power-on hours and the full S.M.A.R.T. attribute table.
 
 NETWORK
@@ -51,14 +51,12 @@ Everyday IT tools for Windows in one app: folder size and disk health, subnet ca
 ## What's new in this version *(max 1,500)*
 
 ```
-Version 2.2.0
-• New Hardware info, CPU-Z style: processor details with code name, cache and instruction sets, live graphs for every core, mainboard and BIOS, memory modules with a live memory chart, every graphics card and integrated GPU with load and video-memory charts, NPU detection, and network speed charts.
-• New tools: Environment variables and PATH editor, Network adapters, DNS lookup, Traceroute, Process monitor (end tasks, free a port) and Hosts file editor.
-• New Home page with your recent and most used tools.
-• Disk info now shows the drive maker and controller and tells you if an SSD is DRAM-less.
-• New Image to Base64 and Image to ICO.
-• Three looks, in light and dark: Fluent, Aero (Windows 7) and Magestica. Pick one from the Skin box; it is remembered.
-• Ctrl+K command palette, zoom, full screen, and menus that follow the tool you are using.
+Version 3.0.0
+• Rebuilt as a native Windows app: faster to start, follows your Windows light or dark theme, and no longer needs a browser window.
+• New Home dashboard with live CPU, memory, disk and network, your recent tools, and search (Ctrl+K).
+• Folder Size: tree with size bars, treemap, pie chart, file types, largest files, search and duplicate finder.
+• Network adapters show a live download and upload graph. Ping handles several hosts at once.
+• Hardware info, Temperatures, Process monitor, Hosts file editor and Environment variables.
 • Still private and works offline.
 ```
 
@@ -147,17 +145,16 @@ Screenshot captions (optional, max 200 each):
 ## Notes for certification *(Submission options → Notes for certification, max 2,000)*
 
 ```
-My Tool Box is a standalone Windows desktop app (MSI installer, per-user, no administrator rights needed). No sign-in, account or test credentials are required.
+My Tool Box is a native Windows desktop app (WinUI 3, packaged as MSIX). No sign-in, account or test credentials are required.
 
 INSTALL
-Silent install: msiexec /i ToolBoxSetup-2.2.0-x64.msi /qn /norestart
-The installer adds Desktop and Start menu shortcuts and one entry in Settings > Apps > Installed apps named "My Tool Box". It installs only this app (no bundled or third-party software) and uninstalls cleanly from there.
+Install it from the Store. It installs only this app (no bundled or third-party software) and uninstalls from Settings > Apps > Installed apps.
 
 HOW IT WORKS
-The app starts a small local web server bound to 127.0.0.1 only (not reachable from other computers) and shows its interface in a Microsoft Edge or Google Chrome app window, both built into Windows. Closing the window exits the app. Nothing is uploaded: there are no accounts, ads, analytics or telemetry.
+The app is self-contained: the .NET and Windows App SDK runtimes are inside the package. It opens no listening network port and has no embedded browser. Nothing is uploaded: there are no accounts, ads, analytics or telemetry. The package declares the runFullTrust capability because the tools read system information (hardware, drives, processes, network adapters) and some can change system settings the user asks them to change (hosts file, environment variables, end a process).
 
 HOW TO TEST (no setup needed)
-1. Folder Size: type C:\Program Files in the address bar and press Enter. Explore the treemap and pie chart.
+1. Folder Size: type C:\Program Files in the address bar and press Enter. Explore the tree, treemap and pie chart.
 2. Subnet calculator: enter 192.168.1.10/24.
 3. Token & UUID: press Generate.
 4. Hash text: type any text.
@@ -177,13 +174,11 @@ Source code: https://github.com/smtanbin/tool-box
 | Price | Free |
 | Age rating | Answer **No** to everything: no violence, sexual content, gambling, user-generated content sharing, or purchases; the app does not collect personal data |
 | Installer parameters | `/qn /norestart` |
-| App type | MSI (one package each for x64, x86 and arm64) |
+| App type | MSIX bundle (`ToolBox-<version>.msixbundle`: x64, x86 and arm64 in one file) |
 | Minimum OS | Windows 10 version 1809 or later |
-| Needs Microsoft Edge or Chrome | Yes, built into Windows 10/11 |
-| Code signing | Required by the Store for MSI/EXE packages. Sign each installer before submitting. |
-| Package URL x64 | `https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-x64.msi` |
-| Package URL x86 | `https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-x86.msi` |
-| Package URL arm64 | `https://smtanbin.github.io/tool-box/downloads/2.2.0/ToolBoxSetup-2.2.0-arm64.msi` |
+| Needs a browser | No |
+| Code signing | Not needed: the Store signs MSIX packages |
+| Capabilities | runFullTrust (reads hardware, drives, processes and network information; edits the hosts file and environment variables when asked) |
 
-The Package URL must **not redirect**. GitHub Release links redirect (HTTP 302), so use
-the GitHub Pages URLs above (needs Settings → Pages → `gh-pages` branch, root).
+Build it with `.\build.ps1 -Msix -Arch x64,x86,arm64` and upload the bundle from `dist` to Partner Center.
+The package identity must match Product management -> Product identity (see the README).

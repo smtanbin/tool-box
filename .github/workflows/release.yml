@@ -1,15 +1,12 @@
-﻿# Publishes a GitHub Release with installers and portable builds for
-# x64, x86 and arm64 whenever a version tag (v1.2.3) is pushed:
+﻿# Publishes a GitHub Release when a version tag is pushed:
 #
-#   git tag v2.0.0 && git push origin v2.0.0
+#   git tag v3.0.0 && git push origin v3.0.0
 #
-# GitHub Release download links redirect to another host, which the Microsoft Store
-# does not accept. So the installers are also published to the gh-pages branch and
-# served by GitHub Pages with NO redirect. Use these as the Store "Package URL":
-#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x64.msi
-#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-x86.msi
-#   https://smtanbin.github.io/tool-box/downloads/2.0.0/ToolBoxSetup-2.0.0-arm64.msi
-# (One-time repo setting: Settings -> Pages -> Deploy from a branch -> gh-pages / root.)
+# It builds x64, x86 and arm64, then makes a portable zip per architecture, an MSIX per architecture and one
+# .msixbundle. Upload the .msixbundle to Partner Center (the Store signs it). Set these in
+# Settings -> Secrets and variables -> Actions -> Variables, copied from Partner Center -> Product identity
+# (the defaults below are used when a variable is not set):
+#   MSIX_IDENTITY_NAME, MSIX_PUBLISHER, MSIX_PUBLISHER_DISPLAY_NAME
 name: Release
 
 on:
@@ -18,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release, without the v (e.g. 2.0.0)"
+        description: "Version to release, without the v (e.g. 3.0.0)"
         required: true
 
 permissions:
@@ -30,10 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-dotnet@v4
         with:
-          go-version: stable
-          cache: true
+          dotnet-version: 9.0.x
 
       - name: Version
         id: ver
@@ -43,41 +39,20 @@ jobs:
           if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Bad version '$v'" }
           "version=$v" >> $env:GITHUB_OUTPUT
 
-      - name: Vet
-        working-directory: src
-        run: go vet ./...
-
-      - name: Install WiX Toolset 5
+      - name: Build, smoke-test (x64), zip and package
         shell: pwsh
-        run: |
-          dotnet tool install --global wix --version 5.0.2
-          wix extension add -g WixToolset.UI.wixext/5.0.2
-          wix extension add -g WixToolset.Util.wixext/5.0.2
-
-      - name: Build installers and portable exes
-        shell: powershell
-        run: .\installer\build.ps1 -Version ${{ steps.ver.outputs.version }}
-
-      # Microsoft Store: the MSI/EXE route requires a purchased code-signing certificate, so the
-      # Store build is an MSIX bundle (the Store signs it). Set these in Settings -> Secrets and
-      # variables -> Actions -> Variables, copied from Partner Center -> Product identity:
-      #   MSIX_IDENTITY_NAME, MSIX_PUBLISHER, MSIX_PUBLISHER_DISPLAY_NAME
-      - name: Build Store MSIX bundle
-        shell: powershell
         env:
           MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME || 'Magestica.MyToolBox' }}
           MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER || 'CN=F8598E86-A98F-4FD0-90D7-DA85D833223D' }}
           MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME || 'Magestica' }}
         run: |
-          if (-not $env:MSIX_IDENTITY_NAME -or -not $env:MSIX_PUBLISHER -or -not $env:MSIX_PUBLISHER_DISPLAY_NAME) {
-            throw "Set repo variables MSIX_IDENTITY_NAME, MSIX_PUBLISHER and MSIX_PUBLISHER_DISPLAY_NAME (Partner Center -> Product identity)"
-          }
-          .\installer\make-msix.ps1 -Version ${{ steps.ver.outputs.version }} -IdentityName $env:MSIX_IDENTITY_NAME -Publisher $env:MSIX_PUBLISHER -PublisherDisplayName $env:MSIX_PUBLISHER_DISPLAY_NAME
+          ./build.ps1 -Version ${{ steps.ver.outputs.version }} -Arch x64,x86,arm64 -Installer -Zip -Msix -Test `
+            -IdentityName $env:MSIX_IDENTITY_NAME -Publisher $env:MSIX_PUBLISHER -PublisherDisplayName $env:MSIX_PUBLISHER_DISPLAY_NAME
 
       - name: Checksums
         shell: pwsh
         run: |
-          Get-ChildItem dist -File | Where-Object Name -match '\.(msi|exe|msixbundle)$' | ForEach-Object {
+          Get-ChildItem dist -File | Where-Object Name -match '\.(msi|zip|msix|msixbundle)$' | ForEach-Object {
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
           } | Set-Content dist\SHA256SUMS.txt -Encoding ascii
           Get-Content dist\SHA256SUMS.txt
@@ -91,44 +66,21 @@ jobs:
           body: |
             ## Download
 
-            | Windows | Installer | Portable |
+            | Windows | Installer | Portable (unzip and run `ToolBox.exe`) |
             |---|---|---|
-            | 64-bit (x64) | [ToolBoxSetup-${{ steps.ver.outputs.version }}-x64.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-x64.msi) | [ToolBox-${{ steps.ver.outputs.version }}-x64.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-x64.exe) |
-            | 32-bit (x86) | [ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi) | [ToolBox-${{ steps.ver.outputs.version }}-x86.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-x86.exe) |
-            | ARM64 | [ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi) | [ToolBox-${{ steps.ver.outputs.version }}-arm64.exe](https://github.com/${{ github.repository }}/releases/download/v${{ steps.ver.outputs.version }}/ToolBox-${{ steps.ver.outputs.version }}-arm64.exe) |
+            | 64-bit (x64) | `ToolBoxSetup-${{ steps.ver.outputs.version }}-x64.msi` | `ToolBox-${{ steps.ver.outputs.version }}-x64.zip` |
+            | 32-bit (x86) | `ToolBoxSetup-${{ steps.ver.outputs.version }}-x86.msi` | `ToolBox-${{ steps.ver.outputs.version }}-x86.zip` |
+            | ARM64 | `ToolBoxSetup-${{ steps.ver.outputs.version }}-arm64.msi` | `ToolBox-${{ steps.ver.outputs.version }}-arm64.zip` |
 
-            The installer is per-user (no admin needed) and adds Desktop and Start menu shortcuts.
+            The installer is per-user (no administrator rights) and adds Desktop and Start menu shortcuts.
             Silent install: `msiexec /i ToolBoxSetup-<version>-<arch>.msi /qn /norestart`
+
+            The `.msixbundle` is the Microsoft Store package (it is signed by the Store, so it cannot be installed by hand).
+            Nothing needs to be installed first: the .NET and Windows App SDK runtimes are inside the app.
           files: |
             dist/ToolBoxSetup-*.msi
-            dist/ToolBox-*.exe
+            dist/ToolBox-*.zip
+            dist/ToolBox-*.msix
             dist/ToolBox-*.msixbundle
             dist/SHA256SUMS.txt
           fail_on_unmatched_files: true
-
-      - name: Publish direct (non-redirecting) downloads to GitHub Pages
-        shell: pwsh
-        env:
-          VERSION: ${{ steps.ver.outputs.version }}
-          REPO: ${{ github.repository }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          $url = "https://x-access-token:$($env:TOKEN)@github.com/$($env:REPO).git"
-          git ls-remote --exit-code --heads $url gh-pages *> $null
-          if ($LASTEXITCODE -eq 0) {
-            git clone --quiet --branch gh-pages --single-branch $url pages
-          } else {
-            git init --quiet pages
-            git -C pages checkout --quiet --orphan gh-pages
-            git -C pages remote add origin $url
-          }
-          $dir = "pages/downloads/$($env:VERSION)"
-          New-Item -ItemType Directory -Force $dir | Out-Null
-          Copy-Item dist/ToolBoxSetup-*.msi, dist/SHA256SUMS.txt $dir
-          # FTP-style listings of all versions (index of /downloads/, /downloads/<version>/)
-          ./installer/make-pages-index.ps1 -Root pages
-          git -C pages add -A
-          git -C pages commit -m "Publish My Tool Box $($env:VERSION) installers"
-          git -C pages push origin gh-pages

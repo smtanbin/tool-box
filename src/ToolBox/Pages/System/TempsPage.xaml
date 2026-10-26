@@ -1,0 +1,16 @@
+<Page x:Class="ToolBox.Pages.TempsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid x:Name="Root" Padding="24,8,24,0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid>
+      <TextBlock Text="Temperatures" Style="{StaticResource TitleTextBlockStyle}"/>
+      <Button x:Name="Refresh" Content="Refresh" HorizontalAlignment="Right" Click="Refresh_Click"/>
+    </Grid>
+    <ProgressBar x:Name="Busy" Grid.Row="1" IsIndeterminate="True" VerticalAlignment="Top" Margin="0,12,0,0"/>
+    <ContentControl x:Name="Body" Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="-24,12,-24,0"/>
+  </Grid>
+</Page>
